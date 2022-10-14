@@ -31,7 +31,7 @@ data class LinkPreviewInfo(
     var title: String? = null,
     var body: String? = null,
     var imgUrl: String? = null,
-    val url: String
+    val url: String = "https://example.com"
 ) : RemoteDatabasePersitable {
 
     override fun hashMap(): HashMap<String, Any?> {
