@@ -1,0 +1,200 @@
+<!--
+  ~
+  ~    Copyright 2022 Aditya Bavadekar
+  ~
+  ~    Licensed under the Apache License, Version 2.0 (the "License");
+  ~    you may not use this file except in compliance with the License.
+  ~    You may obtain a copy of the License at
+  ~
+  ~        http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~    Unless required by applicable law or agreed to in writing, software
+  ~    distributed under the License is distributed on an "AS IS" BASIS,
+  ~    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~    See the License for the specific language governing permissions and
+  ~    limitations under the License.
+  ~
+  -->
+
+<resources>
+    <string name="app_name">Messenger</string>
+
+    <string name="account_type" translatable="false">com.adityaamolbavadekar.messenger</string>
+
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+    <string name="hello_home_second">Hello HomeSecondFragment. Arg: %1$s</string>
+    <string name="hello_dashboard_second">Hello DashboardSecondFragment. Arg: %1$s</string>
+    <string name="title_home">Home</string>
+    <string name="title_conversations">Conversations</string>
+    <string name="title_statuses">Status</string>
+    <string name="title_notifications">Notifications</string>
+
+    <string name="home_second">Home Second</string>
+
+    <!--[START] Conversation List Fragment-->
+    <string name="wallpaper">Wallpaper</string>
+    <string name="profile_picture">Profile Picture</string>
+    <string name="back">Back</string>
+    <string name="icon">Icon</string>
+    <string name="you">You</string>
+    <string name="type_a_message">Type a message…</string>
+    <string name="today">Today</string>
+    <string name="yesterday">Yesterday</string>
+    <!--[END] Conversation List Fragment-->
+
+    <!--[START] Login Fragments-->
+    <string name="enter_your_phone_number">Enter your phone number</string>
+    <string name="select_a_country">Select a country</string>
+    <string name="code">Country code</string>
+    <string name="phone_number">Phone number</string>
+    <string name="sms_disclaimer_phone_auth">Messenger will send you one-time SMS message, operator charges may apply.</string>
+    <string name="you_agree_disclaimer_phone_auth">By continuing, you agree to the %1s &amp; acknowledge the %2s.</string>
+    <string name="edit_number">Edit number</string>
+    <string name="enter_sms_code_we_sent_to">Enter SMS code we sent to %1s</string>
+    <string name="sending_sms_to_formatted">Sending SMS to %1s</string>
+    <string name="send_sms">I Agree send SMS</string>
+    <string name="first_name">First name</string>
+    <string name="last_name">Last name</string>
+    <string name="setup_your_profile">Setup your profile</string>
+    <string name="enter_valid_name_and_last_name">Enter your first and last name.</string>
+    <string name="privacy_policy">Privacy Policy of Messenger</string>
+    <string name="terms_of_service">Terms of Service</string>
+    <string name="signup">SignUp</string>
+    <string name="your_account_has_been_created_successfully">You account has been successfully created.</string>
+    <string name="phone_number_confirmation_dialog_formatted">Is this the correct number?\n<big><b> %1s </b></big>\n</string>
+
+    <!--KEYBOARD KEYS-->
+    <string name="key_name_1">1</string>
+    <string name="key_name_2">2</string>
+    <string name="key_name_3">3</string>
+    <string name="key_name_4">4</string>
+    <string name="key_name_5">5</string>
+    <string name="key_name_6">6</string>
+    <string name="key_name_7">7</string>
+    <string name="key_name_8">8</string>
+    <string name="key_name_9">9</string>
+    <string name="key_name_0">0</string>
+    <!--KEYBOARD KEYS-->
+    <!--[END] Login Fragments-->
+
+    <!--[START] Dialogs-->
+    <string name="remove_wallpaper">Remove wallpaper</string>
+    <string name="change_wallpaper">Change wallpaper</string>
+    <string name="a_problem_occurred">A problem occurred</string>
+    <string name="try_again">Try again</string>
+    <string name="continue_text">Continue</string>
+    <string name="yes">Yes</string>
+    <string name="delete">Delete</string>
+    <string name="logout_question">Logout?</string>
+    <string name="logged_out">Logged out.</string>
+    <string name="logout_confirmation_message">Are you sure you want to logout from <b>%1s</b>?\nYou will not lose your data. All your conversations, messages and media are securely save to the cloud.</string>
+    <string name="logged_out_message">Hey <b>%1s</b>\nYou have been logged out, please login again to continue. If you did\'nt do anything that would log you out, please contact support at : <b> projectsandstudiesaditya@gmail.com </b> </string>
+    <string name="logout">Logout</string>
+    <string name="please_check_your_network_connection_and_try_again">Please check your network connection and try again.\n</string>
+    <string name="network_unavailable">Network unavailable</string>
+    <string name="oops_something_went_wrong_try_again_later">0ops! something went wrong, please try again later.</string>
+    <string name="unable_to_upload_profile_picture">0ops! something went wrong, Unable to upload profile picture.</string>
+    <string name="the_phone_number_is_empty">Phone number is empty</string>
+    <string name="the_phone_number_is_invalid">Phone number invalid</string>
+    <string name="the_country_code_is_invalid">Country code is invalid</string>
+    <string name="invalid_code">Invalid code</string>
+    <string name="user_is_disabled">You account has been disabled.</string>
+    <string name="too_many_requests">Too many sign requests.</string>
+    <string name="network_error_message">Sorry, unable to continue due to network problem. Please check your internet connection.</string>
+    <string name="no_users_found">No users found.</string>
+    <string name="delete_conversation_title">Delete conversation?</string>
+    <string name="delete_conversation_message">All the messages will be deleted.</string>
+    <string name="choose_theme">Choose theme</string>
+    <string name="choose_text_size">Choose text size</string>
+    <!--[END] Dialogs-->
+
+    <!--Contacts Picker-->
+    <string name="new_group">New group</string>
+    <string name="participants">Participants</string>
+    <string name="add_participants">Add participants</string>
+    <string name="check_box">Check box</string>
+    <string name="group_title">Group title</string>
+    <string name="group_description">Group description</string>
+    <string name="done">Done</string>
+    <string name="add_group_title_and_optional_photo">Add group title, photo(optional) and description (optional)</string>
+    <string name="select_contact">Select contact</string>
+
+    <!--Notifications-->
+    <string name="reply">Reply</string>
+    <string name="update_available">Update available</string>
+    <string name="checking_for_new_messages">Checking for new messages</string>
+    <string name="terms_of_service_updated">Terms of Service updated.</string>
+    <string name="privacy_policy_updated">Privacy policy updated.</string>
+    <string name="tap_here_to_update">Tap here to update </string>
+    <string name="online_status">online</string>
+    <string name="status_typing">typing…</string>
+    <string name="last_seen_formatted">last seen on %1s</string>
+    <string name="profile_picture_uploaded">Profile picture uploaded</string>
+
+    <string name="view_starred_messages">View starred messages</string>
+    <string name="delete_group">Delete group</string>
+    <string name="leave_group">Leave group</string>
+    <string name="report_group">Report group</string>
+    <string name="group_create_by_on">Group created by %1s on %2s</string>
+    <string name="group_count_of_participants">%d Participants</string>
+    <plurals name="group_count_of_participants">
+        <item quantity="one">%d Participant</item>
+        <item quantity="many">%d Participants</item>
+    </plurals>
+    <string name="add_group_description">Add group description</string>
+    <string name="remove_participant_formatted">Remove %1s from group?</string>
+    <string name="voice_call">Voice call</string>
+    <string name="read_more">Read more</string>
+    <string name="conversation_list_item_sender_formatted">%1s:</string>
+    <string name="react">React</string>
+    <string name="reacted_count_formatted">%d reacted</string>
+    <string name="jump_to_bottom">Jump to bottom</string>
+    <string name="emoji">Emoji</string>
+    <string name="only_managers_can_send_messages">Only managers can send messages</string>
+    <string name="your_reaction">Your reaction</string>
+    <string name="post_reaction">Post reaction</string>
+    <string name="reactor_reacted_formatted">%1s reacted : %2s</string>
+    <string name="camera">Camera</string>
+    <string name="photos">Photos</string>
+    <string name="location">Location</string>
+    <string name="gif">GIF</string>
+    <string name="document">Document</string>
+    <string name="contact">Contact</string>
+    <string name="no_conversations_message">No conversations\n\n Tap the button bellow to start chatting.</string>
+    <string name="account_and_settings">Account &amp; settings</string>
+    <string name="settings">Settings</string>
+    <string name="medium">Medium</string>
+    <string name="small">Small</string>
+    <string name="large">Large</string>
+
+    <string name="send">Send</string>
+    <string name="attach_pictures">Attach pictures</string>
+    <string name="attach">Attach</string>
+    <string name="add_emojis">Add emojis</string>
+    <string name="backspace_content_description">Backspace</string>
+    <string name="enter_otp_hint">000000</string>
+    <string name="do_you_want_to_submit_logs">Do you want to submit logs?</string>
+    <string name="logs_submitted">Logs submitted</string>
+    <string name="send_feedback">Send feedback</string>
+    <string name="shake_to_send_feedback">Shake to send feedback</string>
+    <string name="shake_presenter_dialog_message">You shook your device. Your feedback helps us make Messenger better. You can disable this shake behaviour visit settings.</string>
+    <string name="dismiss">Dismiss</string>
+    <string name="resend_sms_code">Resend SMS</string>
+    <string name="copyright_message">© Copyright 2022 Aditya Bavadekar</string>
+    <string name="app_version_formatted">Version %s</string>
+    <string name="open_source_licenses">Open-source licenses</string>
+
+    <string-array name="theme_chooser">
+        <item>System Default</item>
+        <item>Light</item>
+        <item>Dark</item>
+    </string-array>
+
+    <string-array name="text_size">
+        <item>Medium</item>
+        <item>Small</item>
+        <item>Large</item>
+    </string-array>
+
+</resources>

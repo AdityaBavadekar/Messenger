@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~
+  ~    Copyright 2022 Aditya Bavadekar
+  ~
+  ~    Licensed under the Apache License, Version 2.0 (the "License");
+  ~    you may not use this file except in compliance with the License.
+  ~    You may obtain a copy of the License at
+  ~
+  ~        http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~    Unless required by applicable law or agreed to in writing, software
+  ~    distributed under the License is distributed on an "AS IS" BASIS,
+  ~    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~    See the License for the specific language governing permissions and
+  ~    limitations under the License.
+  ~
+  -->
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.adityaamolbavadekar.messenger.views.MessagesListRecyclerView
+        android:id="@android:id/list"
+        style="@style/Messenger.Widget.RecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:listitem="@layout/message_item_sent_text" />
+
+    <TextView
+        android:id="@+id/date_header"
+        style="@style/Messenger.Widget.DateHeaderTextView"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:padding="@dimen/dimen_8"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="2 April, 2000"
+        tools:visibility="visible" />
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/jumpToBottom"
+        style="?materialCardViewFilledStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/dimen_16"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="gone"
+        app:cardBackgroundColor="@color/messenger_widget_conversation_root_background"
+        app:cardCornerRadius="32dp"
+        app:cardElevation="@dimen/dimen_2"
+        app:cardForegroundColor="@android:color/transparent"
+        tools:visibility="visible">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center"
+            android:drawableStart="@drawable/ic_arrow_down"
+            android:drawablePadding="@dimen/dimen_8"
+            android:gravity="center"
+            android:padding="@dimen/dimen_8"
+            android:text="@string/jump_to_bottom"
+            android:visibility="gone" />
+
+        <ImageView
+            android:layout_width="@dimen/jump_to_bottom_image_size"
+            android:layout_height="@dimen/jump_to_bottom_image_size"
+            android:layout_gravity="center"
+            android:padding="@dimen/dimen_8"
+            android:src="@drawable/ic_arrow_down"
+            />
+
+    </com.google.android.material.card.MaterialCardView>
+
+</RelativeLayout>

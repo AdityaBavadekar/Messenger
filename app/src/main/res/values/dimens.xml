@@ -1,0 +1,121 @@
+<!--
+  ~
+  ~    Copyright 2022 Aditya Bavadekar
+  ~
+  ~    Licensed under the Apache License, Version 2.0 (the "License");
+  ~    you may not use this file except in compliance with the License.
+  ~    You may obtain a copy of the License at
+  ~
+  ~        http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~    Unless required by applicable law or agreed to in writing, software
+  ~    distributed under the License is distributed on an "AS IS" BASIS,
+  ~    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~    See the License for the specific language governing permissions and
+  ~    limitations under the License.
+  ~
+  -->
+
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="window_insets_layout_default_padding_vertical">4dp</dimen>
+
+    <!--Dimens-->
+    <dimen name="dimen_2">2dp</dimen>
+    <dimen name="dimen_4">4dp</dimen>
+    <dimen name="dimen_6">6dp</dimen>
+    <dimen name="dimen_8">8dp</dimen>
+    <dimen name="dimen_12">12dp</dimen>
+    <dimen name="dimen_16">16dp</dimen>
+    <dimen name="dimen_18">18dp</dimen>
+    <dimen name="dimen_24">24dp</dimen>
+    <dimen name="dimen_32">32dp</dimen>
+
+    <!--Radius-->
+    <dimen name="toolbar_radius">15dp</dimen>
+    <dimen name="message_corner_radius">16dp</dimen>
+    <dimen name="message_reactions_indicator_radius">16dp</dimen>
+    <dimen name="message_input_card_corner_radius">8dp</dimen>
+    <dimen name="compose_bar_input_min_height">48dp</dimen>
+    <dimen name="text_input_layout_background_radius">26dp</dimen>
+    <dimen name="compose_container_radius">24dp</dimen>
+
+    <!--Padding-->
+    <dimen name="text_default_padding">15dp</dimen>
+    <dimen name="toolbar_padding_vertical">12dp</dimen>
+    <dimen name="text_view_drawable_padding">15dp</dimen>
+    <dimen name="compose_bar_padding">8dp</dimen>
+
+    <!--Image Sizes-->
+    <dimen name="toolbar_profile_picture_size">40dp</dimen>
+    <dimen name="toolbar_profile_picture_size_medium">90dp</dimen>
+    <dimen name="toolbar_profile_picture_size_large">120dp</dimen>
+    <dimen name="avatar_image_view_default_size">100dp</dimen>
+    <dimen name="message_image_height">200dp</dimen>
+
+    <!--Elevation-->
+    <dimen name="main_activity_appbar_elevation">3dp</dimen>
+    <dimen name="appbar_elevation">6dp</dimen>
+    <dimen name="message_elevation">4dp</dimen>
+    <dimen name="keyboard_key_padding_start">8dp</dimen>
+    <dimen name="keyboard_key_margin">8dp</dimen>
+    <dimen name="sms_verification_text_view_container_padding">0dp</dimen>
+    <dimen name="new_messages_count_indicator_size">2dp</dimen>
+
+    <dimen name="sms_verification_view_bottom_image_height">2dp</dimen>
+
+    <dimen name="recycler_view_padding_horizontal">0dp</dimen>
+    <dimen name="recycler_view_padding_vertical">0dp</dimen>
+
+    <dimen name="conversation_list_item_height">80dp</dimen>
+    <dimen name="conversation_list_image_size">55dp</dimen>
+
+    <dimen name="message_card_elevation">0dp</dimen>
+    <dimen name="message_min_width">80dp</dimen>
+    <dimen name="message_max_width">280dp</dimen>
+    <dimen name="message_reply_text_view_max_width">200dp</dimen>
+    <dimen name="message_reply_image_view_size">35dp</dimen>
+    <dimen name="message_timestamp_min_width">50dp</dimen>
+    <dimen name="message_margin_top">2dp</dimen>
+    <dimen name="message_padding_horizontal">4dp</dimen>
+    <dimen name="message_padding_vertical">4dp</dimen>
+
+    <dimen name="conversation_bottom_bar_min_height">46dp</dimen>
+    <dimen name="compose_message_min_height">46dp</dimen>
+    <dimen name="compose_message_keyboard_open_margin_bottom">2dp</dimen>
+    <dimen name="emoji_category_size">48dp</dimen>
+
+    <dimen name="settings_item_padding_vertical">8dp</dimen>
+
+    <dimen name="jump_to_bottom_image_size">42dp</dimen>
+    <dimen name="menu_item_size">48dp</dimen>
+    <dimen name="menu_item_ripple_size">48dp</dimen>
+    <dimen name="menu_item_icon_size">24dp</dimen>
+    <dimen name="menu_item_badge_icon_size">12dp</dimen>
+
+    <dimen name="settings_item_container_margin">4dp</dimen>
+    <dimen name="settings_item_min_height">64dp</dimen>
+    <dimen name="fast_scroller_padding">0dp</dimen>
+    <dimen name="popupmenu_backgroung_overlay_radius">8dp</dimen>
+    <dimen name="conversation_list_contact_icon_size">50dp</dimen>
+    <dimen name="conversation_list_additional_icon_size">30dp</dimen>
+
+    <dimen name="emoji_tab_height">48dp</dimen>
+    <dimen name="emoji_popup_min_height">200dp</dimen>
+    <dimen name="emoji_popup_elevation">4dp</dimen>
+    <dimen name="country_selection_textview_max_width">80dp</dimen>
+
+
+    <dimen name="main_activity_app_bar_size">70dp</dimen>
+    <dimen name="bottom_nav_size_condensed_vertical">95dp</dimen>
+    <dimen name="bottom_nav_size_condensed_horizontal">70dp</dimen>
+    <dimen name="bottom_nav_condensed_vertical_fab_margin">110dp</dimen>
+    <dimen name="bottom_nav_condensed_horizontal_fab_margin">85dp</dimen>
+
+    <dimen name="edit_text_layout_drawable_corners_radius">8dp</dimen>
+    <dimen name="edit_text_layout_drawable_padding">2dp</dimen>
+
+
+</resources>

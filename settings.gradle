@@ -1,0 +1,4 @@
+include ':model'
+include ':app'
+project(':app').name = 'Messenger-Android'
+rootProject.name = "Messenger"

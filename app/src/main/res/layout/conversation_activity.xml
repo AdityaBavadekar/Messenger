@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~
+  ~    Copyright 2022 Aditya Bavadekar
+  ~
+  ~    Licensed under the Apache License, Version 2.0 (the "License");
+  ~    you may not use this file except in compliance with the License.
+  ~    You may obtain a copy of the License at
+  ~
+  ~        http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~    Unless required by applicable law or agreed to in writing, software
+  ~    distributed under the License is distributed on an "AS IS" BASIS,
+  ~    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~    See the License for the specific language governing permissions and
+  ~    limitations under the License.
+  ~
+  -->
+
+<com.adityaamolbavadekar.messenger.views.WindowInsetsAwareConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context=".ui.conversation.ConversationActivity">
+
+    <ImageView
+        android:id="@+id/wallpaperImageView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:contentDescription="@null"
+        android:importantForAccessibility="no"
+        android:scaleType="centerCrop"
+        android:src="@color/colorWallpaperDefault"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:orientation="vertical">
+
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <com.google.android.material.appbar.AppBarLayout
+                android:id="@+id/appbar"
+                style="@style/Messenger.Widget.Appbar.ConversationStyle">
+
+                <androidx.appcompat.widget.Toolbar
+                    android:id="@+id/toolbar"
+                    style="@style/Messenger.Widget.Toolbar.ConversationStyle"
+                    android:layout_gravity="center"
+                    app:buttonGravity="center_vertical"
+                    app:contentInsetStartWithNavigation="0dp"
+                    app:menu="@menu/conversation_fragment">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start|center_vertical"
+                        android:gravity="center"
+                        android:minHeight="64dp"
+                        android:orientation="horizontal">
+
+                        <com.adityaamolbavadekar.messenger.views.AvatarImageView
+                            android:id="@+id/profile_picture_image_view"
+                            android:layout_width="@dimen/toolbar_profile_picture_size"
+                            android:layout_height="@dimen/toolbar_profile_picture_size"
+                            android:layout_gravity="center"
+                            android:contentDescription="@string/profile_picture"
+                            android:src="@drawable/ic_user_profile_default"
+                            app:cornerRadius="@dimen/toolbar_profile_picture_size" />
+
+                        <LinearLayout
+                            android:id="@+id/titleSubtitleHolder"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center"
+                            android:layout_marginStart="@dimen/dimen_8"
+                            android:background="?selectableItemBackground"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/title"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:paddingHorizontal="@dimen/dimen_8"
+                                android:singleLine="true"
+                                android:textAppearance="@style/TextAppearance.Messenger.ToolbarTitle"
+                                tools:text="@tools:sample/full_names" />
+
+                            <TextView
+                                android:id="@+id/subtitle"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:paddingHorizontal="@dimen/dimen_8"
+                                android:singleLine="true"
+                                android:textSize="12sp"
+                                android:visibility="gone"
+                                tools:text="@string/online_status"
+                                tools:visibility="visible" />
+
+                        </LinearLayout>
+                    </LinearLayout>
+
+                </androidx.appcompat.widget.Toolbar>
+
+            </com.google.android.material.appbar.AppBarLayout>
+
+            <androidx.coordinatorlayout.widget.CoordinatorLayout
+                android:id="@+id/conversation_fragment_container"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+                <!-- FOR VIEWING PURPOSE ONLY.-->
+                <!--                    <include layout="@layout/conversation_fragment"/>-->
+
+            </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+
+        </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:elevation="@dimen/appbar_elevation"
+            android:orientation="vertical">
+
+            <com.adityaamolbavadekar.messenger.views.compose.ComposeMessageBar
+                android:id="@+id/composeBar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:background="@color/colorWallpaperDefault"
+                android:visibility="gone"
+                app:inputEditTextHint="@string/type_a_message"
+                tools:visibility="visible" />
+
+            <include
+                android:id="@+id/permission_managers_only"
+                layout="@layout/only_managers_can_send_messages_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                tools:visibility="gone" />
+
+            <FrameLayout
+                android:id="@+id/fragment_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</com.adityaamolbavadekar.messenger.views.WindowInsetsAwareConstraintLayout>

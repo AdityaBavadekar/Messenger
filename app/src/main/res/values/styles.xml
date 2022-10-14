@@ -1,0 +1,317 @@
+<!--
+  ~
+  ~    Copyright 2022 Aditya Bavadekar
+  ~
+  ~    Licensed under the Apache License, Version 2.0 (the "License");
+  ~    you may not use this file except in compliance with the License.
+  ~    You may obtain a copy of the License at
+  ~
+  ~        http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~    Unless required by applicable law or agreed to in writing, software
+  ~    distributed under the License is distributed on an "AS IS" BASIS,
+  ~    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~    See the License for the specific language governing permissions and
+  ~    limitations under the License.
+  ~
+  -->
+
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <style name="Messenger.Widget.BottomNavigationView" parent="Widget.Material3.BottomNavigationView">
+        <item name="android:paddingVertical" tools:targetApi="o">@dimen/dimen_4</item>
+    </style>
+
+
+    <style name="Messenger.Widget.BottomNavigationView.MainActivity" parent="Widget.Material3.BottomNavigationView">
+        <item name="itemPaddingTop">10dp</item>
+        <item name="itemPaddingBottom">20dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">match_parent</item>
+    </style>
+
+    <style name="Messenger.Widget.NavigationRailView" parent="Widget.Material3.NavigationRailView" />
+
+    <style name="Messenger.Widget.Toolbar" parent="Widget.MaterialComponents.Toolbar">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="minHeight">?actionBarSize</item>
+        <item name="android:paddingVertical" tools:targetApi="o">@dimen/toolbar_padding_vertical
+        </item>
+        <item name="android:layout_gravity">center</item>
+        <item name="title">@string/app_name</item>
+    </style>
+
+    <style name="Messenger.Widget.Toolbar.NavigationStyle" parent="Messenger.Widget.Toolbar">
+        <item name="navigationIcon">@drawable/ic_arrow_back</item>
+    </style>
+
+    <style name="Messenger.Widget.Appbar" parent="Messenger.Widget.Appbar.Primary" />
+
+    <style name="Messenger.Widget.Appbar.Primary" parent="Widget.MaterialComponents.AppBarLayout.Primary">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="elevation">@dimen/appbar_elevation</item>
+        <item name="minHeight">?attr/actionBarSize</item>
+    </style>
+
+    <style name="Messenger.Widget.Appbar.Surface" parent="Messenger.Widget.Appbar.Primary">
+        <item name="android:background">?colorSurface</item>
+    </style>
+
+    <style name="Messenger.Widget.Appbar.ConversationStyle" parent="Messenger.Widget.Appbar.Surface">
+        <item name="elevation">@dimen/appbar_elevation</item>
+        <item name="android:background">@color/color_conversation_appbar</item>
+    </style>
+
+    <style name="Messenger.Widget.AvatarImageView.Default" parent="android:Widget.ImageButton">
+        <item name="elevation">2dp</item>
+        <item name="android:layout_width">@dimen/avatar_image_view_default_size</item>
+        <item name="android:layout_height">@dimen/avatar_image_view_default_size</item>
+        <item name="cornerRadius">@dimen/avatar_image_view_default_size</item>
+    </style>
+
+    <style name="Messenger.Widget.Toolbar.ConversationStyle" parent="Messenger.Widget.Toolbar.NavigationStyle">
+        <item name="android:paddingVertical" tools:targetApi="o">0dp</item>
+        <item name="android:contentInsetStartWithNavigation" tools:targetApi="n">0dp</item>
+    </style>
+
+    <style name="Messenger.Widget.Button" parent="Widget.Material3.Button">
+        <item name="textAllCaps">false</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
+
+    <style name="Messenger.Widget.DateHeaderTextView" parent="Widget.MaterialComponents.TextView">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+        <item name="android:textAppearance">@style/TextAppearance.Messenger.DateHeader</item>
+        <item name="android:background">@drawable/date_header_background</item>
+        <item name="android:elevation">@dimen/dimen_4</item>
+        <item name="android:gravity">center</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:visibility">gone</item>
+    </style>
+
+    <style name="WidgetKeyboardKey">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/keyboard_key_background</item>
+        <item name="android:gravity">center</item>
+        <item name="android:minHeight">?listPreferredItemHeightSmall</item>
+        <item name="android:paddingVertical" tools:targetApi="o">@dimen/text_default_padding</item>
+        <item name="android:paddingStart">@dimen/keyboard_key_padding_start</item>
+        <item name="android:paddingEnd">@dimen/dimen_32</item>
+        <item name="android:textAppearance">@style/TextAppearance.Messenger.KeyboardKey</item>
+    </style>
+
+    <style name="Messenger.Widget.RecyclerView" parent="android:Widget">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="layoutManager">androidx.recyclerview.widget.LinearLayoutManager</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:paddingHorizontal" tools:targetApi="o">
+            @dimen/recycler_view_padding_horizontal
+        </item>
+        <item name="android:overScrollMode">ifContentScrolls</item>
+        <item name="android:paddingVertical" tools:targetApi="o">
+            @dimen/recycler_view_padding_vertical
+        </item>
+    </style>
+
+    <style name="Messenger.Widget.RecyclerView.FastScroller" parent="Messenger.Widget.RecyclerView">
+        <item name="android:overScrollMode">ifContentScrolls</item>
+        <item name="android:scrollbarSize">0dp</item>
+        <item name="android:scrollbars">none</item>
+        <item name="fastScrollEnabled">true</item>
+        <item name="fastScrollHorizontalThumbDrawable">@drawable/drawable_thumb</item>
+        <item name="fastScrollHorizontalTrackDrawable">@drawable/drawable_line</item>
+        <item name="fastScrollVerticalThumbDrawable">@drawable/drawable_thumb</item>
+        <item name="fastScrollVerticalTrackDrawable">@drawable/drawable_line</item>
+    </style>
+
+    <style name="Messenger.Widget.MessageTimestamp" parent="Widget.MaterialComponents.TextView">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:alpha">0.5</item>
+        <item name="android:paddingStart">0dp</item>
+        <item name="android:paddingEnd">@dimen/dimen_2</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:textAppearance">@style/TextAppearance.Messenger.Message.Timestamp</item>
+    </style>
+
+    <style name="Messenger.Widget.Message.HolderCard" parent="Widget.Material3.CardView.Filled">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_centerVertical">true</item>
+        <item name="cardElevation">@dimen/message_card_elevation</item>
+        <item name="cardForegroundColor">@android:color/transparent</item>
+        <item name="cardCornerRadius">@dimen/message_corner_radius</item>
+        <!--        <item name="android:clickable">true</item>-->
+        <!--        <item name="android:focusable">true</item>-->
+    </style>
+
+    <style name="Messenger.Widget.Message.HolderCard.Outgoing" parent="Messenger.Widget.Message.HolderCard">
+        <!--        <item name="cardBackgroundColor">@color/colorMessageDefaultOutgoing</item>-->
+        <item name="cardBackgroundColor">
+            @color/messenger_widget_message_container_background_outgoing
+        </item>
+    </style>
+
+    <style name="Messenger.Widget.Message.HolderCard.Incoming" parent="Messenger.Widget.Message.HolderCard">
+        <!--        <item name="cardBackgroundColor">@color/colorMessageDefaultIncoming</item>-->
+        <item name="cardBackgroundColor">
+            @color/messenger_widget_message_container_background_incoming
+        </item>
+    </style>
+
+    <style name="Messenger.Widget.Message.Card.Filled" parent="Widget.Material3.CardView.Filled" />
+
+    <style name="Widget.Messenger.Message.Card.NoStrokeTransparent" parent="Widget.Material3.CardView.Filled">
+        <item name="cardBackgroundColor">@android:color/transparent</item>
+        <item name="cardForegroundColor">@android:color/transparent</item>
+    </style>
+
+    <style name="Messenger.Widget.Message.Card.EmojiItemStyle" parent="Widget.Messenger.Message.Card.NoStrokeTransparent">
+        <item name="elevation">0dp</item>
+        <item name="cornerRadius">32dp</item>
+        <item name="android:layout_width">32dp</item>
+        <item name="android:layout_height">32dp</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+    </style>
+
+    <style name="Messenger.Widget.Preferences.Summary" parent="Widget.AppCompat.TextView">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_below">@android:id/title</item>
+        <item name="android:layout_alignStart">@android:id/title</item>
+        <item name="android:maxLines">4</item>
+        <item name="android:textAppearance">@style/TextAppearance.Messenger.Preferences.Summary
+        </item>
+        <item name="android:alpha">0.7</item>
+        <item name="android:textColor">?android:attr/textColorSecondary</item>
+    </style>
+
+    <style name="Messenger.Widget.Preferences.Title" parent="Widget.AppCompat.TextView">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:ellipsize">marquee</item>
+        <item name="android:fadingEdge">horizontal</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:textAppearance">@style/TextAppearance.Messenger.Preferences.Title</item>
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
+    </style>
+
+    <style name="Messenger.Widget.NavigationView" parent="Widget.Material3.NavigationView">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="itemShapeAppearanceOverlay">
+            @style/ShapeAppearanceOverlay.Messenger.NavigationView.Item
+        </item>
+        <item name="drawerLayoutCornerSize">0dp</item>
+        <item name="itemShapeInsetBottom">0dp</item>
+        <item name="itemShapeInsetTop">0dp</item>
+        <item name="itemShapeInsetStart">0dp</item>
+        <item name="itemShapeInsetEnd">0dp</item>
+    </style>
+
+    <style name="Messenger.Widget.FloatingActionButton" parent="Widget.Material3.FloatingActionButton.Primary">
+        <item name="shapeAppearanceOverlay">
+            @style/ShapeAppearanceOverlay.Messenger.FloatingActionButton
+        </item>
+    </style>
+
+    <style name="ShapeAppearanceOverlay.Messenger.FloatingActionButton" parent="">
+        <item name="cornerSize">40%</item>
+        <item name="cornerFamily">rounded</item>
+    </style>
+
+    <style name="ShapeAppearanceOverlay.Messenger.NavigationView.Item" parent="">
+        <item name="cornerSize">0%</item>
+    </style>
+
+    <style name="Widget.Messenger.ActionBar.Light" parent="Widget.AppCompat.Light.ActionBar.Solid">
+        <item name="titleTextStyle">@style/TextAppearance.Material3.ActionBar.Title</item>
+        <item name="subtitleTextStyle">@style/TextAppearance.Material3.ActionBar.Subtitle</item>
+        <item name="background">?attr/colorSurface</item>
+        <item name="backgroundStacked">?attr/colorSurface</item>
+        <item name="backgroundSplit">?attr/colorSurface</item>
+    </style>
+
+    <style name="Messenger.Widget.ActionBar.Dark" parent="Widget.AppCompat.ActionBar.Solid">
+        <item name="titleTextStyle">@style/TextAppearance.Material3.ActionBar.Title</item>
+        <item name="subtitleTextStyle">@style/TextAppearance.Material3.ActionBar.Subtitle</item>
+        <item name="background">?attr/colorSurface</item>
+        <item name="backgroundStacked">?attr/colorSurface</item>
+        <item name="backgroundSplit">?attr/colorSurface</item>
+    </style>
+
+    <style name="Messenger.Widget.MaterialButton" parent="Widget.Material3.Button">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">end|center_vertical</item>
+        <item name="android:layout_marginTop">@dimen/dimen_4</item>
+        <item name="android:layout_marginEnd">@dimen/dimen_16</item>
+        <item name="android:layout_marginBottom">@dimen/dimen_16</item>
+        <item name="android:padding">@dimen/dimen_16</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
+
+    <style name="Messenger.Widget.ReplyView" parent="android:Widget">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:layout_marginBottom">@dimen/dimen_8</item>
+        <item name="android:gravity">center</item>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:maxWidth">@dimen/message_max_width</item>
+    </style>
+
+    <style name="Messenger.Widget.ReactionsView" parent="Widget.Messenger.Message.Card.NoStrokeTransparent">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:layout_marginBottom">@dimen/dimen_8</item>
+        <item name="android:gravity">center</item>
+        <item name="android:maxWidth">@dimen/message_max_width</item>
+    </style>
+
+    <style name="Messenger.Widget.LinkPreviewView" parent="Widget.Messenger.Message.Card.NoStrokeTransparent">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:layout_marginBottom">@dimen/dimen_8</item>
+        <item name="android:alpha">0.7</item>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+        <item name="android:maxWidth">@dimen/message_max_width</item>
+    </style>
+
+    <style name="Messenger.Widget.LinkPreviewView.Card" parent="Messenger.Widget.Message.Card.Filled">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+        <item name="android:maxWidth">@dimen/message_max_width</item>
+    </style>
+
+
+    <style name="Messenger.Widget.PhotoAttachmentsView.Card" parent="Messenger.Widget.Message.Card.Filled">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+        <item name="android:maxWidth">@dimen/message_max_width</item>
+    </style>
+
+    <style name="Messenger.Widget.PopupMenu" parent="Widget.MaterialComponents.PopupMenu">
+        <item name="android:popupElevation">3dp</item>
+    </style>
+
+</resources>

@@ -1,0 +1,252 @@
+<!--
+  ~
+  ~    Copyright 2022 Aditya Bavadekar
+  ~
+  ~    Licensed under the Apache License, Version 2.0 (the "License");
+  ~    you may not use this file except in compliance with the License.
+  ~    You may obtain a copy of the License at
+  ~
+  ~        http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~    Unless required by applicable law or agreed to in writing, software
+  ~    distributed under the License is distributed on an "AS IS" BASIS,
+  ~    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~    See the License for the specific language governing permissions and
+  ~    limitations under the License.
+  ~
+  -->
+
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <!--
+    **********************
+    Messenger Light Themes
+    **********************
+    -->
+    <!--START Primary Application Theme-->
+    <style name="MessengerTheme" parent="MessengerTheme.Material3">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+
+    <!--Primary Application Theme-->
+    <style name="MessengerTheme.NoActionBar" parent="Messenger.Material3.NoActionBar" />
+    <!--END Primary Application Theme-->
+
+    <!--Translucent Application Theme without ActionBar-->
+    <style name="Messenger.Material3.NoActionBar.Translucent" parent="Messenger.Material3.NoActionBar">
+        <item name="android:windowTranslucentStatus">true</item>
+    </style>
+
+    <!--Application Theme without ActionBar-->
+    <style name="Messenger.Material3.NoActionBar" parent="MessengerTheme.Material3">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="Messenger.ShakePresenterTheme" parent="Messenger.Material3.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:backgroundDimEnabled">false</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowIsTranslucent">true</item>
+    </style>
+
+    <style name="Messenger.Material3.NoActionBar.Transparent" parent="Messenger.Material3.NoActionBar">
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+    </style>
+
+    <!--Application Theme-->
+    <style name="MessengerTheme.Material3" parent="Messenger.Material3.BaseTheme.Light" />
+
+    <style name="Messenger.NoActionBarBarSplashScreen" parent="MessengerTheme.NoActionBar">
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+    </style>
+
+    <style name="Messenger.Material3.ZoomImageView" parent="Messenger.Material3.BaseTheme.Dark">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+
+    <!--Base Application Themes-->
+    <style name="Messenger.Material3.BaseTheme.Light" parent="Theme.Material3.Light">
+
+        <!-- Color palettes -->
+        <item name="colorPrimary">@color/messenger_light_color_primary</item>
+        <item name="colorOnPrimary">@color/messenger_light_color_on_primary</item>
+        <item name="colorPrimaryInverse">@color/messenger_light_color_inverse_primary</item>
+        <item name="colorPrimaryContainer">@color/messenger_light_color_primary_container</item>
+        <item name="colorOnPrimaryContainer">@color/messenger_light_color_on_primary_container
+        </item>
+        <item name="colorSecondary">@color/messenger_light_color_secondary</item>
+        <item name="colorOnSecondary">@color/messenger_light_color_on_secondary</item>
+        <item name="colorSecondaryContainer">@color/messenger_light_color_secondary_container</item>
+        <item name="colorOnSecondaryContainer">@color/messenger_light_color_on_secondary_container
+        </item>
+        <item name="colorTertiary">@color/messenger_light_color_tertiary</item>
+        <item name="colorOnTertiary">@color/messenger_light_color_on_tertiary</item>
+        <item name="colorTertiaryContainer">@color/messenger_light_color_tertiary_container</item>
+        <item name="colorOnTertiaryContainer">@color/messenger_light_color_on_tertiary_container
+        </item>
+        <item name="android:colorBackground">@color/messenger_light_color_background</item>
+        <item name="colorOnBackground">@color/messenger_light_color_on_background</item>
+        <item name="colorSurface">@color/messenger_light_color_surface</item>
+        <item name="colorOnSurface">@color/messenger_light_color_on_surface</item>
+        <item name="colorSurfaceVariant">@color/messenger_light_color_surface_variant</item>
+        <item name="colorOnSurfaceVariant">@color/messenger_light_color_on_surface_variant</item>
+        <item name="colorSurfaceInverse">@color/messenger_light_color_inverse_surface</item>
+        <item name="colorOnSurfaceInverse">@color/messenger_light_color_inverse_on_surface</item>
+        <item name="colorOutline">@color/messenger_light_color_outline</item>
+        <item name="colorError">@color/messenger_light_color_error</item>
+        <item name="colorOnError">@color/messenger_light_color_on_error</item>
+        <item name="colorErrorContainer">@color/messenger_light_color_error_container</item>
+        <item name="colorOnErrorContainer">@color/messenger_light_color_on_error_container</item>
+
+        <item name="dialogCornerRadius">15dp</item>
+        <item name="android:dialogCornerRadius" tools:targetApi="p">15dp</item>
+        <item name="colorPrimaryDark">?colorPrimary</item>
+
+        <!--Font Family-->
+        <item name="fontFamily">@font/roboto_medium</item>
+        <item name="android:fontFamily">@font/roboto_medium</item>
+
+        <item name="android:textColor">@android:color/black</item>
+
+        <item name="windowActionModeOverlay">true</item>
+        <item name="android:navigationIcon">@drawable/ic_arrow_back</item>
+        <item name="android:statusBarColor">?colorSurface</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
+        <item name="android:navigationBarColor">?colorSurface</item>
+
+        <!--Widget Styles-->
+        <item name="toolbarStyle">@style/Messenger.Widget.Toolbar</item>
+        <item name="materialButtonStyle">@style/Messenger.Widget.Button</item>
+        <item name="buttonStyle">@style/Messenger.Widget.MaterialButton</item>
+        <item name="textInputStyle">@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox
+        </item>
+        <item name="bottomNavigationStyle">@style/Messenger.Widget.BottomNavigationView</item>
+        <item name="navigationViewStyle">@style/Messenger.Widget.NavigationView</item>
+        <item name="navigationRailStyle">@style/Messenger.Widget.NavigationRailView</item>
+        <item name="floatingActionButtonStyle">@style/Messenger.Widget.FloatingActionButton</item>
+
+        <!-- Popup Menu styles. -->
+        <item name="android:popupMenuStyle">@style/Messenger.Widget.PopupMenu</item>
+        <item name="popupMenuStyle">@style/Messenger.Widget.PopupMenu</item>
+        <item name="popupMenuBackground">@drawable/popupmenu_background_overlay</item>
+
+        <!-- Type styles. -->
+        <item name="textAppearanceDisplayLarge">@style/TextAppearance.Material3.DisplayLarge</item>
+        <item name="textAppearanceDisplayMedium">@style/TextAppearance.Material3.DisplayMedium
+        </item>
+        <item name="textAppearanceDisplaySmall">@style/TextAppearance.Material3.DisplaySmall</item>
+        <item name="textAppearanceHeadlineLarge">@style/TextAppearance.Material3.HeadlineLarge
+        </item>
+        <item name="textAppearanceHeadlineMedium">@style/TextAppearance.Material3.HeadlineMedium
+        </item>
+        <item name="textAppearanceHeadlineSmall">@style/TextAppearance.Material3.HeadlineSmall
+        </item>
+        <item name="textAppearanceTitleLarge">@style/TextAppearance.Material3.TitleLarge</item>
+        <item name="textAppearanceTitleMedium">@style/TextAppearance.Material3.TitleMedium</item>
+        <item name="textAppearanceTitleSmall">@style/TextAppearance.Material3.TitleSmall</item>
+        <item name="textAppearanceBodyLarge">@style/TextAppearance.Material3.BodyLarge</item>
+        <item name="textAppearanceBodyMedium">@style/TextAppearance.Material3.BodyMedium</item>
+        <item name="textAppearanceBodySmall">@style/TextAppearance.Material3.BodySmall</item>
+        <item name="textAppearanceLabelLarge">@style/TextAppearance.Material3.LabelLarge</item>
+        <item name="textAppearanceLabelMedium">@style/TextAppearance.Material3.LabelMedium</item>
+        <item name="textAppearanceLabelSmall">@style/TextAppearance.Material3.LabelSmall</item>
+
+        <item name="titleTextAppearance">@style/TextAppearance.Messenger.Title</item>
+        <item name="android:titleTextAppearance">@style/TextAppearance.Messenger.Title</item>
+
+        <!-- Menu type styles. -->
+        <item name="textAppearanceLargePopupMenu">?attr/textAppearanceBodyLarge</item>
+        <item name="textAppearanceSmallPopupMenu">?attr/textAppearanceBodyLarge</item>
+
+        <!-- Shape styles. -->
+        <item name="shapeAppearanceSmallComponent">@style/ShapeAppearance.Material3.SmallComponent
+        </item>
+        <item name="shapeAppearanceMediumComponent">
+            @style/ShapeAppearance.Material3.MediumComponent
+        </item>
+        <item name="shapeAppearanceLargeComponent">@style/ShapeAppearance.Material3.LargeComponent
+        </item>
+        <!-- Elevation overlays. -->
+        <item name="elevationOverlayEnabled">true</item>
+        <item name="elevationOverlayColor">?attr/colorPrimary</item>
+
+        <!-- Theme overlays. -->
+        <item name="dynamicColorThemeOverlay">@style/ThemeOverlay.Material3.DynamicColors.Light
+        </item>
+    </style>
+    <style name="Messenger.Material3.BaseTheme.Dark" parent="Theme.Material3.Dark">
+
+        <!-- Color palettes -->
+        <item name="colorPrimary">@color/messenger_dark_color_primary</item>
+        <item name="colorOnPrimary">@color/messenger_dark_color_on_primary</item>
+        <item name="colorPrimaryInverse">@color/messenger_dark_color_inverse_primary</item>
+        <item name="colorPrimaryContainer">@color/messenger_dark_color_primary_container</item>
+        <item name="colorOnPrimaryContainer">@color/messenger_dark_color_on_primary_container</item>
+        <item name="colorSecondary">@color/messenger_dark_color_secondary</item>
+        <item name="colorOnSecondary">@color/messenger_dark_color_on_secondary</item>
+        <item name="colorSecondaryContainer">@color/messenger_dark_color_secondary_container</item>
+        <item name="colorOnSecondaryContainer">@color/messenger_dark_color_on_secondary_container
+        </item>
+        <item name="colorTertiary">@color/messenger_dark_color_tertiary</item>
+        <item name="colorOnTertiary">@color/messenger_dark_color_on_tertiary</item>
+        <item name="colorTertiaryContainer">@color/messenger_dark_color_tertiary_container</item>
+        <item name="colorOnTertiaryContainer">@color/messenger_dark_color_on_tertiary_container
+        </item>
+        <item name="android:colorBackground">@color/messenger_dark_color_background</item>
+        <item name="colorOnBackground">@color/messenger_dark_color_on_background</item>
+        <item name="colorSurface">@color/messenger_dark_color_surface</item>
+        <item name="colorOnSurface">@color/messenger_dark_color_on_surface</item>
+        <item name="colorSurfaceVariant">@color/messenger_dark_color_surface_variant</item>
+        <item name="colorOnSurfaceVariant">@color/messenger_dark_color_on_surface_variant</item>
+        <item name="colorSurfaceInverse">@color/messenger_dark_color_inverse_surface</item>
+        <item name="colorOnSurfaceInverse">@color/messenger_dark_color_inverse_on_surface</item>
+        <item name="colorOutline">@color/messenger_dark_color_outline</item>
+        <item name="colorError">@color/messenger_dark_color_error</item>
+        <item name="colorOnError">@color/messenger_dark_color_on_error</item>
+        <item name="colorErrorContainer">@color/messenger_dark_color_error_container</item>
+        <item name="colorOnErrorContainer">@color/messenger_dark_color_on_error_container</item>
+
+        <item name="dialogCornerRadius">15dp</item>
+        <item name="android:dialogCornerRadius" tools:targetApi="p">15dp</item>
+        <item name="colorPrimaryDark">?colorPrimary</item>
+        <item name="android:isLightTheme" tools:targetApi="q">true</item>
+
+        <!--Font Family-->
+        <item name="fontFamily">@font/roboto_medium</item>
+        <item name="android:fontFamily">@font/roboto_medium</item>
+
+        <item name="windowActionModeOverlay">true</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="m">false</item>
+        <item name="android:navigationIcon">@drawable/ic_arrow_back</item>
+        <item name="android:statusBarColor">?colorSurface</item>
+        <item name="android:navigationBarColor">?colorSurface</item>
+
+        <!--Widget Styles-->
+        <item name="toolbarStyle">@style/Messenger.Widget.Toolbar</item>
+        <item name="materialButtonStyle">@style/Messenger.Widget.Button</item>
+        <item name="buttonStyle">@style/Messenger.Widget.MaterialButton</item>
+        <item name="textInputStyle">@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox
+        </item>
+        <item name="bottomNavigationStyle">@style/Messenger.Widget.BottomNavigationView</item>
+        <item name="navigationViewStyle">@style/Messenger.Widget.NavigationView</item>
+        <item name="navigationRailStyle">@style/Messenger.Widget.NavigationRailView</item>
+        <item name="floatingActionButtonStyle">@style/Messenger.Widget.FloatingActionButton</item>
+
+        <!-- Popup Menu styles. -->
+        <item name="android:popupMenuStyle">@style/Messenger.Widget.PopupMenu</item>
+        <item name="popupMenuStyle">@style/Messenger.Widget.PopupMenu</item>
+        <item name="popupMenuBackground">@drawable/popupmenu_background_overlay</item>
+    </style>
+
+</resources>

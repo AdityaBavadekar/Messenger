@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~
+  ~    Copyright 2022 Aditya Bavadekar
+  ~
+  ~    Licensed under the Apache License, Version 2.0 (the "License");
+  ~    you may not use this file except in compliance with the License.
+  ~    You may obtain a copy of the License at
+  ~
+  ~        http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~    Unless required by applicable law or agreed to in writing, software
+  ~    distributed under the License is distributed on an "AS IS" BASIS,
+  ~    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~    See the License for the specific language governing permissions and
+  ~    limitations under the License.
+  ~
+  -->
+
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/conversation_list_navigation.xml"
+    app:startDestination="@id/conversationListFragment">
+
+    <fragment
+        android:id="@+id/conversationListFragment"
+        android:name="com.adityaamolbavadekar.messenger.ui.conversation_list.ConversationListFragment"
+        android:label="ConversationListFragment"
+        tools:layout="@layout/conversation_list_fragment">
+        <action
+            android:id="@+id/action_conversationListFragment_to_conversationFragment"
+            app:destination="@id/conversationFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/conversationFragment"
+        android:name="com.adityaamolbavadekar.messenger.ui.conversation.ConversationFragment"
+        android:label="ConversationFragment"
+        tools:layout="@layout/conversation_fragment">
+        <argument
+            android:name="conversationId"
+            app:argType="string"
+            android:defaultValue=""
+            app:nullable="true" />
+        <action
+            android:id="@+id/action_conversationFragment_to_conversationInfoFragment"
+            app:destination="@id/conversationInfoFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/conversationInfoFragment"
+        tools:layout="@layout/conversation_info_fragment"
+        android:name="com.adityaamolbavadekar.messenger.ui.conversation_info.ConversationInfoFragment"
+        android:label="ConversationInfoFragment" >
+
+        <argument
+            android:name="conversationId"
+            app:argType="string"
+            android:defaultValue=""
+            app:nullable="true" />
+
+    </fragment>
+
+</navigation>

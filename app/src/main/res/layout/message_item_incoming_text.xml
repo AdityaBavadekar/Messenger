@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~
+  ~    Copyright 2022 Aditya Bavadekar
+  ~
+  ~    Licensed under the Apache License, Version 2.0 (the "License");
+  ~    you may not use this file except in compliance with the License.
+  ~    You may obtain a copy of the License at
+  ~
+  ~        http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~    Unless required by applicable law or agreed to in writing, software
+  ~    distributed under the License is distributed on an "AS IS" BASIS,
+  ~    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~    See the License for the specific language governing permissions and
+  ~    limitations under the License.
+  ~
+  -->
+
+<com.adityaamolbavadekar.messenger.views.MessageItem xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:viewBindingIgnore="true">
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/send_message_card"
+        style="@style/Messenger.Widget.Message.HolderCard.Incoming"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="@dimen/dimen_4">
+
+        <LinearLayout
+            android:id="@+id/inner_root"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="@dimen/message_min_width"
+            android:orientation="vertical"
+            android:padding="@dimen/dimen_6">
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/dimen_8"
+                android:background="?selectableItemBackground"
+                android:maxWidth="@dimen/message_max_width"
+                android:minWidth="@dimen/message_min_width"
+                android:singleLine="true"
+                android:textAppearance="@style/TextAppearance.Messenger.Message.Title"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="@tools:sample/full_names"
+                tools:visibility="visible" />
+
+            <TextView
+                android:id="@+id/message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:autoLink="all"
+                android:linksClickable="true"
+                android:maxWidth="@dimen/message_max_width"
+                android:minWidth="@dimen/message_min_width"
+                android:paddingStart="12dp"
+                android:paddingEnd="0dp"
+                android:textAppearance="@style/TextAppearance.Messenger.Message.Body"
+                android:visibility="gone"
+                tools:maxLines="5"
+                tools:text="@tools:sample/lorem/random"
+                tools:visibility="visible" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|end"
+                android:layout_marginTop="2dp"
+                android:minWidth="@dimen/message_min_width"
+                android:orientation="horizontal">
+
+                <com.adityaamolbavadekar.messenger.views.message.ReactionsView
+                    android:id="@+id/reactionsView"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"/>
+
+                <TextView
+                    android:id="@+id/stamp"
+                    style="@style/Messenger.Widget.MessageTimestamp"
+                    android:layout_gravity="center_vertical|end"
+                    android:minWidth="@dimen/message_timestamp_min_width"
+                    android:layout_marginStart="@dimen/dimen_12"
+                    android:layout_marginEnd="@dimen/dimen_8"
+                    tools:text="10:00 AM" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+</com.adityaamolbavadekar.messenger.views.MessageItem>

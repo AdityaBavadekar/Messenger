@@ -1,0 +1,170 @@
+/*
+ *
+ *    Copyright 2022 Aditya Bavadekar
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ *
+ */
+
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'com.google.gms.google-services'
+apply plugin: 'androidx.navigation.safeargs.kotlin'
+
+android {
+    compileSdkVersion COMPILE_SDK
+    buildToolsVersion BUILD_TOOLS_VERSION
+
+    defaultConfig {
+        applicationId "com.adityaamolbavadekar.messenger"
+        minSdkVersion MIN_SDK
+        targetSdkVersion TARGET_SDK
+        versionCode appVersionCode
+        versionName appVersionName
+        vectorDrawables.useSupportLibrary = true
+        multiDexEnabled true
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField "String", "DATE", "\"${new Date()}\""
+
+        Properties properties = new Properties()
+        properties.load(project.rootProject.file("local.properties").newDataInputStream())
+        buildConfigField "String", "FCM_MESSAGING_BASE_URL", "\"${properties.getProperty("FCM_MESSAGING_BASE_URL")}\""
+        buildConfigField "String", "FCM_MESSAGING_SERVER_KEY", "\"${properties.getProperty("FCM_MESSAGING_SERVER_KEY")}\""
+        buildConfigField "String", "FCM_MESSAGING_CONTENT_TYPE", "\"${properties.getProperty("FCM_MESSAGING_CONTENT_TYPE")}\""
+
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            buildConfigField "String", "BUILD_TYPE_NAME", "\"Release\""
+        }
+
+        debug {
+            versionNameSuffix "-debug"
+            buildConfigField "String", "BUILD_TYPE_NAME", "\"Debug\""
+        }
+
+    }
+
+    lintOptions {
+        baseline file("lint-baseline.xml")
+    }
+
+    android.applicationVariants.all { variant ->
+        variant.outputs.each { output ->
+            output.outputFileName = output.outputFileName.replace(".apk", "-${variant.versionName}.apk")
+        }
+    }
+
+    buildFeatures {
+        viewBinding = true
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+
+}
+
+dependencies {
+
+    implementation fileTree(dir: "libs", include: ["*.jar"])
+    implementation project(":model")
+
+    //Kotlin
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+
+    /*Androidx*/
+    implementation "androidx.core:core-ktx:$androidx_core"
+    implementation "androidx.appcompat:appcompat:$androidx_appcompat"
+    implementation "androidx.activity:activity-ktx:$androidx_fragment"
+    implementation "androidx.fragment:fragment-ktx:$androidx_activity"
+    implementation "androidx.constraintlayout:constraintlayout:$androidx_constraint_layout"
+
+    //Lifecycle
+    implementation "androidx.lifecycle:lifecycle-extensions:$androidx_lifecycle_ext"
+
+    //Room
+    kapt "androidx.room:room-compiler:$androidx_room"
+
+    //ViewModel
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$androidx_viewmodel"
+
+    //RecyclerView
+    implementation "androidx.recyclerview:recyclerview:$androidx_recyclerview"
+    implementation "androidx.recyclerview:recyclerview-selection:$androidx_recyclerview_selection"
+
+    //Dynamication
+    implementation "androidx.dynamicanimation:dynamicanimation-ktx:$androidx_dynamication"
+
+    //Prefs
+    implementation "androidx.preference:preference:$androidx_prefs"
+
+    //Navigation
+    implementation "androidx.navigation:navigation-fragment:$nav_version"
+    implementation "androidx.navigation:navigation-ui:$nav_version"
+
+    //Material Design
+    implementation "com.google.android.material:material:$material_version"
+
+    //Coroutines
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_core")
+
+    //PinLog
+    implementation "com.github.AdityaBavadekar.PinLog:pinlog:$pinlog_version"
+    debugImplementation "com.github.AdityaBavadekar.PinLog:pinlog-activity:$pinlog_version"
+
+    //Glide
+    implementation "com.github.bumptech.glide:glide:$glide_version"
+    kapt "com.github.bumptech.glide:compiler:$glide_version"
+
+    //Google-Auth
+    implementation "com.google.android.gms:play-services-auth:$gmsauth_version"
+
+    //Retrofit
+    implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
+    implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
+
+    //Emoji2
+    implementation "androidx.emoji2:emoji2:$androidx_emoji2"
+
+    //PhoneLib
+    implementation "com.googlecode.libphonenumber:libphonenumber:$libphonenumber_version"
+
+    //Firebase
+    implementation platform("com.google.firebase:firebase-bom:$firebase_bom_version")
+    implementation 'com.google.firebase:firebase-auth-ktx'
+    implementation 'com.google.firebase:firebase-storage-ktx'
+    implementation 'com.google.firebase:firebase-database-ktx'
+    implementation ('com.google.firebase:firebase-messaging-ktx'){
+        exclude group: 'com.google.firebase', module: 'firebase-analytics'
+        exclude group: 'com.google.firebase', module: 'firebase-measurement-connector'
+    }
+
+    //PhotoView
+    implementation "com.github.chrisbanes:PhotoView:$photo_view"
+
+    //Jsoup
+    implementation "org.jsoup:jsoup:$jsoup_version"
+
+}

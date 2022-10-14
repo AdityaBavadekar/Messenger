@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~
+  ~    Copyright 2022 Aditya Bavadekar
+  ~
+  ~    Licensed under the Apache License, Version 2.0 (the "License");
+  ~    you may not use this file except in compliance with the License.
+  ~    You may obtain a copy of the License at
+  ~
+  ~        http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~    Unless required by applicable law or agreed to in writing, software
+  ~    distributed under the License is distributed on an "AS IS" BASIS,
+  ~    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~    See the License for the specific language governing permissions and
+  ~    limitations under the License.
+  ~
+  -->
+
+<resources>
+
+    <declare-styleable name="CircularMenuItemButton">
+
+        <attr name="android:src" format="reference" />
+
+        <attr name="srcCompat" format="reference" />
+
+        <attr name="containerColor" format="color" />
+
+        <attr name="imageContentDescription" format="color" />
+
+        <attr name="badgeVisible" format="boolean" />
+
+        <attr name="iconTint" format="color" />
+
+        <attr name="iconScaleType" format="color" />
+
+    </declare-styleable>
+
+    <declare-styleable name="ComposeMessageBar">
+
+        <attr name="addButtonVisible" format="boolean" />
+
+        <attr name="emojiButtonVisible" format="boolean" />
+
+        <attr name="inputEditTextHint" format="string" />
+
+        <attr name="inputEditTextMaxLines" format="integer" />
+
+        <attr name="inputAllowRichContent" format="boolean" />
+
+        <attr name="plainTextOnly" format="boolean" />
+
+        <attr name="innerContainerBackground" format="reference" />
+
+        <attr name="buttonIconTint" format="color" />
+
+        <attr name="android:text" format="string" localization="suggested" />
+
+    </declare-styleable>
+
+    <declare-styleable name="AvatarImageView">
+
+        <attr name="cornerRadius" format="dimension" />
+
+        <attr name="elevation" format="dimension" />
+
+        <attr name="imageBackgroundColor" format="color" />
+
+    </declare-styleable>
+
+</resources>

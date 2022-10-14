@@ -1,0 +1,435 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~
+  ~    Copyright 2022 Aditya Bavadekar
+  ~
+  ~    Licensed under the Apache License, Version 2.0 (the "License");
+  ~    you may not use this file except in compliance with the License.
+  ~    You may obtain a copy of the License at
+  ~
+  ~        http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~    Unless required by applicable law or agreed to in writing, software
+  ~    distributed under the License is distributed on an "AS IS" BASIS,
+  ~    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~    See the License for the specific language governing permissions and
+  ~    limitations under the License.
+  ~
+  -->
+
+<resources>
+    <color name="colorPrimary">#6200EE</color>
+    <color name="colorPrimaryDark">#3700B3</color>
+    <color name="colorAccent">#03DAC5</color>
+    <color name="colorEditText">#B3E5FC</color>
+    <color name="colorThemeBasic">#FFFFFF</color>
+    <color name="colorThemeEmphasis">#F6F6F6</color>
+    <color name="colorMessageDefault">#E3F2FD</color>
+    <color name="colorMessageDefaultOutgoing">#E6EE9C</color>
+    <color name="colorMessageDefaultIncoming">#9FA8DA</color>
+<!--    <color name="colorWallpaperDefault">#F1FFFC</color>-->
+    <color name="colorWallpaperDefault">@color/messenger_widget_conversation_root_background</color>
+
+    <color name="green">#C5E1A5</color>
+    <color name="orange">#FFE082</color>
+    <color name="blue">#81D4FA</color>
+    <color name="red">#EF9A9A</color>
+    <color name="yellow">#FFF59D</color>
+
+    <!--Shade Group 500-->
+    <color name="rgb_cyan">#ff00bcd4</color>
+    <color name="rgb_indigo">#ff3f51b5</color>
+    <color name="rgb_blue">#ff4285f4</color>
+    <color name="rgb_pink">#ffe91e63</color>
+    <color name="rgb_green">#ff0f9d58</color>
+    <color name="rgb_light_green">#ff8bc34a</color>
+    <color name="rgb_orange">#ffff9800</color>
+    <color name="rgb_dark_orange">#ffff5722</color>
+    <color name="rgb_gray">#ff9e9e9e</color>
+    <color name="rgb_white">#ffffffff</color>
+
+
+    <color name="messenger_widget_textfield_hint">@color/messenger_black</color>
+
+    <color name="messenger_widget_message_link_preview_container_background">
+        @color/messenger_transparent
+    </color>
+    <color name="messenger_widget_message_link_preview_text_title">@color/messenger_grey900</color>
+    <color name="messenger_widget_message_link_preview_text_body">@color/messenger_grey800</color>
+    <color name="messenger_widget_message_link_preview_text_url">@color/messenger_grey700</color>
+
+    <color name="messenger_widget_compose_message_container_background">#EEEEEE</color>
+
+    <color name="messenger_widget_conversation_appbar_background">#80FFFFFF</color>
+    <color name="messenger_widget_conversation_root_background">@color/messenger_white200</color>
+    <color name="messenger_widget_conversation_date_header_background">@color/messenger_blue300</color>
+    <color name="messenger_widget_conversation_jumptobottom_background">@color/messenger_blue300
+    </color>
+
+    <color name="messenger_widget_message_container_background_outgoing">@color/messenger_blue100</color>
+    <color name="messenger_widget_message_container_background_incoming">#E6E6E6</color>
+    <!--<color name="messenger_widget_message_container_background_incoming">@color/messenger_orange100
+    </color>-->
+
+    <color name="messenger_widget_message_text">@color/messenger_black</color>
+    <color name="messenger_widget_message_timestamp">@color/messenger_black</color>
+
+    <color name="messenger_green100">@color/messenger_ref_palette_green100</color>
+    <color name="messenger_green300">@color/messenger_ref_palette_green300</color>
+    <color name="messenger_green400">@color/messenger_ref_palette_green400</color>
+    <color name="messenger_green50">@color/messenger_ref_palette_green50</color>
+    <color name="messenger_green600">@color/messenger_ref_palette_green600</color>
+    <color name="messenger_green700">@color/messenger_ref_palette_green700</color>
+    <color name="messenger_green900">@color/messenger_ref_palette_green900</color>
+    <color name="messenger_grey_lighter">@color/messenger_ref_palette_grey100</color>
+    <color name="messenger_grey100">@color/messenger_ref_palette_grey100</color>
+    <color name="messenger_grey200">@color/messenger_ref_palette_grey200</color>
+    <color name="messenger_grey300">@color/messenger_ref_palette_grey300</color>
+    <color name="messenger_grey400">@color/messenger_ref_palette_grey400</color>
+    <color name="messenger_grey50">@color/messenger_ref_palette_grey50</color>
+    <color name="messenger_grey500">@color/messenger_ref_palette_grey500</color>
+    <color name="messenger_grey600">@color/messenger_ref_palette_grey600</color>
+    <color name="messenger_grey700">@color/messenger_ref_palette_grey700</color>
+    <color name="messenger_grey800">@color/messenger_ref_palette_grey800</color>
+    <color name="messenger_grey850">@color/messenger_ref_palette_grey850</color>
+    <color name="messenger_grey900">@color/messenger_ref_palette_grey900</color>
+    <color name="messenger_grey950">@color/messenger_ref_palette_grey950</color>
+    <color name="messenger_orange50">#fffeefe3</color>
+    <color name="messenger_orange100">#FFE4CE</color>
+    <color name="messenger_orange300">#fffcad70</color>
+    <color name="messenger_orange400">#fffa903e</color>
+    <color name="messenger_orange600">#ffe8710a</color>
+    <color name="messenger_orange900">#ffb06000</color>
+    <color name="messenger_pink400">#ffff63b8</color>
+    <color name="messenger_pink900">#ff9c166b</color>
+    <color name="messenger_purple300">#ffc58af9</color>
+    <color name="messenger_purple400">#ffaf5cf7</color>
+    <color name="messenger_purple50">#fff3e8fd</color>
+    <color name="messenger_purple600">#ff9334e6</color>
+    <color name="messenger_purple800">#ff7627bb</color>
+    <color name="messenger_purple900">#ff681da8</color>
+    <color name="messenger_red200">@color/messenger_ref_palette_red200</color>
+    <color name="messenger_red300">@color/messenger_ref_palette_red300</color>
+    <color name="messenger_red400">@color/messenger_ref_palette_red400</color>
+    <color name="messenger_red50">@color/messenger_ref_palette_red50</color>
+    <color name="messenger_red500">@color/messenger_ref_palette_red500</color>
+    <color name="messenger_red600">@color/messenger_ref_palette_red600</color>
+    <color name="messenger_red700">@color/messenger_ref_palette_red700</color>
+    <color name="messenger_red900">@color/messenger_ref_palette_red900</color>
+    <color name="messenger_red_a100">#ffff8a80</color>
+    <color name="messenger_scrim">#99000000</color>
+    <color name="messenger_transparent">@color/messenger_ref_palette_transparent</color>
+    <color name="messenger_white">@color/messenger_ref_palette_white</color>
+    <color name="messenger_white200">@color/messenger_ref_palette_white</color>
+    <color name="messenger_black">@color/messenger_ref_palette_black</color>
+    <color name="messenger_yellow200">@color/messenger_ref_palette_yellow200</color>
+    <color name="messenger_yellow300">@color/messenger_ref_palette_yellow300</color>
+    <color name="messenger_yellow400">@color/messenger_ref_palette_yellow400</color>
+    <color name="messenger_yellow600">@color/messenger_ref_palette_yellow600</color>
+    <color name="messenger_yellow700">@color/messenger_ref_palette_yellow700</color>
+    <color name="messenger_yellow900">@color/messenger_ref_palette_yellow900</color>
+
+    <color name="messenger_blue100">@color/messenger_ref_palette_blue100</color>
+    <color name="messenger_blue200">@color/messenger_ref_palette_blue200</color>
+    <color name="messenger_blue300">@color/messenger_ref_palette_blue300</color>
+    <color name="messenger_blue400">@color/messenger_ref_palette_blue400</color>
+    <color name="messenger_blue50">@color/messenger_ref_palette_blue50</color>
+    <color name="messenger_blue500">@color/messenger_ref_palette_blue500</color>
+    <color name="messenger_blue600">@color/messenger_ref_palette_blue600</color>
+    <color name="messenger_blue700">@color/messenger_ref_palette_blue700</color>
+    <color name="messenger_blue800">@color/messenger_ref_palette_blue800</color>
+    <color name="messenger_blue900">@color/messenger_ref_palette_blue900</color>
+    <color name="messenger_blue_ultra_dark">@color/messenger_ref_palette_blue_ultra_dark</color>
+    <color name="messenger_blue_800">#ff2a56c6</color>
+    <color name="messenger_blue_900">#ff1c3aa9</color>
+    <color name="messenger_blue_grey_300">#ff90a4ae</color>
+    <color name="messenger_blue_grey_50">#ffeceff1</color>
+    <color name="messenger_blue_grey_600">#ff546e7a</color>
+    <color name="messenger_blue_grey_700">#ff455a64</color>
+    <color name="messenger_blue_grey_800">#ff37474f</color>
+    <color name="messenger_blue_grey_900">#ff263238</color>
+    <color name="messenger_cyan300">#ff78d9ec</color>
+    <color name="messenger_cyan400">#ff4ecde6</color>
+    <color name="messenger_cyan50">#ffe4f7fb</color>
+    <color name="messenger_cyan600">#ff12b5cb</color>
+    <color name="messenger_cyan900">#ff007b83</color>
+    <color name="messenger_cyan_600">#ff00acc1</color>
+    <color name="messenger_cyan_a200">#ff18ffff</color>
+
+
+    <!--Blue-->
+    <color name="messenger_ref_palette_blue_variant">#D0D7E3</color>
+    <color name="messenger_ref_palette_blue50">#ffe8f0fe</color>
+    <color name="messenger_ref_palette_blue100">#ffd2e3fc</color>
+    <color name="messenger_ref_palette_blue200">#ffaecbfa</color>
+    <color name="messenger_ref_palette_blue300">#ff8ab4f8</color>
+    <color name="messenger_ref_palette_blue400">#ff669df6</color>
+    <color name="messenger_ref_palette_blue500">#ff4285f4</color>
+    <color name="messenger_ref_palette_blue600">#ff1a73e8</color>
+    <color name="messenger_ref_palette_blue700">#ff1967d2</color>
+    <color name="messenger_ref_palette_blue800">#ff185abc</color>
+    <color name="messenger_ref_palette_blue900">#ff174ea6</color>
+    <color name="messenger_ref_palette_blue_ultra_dark">#042559</color>
+    <!--Green-->
+    <color name="messenger_ref_palette_green100">#ffceead6</color>
+    <color name="messenger_ref_palette_green300">#ff81c995</color>
+    <color name="messenger_ref_palette_green400">#ff5bb974</color>
+    <color name="messenger_ref_palette_green50">#ffe6f4ea</color>
+    <color name="messenger_ref_palette_green600">#ff1e8e3e</color>
+    <color name="messenger_ref_palette_green700">#ff188038</color>
+    <color name="messenger_ref_palette_green900">#ff0d652d</color>
+    <!--Grey-->
+    <color name="messenger_ref_palette_grey_lighter">#EEEEEE</color>
+    <color name="messenger_ref_palette_grey100">#fff1f3f4</color>
+    <color name="messenger_ref_palette_grey200">#ffe8eaed</color>
+    <color name="messenger_ref_palette_grey300">#ffdadce0</color>
+    <color name="messenger_ref_palette_grey400">#ffbdc1c6</color>
+    <color name="messenger_ref_palette_grey50">#fff8f9fa</color>
+    <color name="messenger_ref_palette_grey500">#ff9aa0a6</color>
+    <color name="messenger_ref_palette_grey600">#ff80868b</color>
+    <color name="messenger_ref_palette_grey700">#ff5f6368</color>
+    <color name="messenger_ref_palette_grey800">#ff3c4043</color>
+    <color name="messenger_ref_palette_grey850">#26292B</color>
+    <color name="messenger_ref_palette_grey900">#ff202124</color>
+    <color name="messenger_ref_palette_grey950">#1A1A1C</color>
+    <!--Red-->
+    <color name="messenger_ref_palette_red200">#fff6aea9</color>
+    <color name="messenger_ref_palette_red300">#fff28b82</color>
+    <color name="messenger_ref_palette_red400">#ffee675c</color>
+    <color name="messenger_ref_palette_red50">#fffce8e6</color>
+    <color name="messenger_ref_palette_red500">#ffea4335</color>
+    <color name="messenger_ref_palette_red600">#ffd93025</color>
+    <color name="messenger_ref_palette_red700">#ffc5221f</color>
+    <color name="messenger_ref_palette_red900">#ffa50e0e</color>
+    <color name="messenger_ref_palette_red70">#ffec928e</color>
+    <!--Yellow-->
+    <color name="messenger_ref_palette_yellow30">#ff754200</color>
+    <color name="messenger_ref_palette_yellow40">#ff945700</color>
+    <color name="messenger_ref_palette_yellow80">#ffffbb29</color>
+    <color name="messenger_ref_palette_yellow90">#ffffdf99</color>
+    <color name="messenger_ref_palette_yellow200">#fffde293</color>
+    <color name="messenger_ref_palette_yellow300">#fffdd663</color>
+    <color name="messenger_ref_palette_yellow400">#fffcc934</color>
+    <color name="messenger_ref_palette_yellow600">#fff9ab00</color>
+    <color name="messenger_ref_palette_yellow700">#fff29900</color>
+    <color name="messenger_ref_palette_yellow900">#ffe37400</color>
+
+    <color name="messenger_ref_palette_black">#ff000000</color>
+    <color name="messenger_ref_palette_transparent">#00000000</color>
+
+    <color name="messenger_ref_palette_error0">#ff000000</color>
+    <color name="messenger_ref_palette_error10">#ff410e0b</color>
+    <color name="messenger_ref_palette_error100">#ffffffff</color>
+    <color name="messenger_ref_palette_error20">#ff601410</color>
+    <color name="messenger_ref_palette_error30">#ff8c1d18</color>
+    <color name="messenger_ref_palette_error40">#ffb3261e</color>
+    <color name="messenger_ref_palette_error50">#ffdc362e</color>
+    <color name="messenger_ref_palette_error60">#ffe46962</color>
+    <color name="messenger_ref_palette_error70">#ffec928e</color>
+    <color name="messenger_ref_palette_error80">#fff2b8b5</color>
+    <color name="messenger_ref_palette_error90">#fff9dedc</color>
+    <color name="messenger_ref_palette_error95">#fffceeee</color>
+    <color name="messenger_ref_palette_error99">#fffffbf9</color>
+    <color name="messenger_ref_palette_neutral0">#ff000000</color>
+    <color name="messenger_ref_palette_neutral10">#ff1c1b1f</color>
+    <color name="messenger_ref_palette_neutral100">#ffffffff</color>
+    <color name="messenger_ref_palette_neutral20">#ff313033</color>
+    <color name="messenger_ref_palette_neutral30">#ff484649</color>
+    <color name="messenger_ref_palette_neutral40">#ff605d62</color>
+    <color name="messenger_ref_palette_neutral50">#ff787579</color>
+    <color name="messenger_ref_palette_neutral60">#ff939094</color>
+    <color name="messenger_ref_palette_neutral70">#ffaeaaae</color>
+    <color name="messenger_ref_palette_neutral80">#ffc9c5ca</color>
+    <color name="messenger_ref_palette_neutral90">#ffe6e1e5</color>
+    <color name="messenger_ref_palette_neutral95">#fff4eff4</color>
+    <color name="messenger_ref_palette_neutral99">#fffffbfe</color>
+    <color name="messenger_ref_palette_neutral_variant0">#ff000000</color>
+    <color name="messenger_ref_palette_neutral_variant10">#ff1d1a22</color>
+    <color name="messenger_ref_palette_neutral_variant100">#ffffffff</color>
+    <color name="messenger_ref_palette_neutral_variant20">#ff322f37</color>
+    <color name="messenger_ref_palette_neutral_variant30">#ff49454f</color>
+    <color name="messenger_ref_palette_neutral_variant40">#ff605d66</color>
+    <color name="messenger_ref_palette_neutral_variant50">#ff79747e</color>
+    <color name="messenger_ref_palette_neutral_variant60">#ff938f99</color>
+    <color name="messenger_ref_palette_neutral_variant70">#ffaea9b4</color>
+    <color name="messenger_ref_palette_neutral_variant80">#ffcac4d0</color>
+    <color name="messenger_ref_palette_neutral_variant90">#ffe7e0ec</color>
+    <color name="messenger_ref_palette_neutral_variant95">#fff5eefa</color>
+    <color name="messenger_ref_palette_neutral_variant99">#fffffbfe</color>
+    <color name="messenger_ref_palette_primary0">#ff000000</color>
+    <color name="messenger_ref_palette_primary10">#ff21005d</color>
+    <color name="messenger_ref_palette_primary100">#ffffffff</color>
+    <color name="messenger_ref_palette_primary20">#ff381e72</color>
+    <color name="messenger_ref_palette_primary30">#ff4f378b</color>
+    <color name="messenger_ref_palette_primary40">#ff6750a4</color>
+    <color name="messenger_ref_palette_primary50">#ff7f67be</color>
+    <color name="messenger_ref_palette_primary60">#ff9a82db</color>
+    <color name="messenger_ref_palette_primary70">#ffb69df8</color>
+    <color name="messenger_ref_palette_primary80">#ffd0bcff</color>
+    <color name="messenger_ref_palette_primary90">#ffeaddff</color>
+    <color name="messenger_ref_palette_primary95">#fff6edff</color>
+    <color name="messenger_ref_palette_primary99">#fffffbfe</color>
+    <color name="messenger_ref_palette_secondary0">#ff000000</color>
+    <color name="messenger_ref_palette_secondary10">#ff1d192b</color>
+    <color name="messenger_ref_palette_secondary100">#ffffffff</color>
+    <color name="messenger_ref_palette_secondary20">#ff332d41</color>
+    <color name="messenger_ref_palette_secondary30">#ff4a4458</color>
+    <color name="messenger_ref_palette_secondary40">#ff625b71</color>
+    <color name="messenger_ref_palette_secondary50">#ff7a7289</color>
+    <color name="messenger_ref_palette_secondary60">#ff958da5</color>
+    <color name="messenger_ref_palette_secondary70">#ffb0a7c0</color>
+    <color name="messenger_ref_palette_secondary80">#ffccc2dc</color>
+    <color name="messenger_ref_palette_secondary90">#ffe8def8</color>
+    <color name="messenger_ref_palette_secondary95">#fff6edff</color>
+    <color name="messenger_ref_palette_secondary99">#fffffbfe</color>
+    <color name="messenger_ref_palette_tertiary0">#ff000000</color>
+    <color name="messenger_ref_palette_tertiary10">#ff31111d</color>
+    <color name="messenger_ref_palette_tertiary100">#ffffffff</color>
+    <color name="messenger_ref_palette_tertiary20">#ff492532</color>
+    <color name="messenger_ref_palette_tertiary30">#ff633b48</color>
+    <color name="messenger_ref_palette_tertiary40">#ff7d5260</color>
+    <color name="messenger_ref_palette_tertiary50">#ff986977</color>
+    <color name="messenger_ref_palette_tertiary60">#ffb58392</color>
+    <color name="messenger_ref_palette_tertiary70">#ffd29dac</color>
+    <color name="messenger_ref_palette_tertiary80">#ffefb8c8</color>
+    <color name="messenger_ref_palette_tertiary90">#ffffd8e4</color>
+    <color name="messenger_ref_palette_tertiary95">#ffffecf1</color>
+    <color name="messenger_ref_palette_tertiary99">#fffffbfa</color>
+    <color name="messenger_ref_palette_white">#ffffffff</color>
+    <color name="messenger_ref_palette_white200">#EFE6E6</color>
+
+    <!--
+    ***************************************************************
+                            Dark Theme Colours
+    ***************************************************************
+    -->
+    <!--Primary-->
+    <color name="messenger_dark_color_primary">@color/messenger_ref_palette_primary80</color>
+    <color name="messenger_dark_color_primary_variant"></color>
+    <color name="messenger_dark_color_primary_container">@color/messenger_ref_palette_primary30
+    </color>
+    <color name="messenger_dark_color_on_primary">@color/messenger_ref_palette_primary20</color>
+    <color name="messenger_dark_color_on_primary_container">@color/messenger_ref_palette_primary90
+    </color>
+    <color name="messenger_dark_color_inverse_primary">@color/messenger_ref_palette_primary40
+    </color>
+
+    <!--Secondary-->
+    <color name="messenger_dark_color_secondary">@color/messenger_ref_palette_secondary80</color>
+    <color name="messenger_dark_color_secondary_variant"></color>
+    <color name="messenger_dark_color_secondary_container">
+        @color/messenger_ref_palette_secondary30
+    </color>
+    <color name="messenger_dark_color_on_secondary">@color/messenger_ref_palette_secondary20</color>
+    <color name="messenger_dark_color_on_secondary_container">
+        @color/messenger_ref_palette_secondary90
+    </color>
+
+    <!--Tertiary-->
+    <color name="messenger_dark_color_tertiary">@color/messenger_ref_palette_tertiary80</color>
+    <color name="messenger_dark_color_tertiary_variant"></color>
+    <color name="messenger_dark_color_tertiary_container">@color/messenger_ref_palette_tertiary30
+    </color>
+    <color name="messenger_dark_color_on_tertiary">@color/messenger_ref_palette_tertiary20</color>
+    <color name="messenger_dark_color_on_tertiary_container">
+        @color/messenger_ref_palette_tertiary90
+    </color>
+
+    <!--Surface-->
+    <color name="messenger_dark_color_surface">@color/messenger_ref_palette_neutral10</color>
+    <color name="messenger_dark_color_surface_variant">@color/messenger_ref_palette_neutral30
+    </color>
+    <color name="messenger_dark_color_on_surface_variant">@color/messenger_ref_palette_neutral80
+    </color>
+    <color name="messenger_dark_color_on_surface">@color/messenger_ref_palette_neutral90</color>
+    <color name="messenger_dark_color_inverse_surface">@color/messenger_ref_palette_neutral90
+    </color>
+    <color name="messenger_dark_color_inverse_on_surface">@color/messenger_ref_palette_neutral20
+    </color>
+
+    <!--Error-->
+    <color name="messenger_dark_color_error">@color/messenger_ref_palette_error80</color>
+    <color name="messenger_dark_color_error_container">@color/messenger_ref_palette_error30</color>
+    <color name="messenger_dark_color_on_error">@color/messenger_ref_palette_error20</color>
+    <color name="messenger_dark_color_on_error_container">@color/messenger_ref_palette_error80
+    </color>
+
+    <!--Background-->
+    <color name="messenger_dark_color_background">@color/messenger_ref_palette_neutral10</color>
+    <color name="messenger_dark_color_on_background">@color/messenger_ref_palette_neutral90</color>
+
+    <!--Outline-->
+    <color name="messenger_dark_color_outline">@color/messenger_ref_palette_neutral_variant60
+    </color>
+
+
+    <!--
+    ***************************************************************
+                            Light Theme Colours
+    ***************************************************************
+     -->
+    <!--Primary-->
+    <color name="messenger_light_color_primary">@color/messenger_ref_palette_primary40</color>
+    <color name="messenger_light_color_primary_variant">@color/messenger_ref_palette_primary100
+    </color>
+    <color name="messenger_light_color_primary_container">@color/messenger_ref_palette_primary90
+    </color>
+    <color name="messenger_light_color_on_primary">@color/messenger_ref_palette_primary100</color>
+    <color name="messenger_light_color_on_primary_container">
+        @color/messenger_ref_palette_primary10
+    </color>
+    <color name="messenger_light_color_inverse_primary">@color/messenger_ref_palette_primary80
+    </color>
+
+    <!--Secondary-->
+    <color name="messenger_light_color_secondary">@color/messenger_ref_palette_secondary40</color>
+    <color name="messenger_light_color_secondary_variant">@color/m3_ref_palette_secondary40</color>
+    <color name="messenger_light_color_secondary_container">@color/m3_ref_palette_secondary90
+    </color>
+    <color name="messenger_light_color_on_secondary">@color/m3_ref_palette_secondary100</color>
+    <color name="messenger_light_color_on_secondary_container">@color/m3_ref_palette_secondary10
+    </color>
+
+    <!--Tertiary-->
+    <color name="messenger_light_color_tertiary">@color/m3_ref_palette_tertiary40</color>
+    <color name="messenger_light_color_tertiary_variant"></color>
+    <color name="messenger_light_color_tertiary_container">@color/messenger_ref_palette_tertiary90
+    </color>
+    <color name="messenger_light_color_on_tertiary">@color/messenger_ref_palette_tertiary100</color>
+    <color name="messenger_light_color_on_tertiary_container">
+        @color/messenger_ref_palette_tertiary10
+    </color>
+
+    <!--Surface-->
+    <color name="messenger_light_color_inverse_on_surface">@color/messenger_ref_palette_neutral95
+    </color>
+    <color name="messenger_light_color_inverse_surface">@color/messenger_ref_palette_neutral20
+    </color>
+    <color name="messenger_light_color_surface">@color/messenger_ref_palette_neutral99</color>
+    <color name="messenger_light_color_surface_variant">
+        @color/messenger_ref_palette_neutral_variant90
+    </color>
+    <color name="messenger_light_color_on_surface">@color/messenger_ref_palette_neutral10</color>
+    <color name="messenger_light_color_on_surface_variant">
+        @color/messenger_ref_palette_neutral_variant30
+    </color>
+
+    <!--Error-->
+    <color name="messenger_light_color_error">@color/messenger_ref_palette_error40</color>
+    <color name="messenger_light_color_on_error">@color/messenger_ref_palette_error100</color>
+    <color name="messenger_light_color_on_error_container">@color/messenger_ref_palette_error10
+    </color>
+    <color name="messenger_light_color_error_container">@color/messenger_ref_palette_error90</color>
+
+    <!--Background-->
+    <color name="messenger_light_color_background">@color/messenger_ref_palette_neutral99</color>
+    <color name="messenger_light_color_on_background">@color/messenger_ref_palette_neutral10</color>
+
+    <!--Outline-->
+    <color name="messenger_light_color_outline">@color/messenger_ref_palette_neutral_variant50
+    </color>
+
+
+    <color name="messenger_divider">#1f000000</color>
+
+</resources>
