@@ -100,29 +100,24 @@ dependencies {
     implementation "androidx.activity:activity-ktx:$androidx_fragment"
     implementation "androidx.fragment:fragment-ktx:$androidx_activity"
     implementation "androidx.constraintlayout:constraintlayout:$androidx_constraint_layout"
-
     //Lifecycle
     implementation "androidx.lifecycle:lifecycle-extensions:$androidx_lifecycle_ext"
-
     //Room
     kapt "androidx.room:room-compiler:$androidx_room"
-
     //ViewModel
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$androidx_viewmodel"
-
     //RecyclerView
     implementation "androidx.recyclerview:recyclerview:$androidx_recyclerview"
     implementation "androidx.recyclerview:recyclerview-selection:$androidx_recyclerview_selection"
-
     //Dynamication
     implementation "androidx.dynamicanimation:dynamicanimation-ktx:$androidx_dynamication"
-
     //Prefs
     implementation "androidx.preference:preference:$androidx_prefs"
-
     //Navigation
     implementation "androidx.navigation:navigation-fragment:$nav_version"
     implementation "androidx.navigation:navigation-ui:$nav_version"
+    //Emoji2
+    implementation "androidx.emoji2:emoji2:$androidx_emoji2"
 
     //Material Design
     implementation "com.google.android.material:material:$material_version"
@@ -144,9 +139,6 @@ dependencies {
     //Retrofit
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
-
-    //Emoji2
-    implementation "androidx.emoji2:emoji2:$androidx_emoji2"
 
     //PhoneLib
     implementation "com.googlecode.libphonenumber:libphonenumber:$libphonenumber_version"
