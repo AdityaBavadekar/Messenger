@@ -208,12 +208,12 @@ class ConversationFragment : BindingHelperFragment<ConversationFragmentBinding>(
 
     override fun onShouldShowReactionChooser(messageRecord: MessageRecord) {
         Dialogs.showReactionChooserDialog(requireContext()) { reaction ->
-            if (messagesAdapter.currentList.contains(messageRecord)) {
-                val currentList = messagesAdapter.currentList.toMutableList()
+           val currentList = messagesAdapter.currentList.toMutableList()
+           if (currentList.contains(messageRecord)) {
+                val index = currentList.indexOf(messageRecord)    
                 val reactionRecord = ReactionRecord.new(messageRecord.id, reaction, me.uid)
                 messageRecord.addReaction(reactionRecord)
-                viewModel.updateMessage(messageRecord)
-                val index = currentList.indexOf(messageRecord)
+                viewModel.updateMessage(messageRecord)                
                 currentList[index] = messageRecord
                 messagesAdapter.submitList(currentList.toList())
             }
