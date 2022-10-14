@@ -5,7 +5,7 @@ Messenger is open-source.
 Note that Messenger does not have encryption facility for now but we are working to provide support for secure end-2-end encryption.
 
 ## Status : Development
-- Application development is in progress for v0.0.1
+- Application development is in progress for v0.0.2
 - Any version increments would be reflected in github's releases section.
 
 
