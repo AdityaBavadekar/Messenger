@@ -99,9 +99,10 @@ class CloudDatabaseManager {
         onResult: (Boolean) -> Unit={}
     ) =
         CoroutineScope(Dispatchers.Default).launch {
-            val rootRef = Firebase.database.getReference(Constants.CloudPaths.getUserPath(userId))
+           
             map.forEach { pair ->
-                rootRef.child(pair.key).setValue(pair.value)
+                Firebase.database.getReference(Constants.CloudPaths.getUserPath(userId))
+                .child(pair.key).setValue(pair.value)
                     .addOnSuccessListener {
                         InternalLogger.logI(
                             TAG,
