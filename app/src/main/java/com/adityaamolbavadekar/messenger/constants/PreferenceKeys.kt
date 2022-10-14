@@ -87,6 +87,7 @@ object PreferenceKeys {
         CHAT_STATUS_PROTECTED,
         APP_THEME,
         TEXT_SIZE,
+        LAST_CONTACTS_UPLOADED
     )
 
     val allRemovablePreferenceKeys: Array<String> = arrayOf(
