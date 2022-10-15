@@ -50,7 +50,7 @@
 
 <!--    <color name="messenger_widget_message_container_background_outgoing">@color/messenger_blue800</color>-->
     <color name="messenger_widget_message_container_background_outgoing">@color/messenger_blue_ultra_dark</color>
-    <color name="messenger_widget_message_container_background_incoming">@color/messenger_grey600</color>
+    <color name="messenger_widget_message_container_background_incoming">@color/messenger_grey800</color>
     <color name="messenger_widget_message_text">@color/messenger_black</color>
     <color name="messenger_widget_message_timestamp">@color/messenger_black</color>
 
