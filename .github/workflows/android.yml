@@ -25,7 +25,8 @@ jobs:
     - name: Create local.properties      
       run: cat /home/runner/work/Messenger/Messenger/local.properties 
     - name: Putting data
-      env: DATA: ${{ secrets.LOCAL_PROPERTIES }}
+      env: 
+         DATA: ${{ secrets.LOCAL_PROPERTIES }}
       run: echo $DATA > home/runner/work/Messenger/Messenger/local.properties
     - name: Build with Gradle
       run: ./gradlew clean build -Pbuild=dev
