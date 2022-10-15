@@ -1,0 +1,61 @@
+name: Compile APK
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: set up JDK 11
+      uses: actions/setup-java@v3
+      with:
+        java-version: '11'
+        distribution: 'temurin'
+        cache: gradle
+
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+    - name: Build with Gradle
+      run: ./gradlew assembleRelease --stacktrace
+    - uses: actions/upload-artifact@v3
+       with:
+         name: MESSENGER-ANDROID-APK
+         path: ./app/build/outputs/apk/release/**.apk
+
+
+
+release:
+   name: Release APK
+   needs: apk
+   permissions:
+      # write permission is required to create a github release
+      contents: write
+      # write permission is required for autolabeler
+      # otherwise, read permission is required at least
+      pull-requests: read
+   runs-on: ubuntu-latest
+   steps:
+     - name: Download APK from build
+       uses: actions/download-artifact@v1
+       with:
+         name: MESSENGER-ANDROID-APK
+     - uses: release-drafter/release-drafter@v5
+       id: draft_release
+        # (Optional) specify config name to use, relative to .github/. Default: release-drafter.yml
+        # with:
+        #   config-name: my-config.yml
+        #   disable-autolabeler: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+     - name: Upload Release APK
+       id: upload_release_asset
+       uses: actions/upload-release-asset@v1.0.1
+       env:
+         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+       with:
+         upload_url: ${{ steps.draft_release.outputs.upload_url }}
+         asset_path: MESSENGER-ANDROID-APK/app-debug.apk
+         asset_name: ${{ github.event.repository.name }}.apk
+         asset_content_type: application/octet-stream
