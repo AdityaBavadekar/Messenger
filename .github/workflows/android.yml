@@ -28,7 +28,7 @@ jobs:
       run: echo $DATA > ./local.properties
     - name: Create google-services.json 1
       run: cd /app/debug
-   - name: Create google-services.json 2
+    - name: Create google-services.json 2
       run: touch google-services.json
     - name: Add data 2
       env: 
