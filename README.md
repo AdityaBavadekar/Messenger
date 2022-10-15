@@ -1,3 +1,6 @@
+![](https://img.shields.io/github/v/release/AdityaBavadekar/Messenger?include_prereleases&label=Messenger-Android)
+[![Android CI](https://github.com/AdityaBavadekar/Messenger/actions/workflows/android.yml/badge.svg)](https://github.com/AdityaBavadekar/Messenger/actions/workflows/android.yml)
+
 # Messenger
 Messenger is simple and easy-to-use real-time messaging app for android, make for private and group conversations.
 Messenger is open-source.
