@@ -159,4 +159,6 @@ dependencies {
     //Jsoup
     implementation "org.jsoup:jsoup:$jsoup_version"
 
+    //Lottie
+    implementation "com.airbnb.android:lottie:$lottie_version"
 }
