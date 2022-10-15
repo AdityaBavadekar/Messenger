@@ -1,4 +1,4 @@
-Third Party Libraries used.
+Following are list of Third Party libraries used :
 
 Material Design
 Rooom Database
