@@ -5,7 +5,11 @@ on:
     types:
       - closed
     branches:
-      - 'main'
+      - 'master'
+
+  push:
+    tags:
+      - v**
 
 jobs:
   build:
