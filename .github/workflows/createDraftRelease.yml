@@ -28,8 +28,7 @@ jobs:
 
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
-    - name: Signing Reports
-      run: ./gradlew signingReport
+
     - name: Add data to local.properties
       env: 
          DATA: ${{ secrets.LOCAL_PROPERTIES }}
@@ -40,10 +39,16 @@ jobs:
       env: 
          DATA2: ${{ secrets.GOOGLE_SERVICES_JSON }}
       run: echo $DATA2 > ./app/src/google-services.json
+
+    - name: Signing Reports
+      run: ./gradlew signingReport
+
     - name: Build with Gradle
       run: ./gradlew assembleDebug --stacktrace
+
     - name: Print created file names
       run: tree ./app/build/outputs/apk/
+
     - uses: actions/upload-artifact@v3
       with:
          name: MESSENGER-ANDROID-APK
