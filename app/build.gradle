@@ -70,6 +70,7 @@ android {
         
         variant.outputs.each { output ->
             output.outputFileName = output.outputFileName.replace(".apk", "-${variant.versionName}.apk")
+            print(output.outputFileName)
         }
     }
 
