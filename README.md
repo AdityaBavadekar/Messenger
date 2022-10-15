@@ -26,7 +26,8 @@ The project contains 2 modules :
 - AOSP
 - Firebase Auth, Messaging, Storage and Realease Database
 - PhotoView
-- Pinlog
+- PinLog
+- Lottie
 - Glide
 - Jsoup
 - Kotlin
