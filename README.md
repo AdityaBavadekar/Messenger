@@ -3,7 +3,7 @@
 
 # Messenger
 Messenger is simple and easy-to-use real-time messaging app for android, make for private and group conversations.
-Messenger is open-source.
+This is open-source repository of Messenger-Android.
 
 Note that Messenger does not have encryption facility for now but we are working to provide support for secure end-2-end encryption.
 
@@ -24,7 +24,7 @@ The project contains 2 modules :
 - Google's libphonenumber
 - Androidx libraries ([view build.gradle](https://github.com/AdityaBavadekar/Messenger/app/build.gradle))
 - AOSP
-- Firebase Auth, Messaging, Storage and Realease Database
+- Firebase Auth, Messaging, Storage and Realtime Database
 - PhotoView
 - PinLog
 - Lottie
