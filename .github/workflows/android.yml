@@ -34,9 +34,15 @@ jobs:
       run: echo $DATA2 > ./app/src/google-services.json
     - name: Build with Gradle
       run: ./gradlew assembleDebug
+    - name: Save Apk of successful build
+      if: ${{ success() }}
+      uses: actions/upload-artifact@v3
+      with:
+        name: Github Actions DebugApk
+        path: '*/app/build/outputs/apk/debug'
     - name: Save reports of failed build
       if: ${{ failure() }}
       uses: actions/upload-artifact@v3
       with:
         name: reports
-        path: '*/buildReports'
+        path: '*/build/reports'
