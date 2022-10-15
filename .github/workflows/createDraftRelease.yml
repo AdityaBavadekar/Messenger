@@ -28,6 +28,8 @@ jobs:
 
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
+    - name: Signing Reports
+      run: ./gradlew signingReport
     - name: Add data to local.properties
       env: 
          DATA: ${{ secrets.LOCAL_PROPERTIES }}
