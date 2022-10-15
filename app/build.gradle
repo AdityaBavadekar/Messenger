@@ -55,8 +55,7 @@ android {
             buildConfigField "String", "BUILD_TYPE_NAME", "\"Release\""
         }
 
-        debug {
-            versionNameSuffix "-debug"
+        debug {            
             buildConfigField "String", "BUILD_TYPE_NAME", "\"Debug\""
         }
        
