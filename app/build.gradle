@@ -58,6 +58,11 @@ android {
             versionNameSuffix "-debug"
             buildConfigField "String", "BUILD_TYPE_NAME", "\"Debug\""
         }
+       
+        dev {
+            versionNameSuffix "-dev"
+            buildConfigField "String", "BUILD_TYPE_NAME", "\"Dev\""
+        }
 
     }
 
@@ -65,7 +70,13 @@ android {
         baseline file("lint-baseline.xml")
     }
 
+    def build_param = "${build}"
     android.applicationVariants.all { variant ->
+        if (build_param != "dev" && variant.getFlavors().get(0).name.equals('dev')) {
+            variant.setIgnore(true);
+        }else {
+            variant.setIgnore(false)
+        }
         variant.outputs.each { output ->
             output.outputFileName = output.outputFileName.replace(".apk", "-${variant.versionName}.apk")
         }
