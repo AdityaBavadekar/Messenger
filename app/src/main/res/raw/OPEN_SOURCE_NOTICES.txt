@@ -1,0 +1,14 @@
+Third Party Libraries used.
+
+Material Design
+Rooom Database
+Google's libphonenumber
+Androidx libraries (view build.gradle)
+AOSP
+Firebase Auth, Messaging, Storage and Realease Database
+PhotoView
+PinLog
+Lottie
+Glide
+Jsoup
+Kotlin
