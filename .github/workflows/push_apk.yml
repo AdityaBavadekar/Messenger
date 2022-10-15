@@ -1,5 +1,15 @@
 name: Compile APK
 
+on:
+  pull_request:
+    types:
+      - closed
+    branches:
+      - 'dev'
+  push:
+    tags:
+      - v**
+
 jobs:
   build:
 
