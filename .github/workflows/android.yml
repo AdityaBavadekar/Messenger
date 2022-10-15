@@ -22,9 +22,13 @@ jobs:
 
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
-    - name: Putting data
+    - name: Add data 1
       env: 
          DATA: ${{ secrets.LOCAL_PROPERTIES }}
       run: echo $DATA > ./local.properties
+    - name: Add data 2
+      env: 
+         DATA: ${{ secrets.GOOGLE_SERVICES_JSON }}
+      run: echo $DATA > ./app/debug/google-services.json
     - name: Build with Gradle
       run: ./gradlew clean build -Pbuild=dev
