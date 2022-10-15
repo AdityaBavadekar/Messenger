@@ -8,6 +8,8 @@ on:
       - 'master'
 
   push:
+    branches: 
+      - 'master'
     tags:
       - v**
 
