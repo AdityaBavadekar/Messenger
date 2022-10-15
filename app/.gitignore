@@ -1,6 +1,2 @@
-/build/intermediates
-/build/generated
-/build/kotlin
-/build/tmp
-/build/outputs/logs
+/build
 google-services.json
