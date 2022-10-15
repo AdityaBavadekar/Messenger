@@ -74,9 +74,9 @@ android {
     def build_param = "${build}"
     android.applicationVariants.all { variant ->
         if (build_param != "dev" && variant.getFlavors().get(0).name.equals('dev')) {
-            variant.setIgnore(true);
+            setIgnore(true);
         }else {
-            variant.setIgnore(false)
+            setIgnore(false);
         }
         variant.outputs.each { output ->
             output.outputFileName = output.outputFileName.replace(".apk", "-${variant.versionName}.apk")
