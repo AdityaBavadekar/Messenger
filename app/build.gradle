@@ -71,13 +71,8 @@ android {
         baseline file("lint-baseline.xml")
     }
 
-    def build_param = "${build}"
     android.applicationVariants.all { variant ->
-        if (build_param != "dev" && variant.getFlavors().get(0).name.equals('dev')) {
-            setIgnore(true);
-        }else {
-            setIgnore(false);
-        }
+        
         variant.outputs.each { output ->
             output.outputFileName = output.outputFileName.replace(".apk", "-${variant.versionName}.apk")
         }
