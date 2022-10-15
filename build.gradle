@@ -26,6 +26,7 @@ buildscript {
         androidx_room = "2.3.0"
         androidx_emoji2 = "1.2.0-alpha04"
         androidx_dynamication= "1.0.0-alpha03"
+
         coroutines_core = "1.5.2"
         material_version = "1.6.0"
         splash_version = "1.0.0-alpha02"
@@ -38,6 +39,7 @@ buildscript {
         photo_view = "2.0.0"
         retrofit_version = "2.6.2"
         jsoup_version = "1.11.3"
+        lottie_version = "3.6.0"
     }
     repositories {
         google()
