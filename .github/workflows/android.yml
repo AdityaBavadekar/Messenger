@@ -39,7 +39,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: Github Actions DebugApk
-        path: '*/app/build/outputs/apk/debug'
+        path: '*/'
     - name: Save reports of failed build
       if: ${{ failure() }}
       uses: actions/upload-artifact@v3
