@@ -180,6 +180,7 @@
     <string name="shake_to_send_feedback">Shake to send feedback</string>
     <string name="shake_presenter_dialog_message">You shook your device. Your feedback helps us make Messenger better. You can disable this shake behaviour visit settings.</string>
     <string name="dismiss">Dismiss</string>
+    <string name="search">Search</string>
     <string name="resend_sms_code">Resend SMS</string>
     <string name="copyright_message">© Copyright 2022 Aditya Bavadekar</string>
     <string name="app_version_formatted">Version %s</string>
