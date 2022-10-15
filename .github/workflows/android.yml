@@ -27,7 +27,7 @@ jobs:
          DATA: ${{ secrets.LOCAL_PROPERTIES }}
       run: echo $DATA > ./local.properties
     - name: Create google-services.json
-      run: touch /home/runner/work/Messenger/Messenger/app/src/debug/google-services.json
+      run: touch ./app/src/debug/google-services.json
     - name: Add data 2
       env: 
          DATA2: ${{ secrets.GOOGLE_SERVICES_JSON }}
