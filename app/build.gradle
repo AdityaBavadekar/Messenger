@@ -63,6 +63,7 @@ android {
             versionNameSuffix "-dev"           
             applicationIdSuffix ".dev"
             buildConfigField "String", "BUILD_TYPE_NAME", "\"Dev\""
+            matchingFallbacks = ['debug']
         }
 
     }
