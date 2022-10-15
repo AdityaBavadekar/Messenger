@@ -22,18 +22,16 @@ jobs:
 
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
-    - name: Add data 1
+    - name: Add data to local.properties
       env: 
          DATA: ${{ secrets.LOCAL_PROPERTIES }}
       run: echo $DATA > ./local.properties
     - name: Create google-services.json 1
       run: touch ./app/src/google-services.json
-    - name: Create google-services.json 2
-      run: touch google-services.json
-    - name: Add data 2
+    - name: Add data to google-services.json
       env: 
          DATA2: ${{ secrets.GOOGLE_SERVICES_JSON }}
-      run: echo $DATA2 > /home/runner/work/Messenger/Messenger/app/src/debug/google-services.json
+      run: echo $DATA2 > ./app/src/google-services.json
     - name: Build with Gradle
       run: ./gradlew assembleDebug
     - name: Save reports of failed build
