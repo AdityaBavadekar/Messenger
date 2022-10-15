@@ -19,7 +19,7 @@ jobs:
     - name: Build with Gradle
       run: ./gradlew assembleRelease --stacktrace
     - uses: actions/upload-artifact@v3
-       with:
+      with:
          name: MESSENGER-ANDROID-APK
          path: ./app/build/outputs/apk/release/**.apk
 
