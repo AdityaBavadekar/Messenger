@@ -100,7 +100,7 @@ class P2PConversationInfoFragment : BindingHelperFragment<P2pConversationInfoFra
 
     private fun createList(): MutableList<ConversationInfoItem> {
         val list = mutableListOf<ConversationInfoItem>()
-        list.add(ConversationInfoItem(0, "Phone bumber : ${recipient.phone ?: "Not added"}") {})
+        list.add(ConversationInfoItem(0, "Phone number : ${recipient.phone ?: "Not added"}") {})
         list.add(ConversationInfoItem(1, "Description : ${recipient.tempAbout}") {})
         list.add(ConversationInfoItem(2, "Audio call") {})
         list.add(ConversationInfoItem(3, "Video call") {})
