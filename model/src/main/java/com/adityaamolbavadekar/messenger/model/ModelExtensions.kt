@@ -37,7 +37,7 @@ fun List<User>.toRecipientsList(): MutableList<Recipient> {
 
 fun List<User>.toRecipientsList(ignorableUserId: String): MutableList<Recipient> {
     val newList = mutableListOf<Recipient>()
-    for (r in this) {
+    for (r in this.distinctBy { it.UID }) {
         if (r.UID != ignorableUserId) {
             newList.add(Recipient.Builder(r).build())
         }
