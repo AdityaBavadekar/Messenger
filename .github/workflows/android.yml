@@ -27,7 +27,7 @@ jobs:
          DATA: ${{ secrets.LOCAL_PROPERTIES }}
       run: echo $DATA > ./local.properties
     - name: Create google-services.json 1
-      run: cd /app/src/debug
+      run: cd ./app/src/debug
     - name: Create google-services.json 2
       run: touch google-services.json
     - name: Add data 2
