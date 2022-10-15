@@ -36,10 +36,11 @@ jobs:
       run: ./gradlew assembleDebug
     - name: Save Apk of successful build
       if: ${{ success() }}
-      uses: actions/upload-artifact@v3
-      with:
-        name: Github Actions DebugApk
-        path: '*/'
+      #uses: actions/upload-artifact@v3
+      #with:
+        #name: Github Actions DebugApk
+        #path: '*/'
+      run: tree ./app/build/outputs/apk/debug
     - name: Save reports of failed build
       if: ${{ failure() }}
       uses: actions/upload-artifact@v3
