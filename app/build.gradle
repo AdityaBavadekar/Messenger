@@ -59,9 +59,22 @@ android {
             buildConfigField "String", "BUILD_TYPE_NAME", "\"Debug\""
         }
        
+        staging {            
+            initWith debug
+            matchingFallbacks = ['debug']
+            
+            buildConfigField "String", "BUILD_TYPE_NAME", "\"Staging\""
+        }
+
     }
 
+    testBuildType "staging"
+
     lintOptions {
+
+        // Running lint over the debug variant is enough
+        checkReleaseBuilds false
+
         baseline file("lint-baseline.xml")
     }
 
