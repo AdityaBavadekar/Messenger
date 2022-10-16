@@ -23,16 +23,6 @@ apply plugin: 'com.google.gms.google-services'
 apply plugin: 'androidx.navigation.safeargs.kotlin'
 
 android {
-    signingConfigs {
-        releaseConfig {
-            Properties keystoreProperties = new Properties()
-            properties.load(project.rootProject.file("keystore.properties").newDataInputStream())
-            keyAlias = keystoreProperties.getProperty("KEY_ALIAS")
-            keyPassword = keystoreProperties.getProperty("KEY_PASSWORD")
-            storePassword = keystoreProperties.getProperty("STORE_PASSWORD")
-            storeFile = keystoreProperties.getProperty("STORE_FILE")
-        }
-    }
     compileSdkVersion COMPILE_SDK
     buildToolsVersion BUILD_TOOLS_VERSION
 
@@ -55,6 +45,17 @@ android {
         buildConfigField "String", "FCM_MESSAGING_SERVER_KEY", "\"${properties.getProperty("FCM_MESSAGING_SERVER_KEY")}\""
         buildConfigField "String", "FCM_MESSAGING_CONTENT_TYPE", "\"${properties.getProperty("FCM_MESSAGING_CONTENT_TYPE")}\""
 
+    }
+
+    signingConfigs {
+        releaseConfig {
+            Properties keystoreProperties = new Properties()
+            properties.load(project.rootProject.file("keystore.properties").newDataInputStream())
+            keyAlias = keystoreProperties.getProperty("KEY_ALIAS")
+            keyPassword = keystoreProperties.getProperty("KEY_PASSWORD")
+            storePassword = keystoreProperties.getProperty("STORE_PASSWORD")
+            storeFile = keystoreProperties.getProperty("STORE_FILE")
+        }
     }
 
     buildTypes {
