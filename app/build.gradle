@@ -23,6 +23,16 @@ apply plugin: 'com.google.gms.google-services'
 apply plugin: 'androidx.navigation.safeargs.kotlin'
 
 android {
+    signingConfigs {
+        releaseConfig {
+            Properties keystoreProperties = new Properties()
+            properties.load(project.rootProject.file("keystore.properties").newDataInputStream())
+            keyAlias = keystoreProperties.getProperty("KEY_ALIAS")
+            keyPassword = keystoreProperties.getProperty("KEY_PASSWORD")
+            storePassword = keystoreProperties.getProperty("STORE_PASSWORD")
+            storeFile = keystoreProperties.getProperty("STORE_FILE")
+        }
+    }
     compileSdkVersion COMPILE_SDK
     buildToolsVersion BUILD_TOOLS_VERSION
 
@@ -51,6 +61,7 @@ android {
         release {
             minifyEnabled true
             shrinkResources true
+            signingConfig signingConfigs.releaseConfig
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             buildConfigField "String", "BUILD_TYPE_NAME", "\"Release\""
         }
