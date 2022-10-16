@@ -66,7 +66,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|center_vertical"
                         android:gravity="center"
-                        android:minHeight="64dp"
+                        android:minHeight="72dp"
                         android:orientation="horizontal">
 
                         <com.adityaamolbavadekar.messenger.views.AvatarImageView
