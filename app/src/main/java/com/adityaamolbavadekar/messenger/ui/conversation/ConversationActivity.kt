@@ -503,7 +503,7 @@ class ConversationActivity : BaseActivity() {
         if (item.itemId == R.id.action_add_reply) {
             val list = viewModel.messages.value!!
             if (list.isEmpty() || conversation?.isGroup == false) return true
-            val last = list.last()
+            val last = list.first()
             val sender = groupRecipients.random()
             val messageRecord = MessageRecord.createCopyOf(
                 last,
