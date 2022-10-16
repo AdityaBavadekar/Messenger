@@ -135,12 +135,10 @@ class ConversationInfoFragment : BindingHelperFragment<ConversationInfoFragmentB
         database.getRecipientsOfConversation(conversationId).observe(viewLifecycleOwner) {
             InternalLogger.logD(TAG, "ConversationRecipients : $it")
             conversation = it.conversationRecord
+            groupRecipients = it.recipients.toMutableList()
             listAdapter.submitList(createList())
-            if (it.conversationRecord.isGroup) {
-                groupRecipients = it.recipients.toMutableList()
-                updateToolbar()
-                addConversationObserver()
-            }
+            updateToolbar()
+            addConversationObserver()
         }
 
     }
