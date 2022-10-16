@@ -58,7 +58,7 @@ data class Recipient(
 
     constructor() : this(
         null,
-        UUID.randomUUID().toString(),
+        "",
         "", mutableListOf(),
         null,
         false,

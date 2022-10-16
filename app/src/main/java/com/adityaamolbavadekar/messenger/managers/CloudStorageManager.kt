@@ -60,7 +60,7 @@ class CloudStorageManager {
     fun savePicture(
         photoUri: Uri,
         metadata: StorageMetadata,
-        onResponseCallback: OnResponseCallback<Uri, Exception>
+        onResponseCallback: OnResponseCallback<Uri, Exception>,
     ) =
         runOnIOThread {
             val ref = db.getReference(
@@ -77,6 +77,32 @@ class CloudStorageManager {
                 }
                 .addOnFailureListener {
                     InternalLogger.logE(TAG, "Unable to upload PICTURE for user.", it)
+                    onResponseCallback.onFailure(it)
+                }
+        }
+
+
+    fun saveProfilePicture(
+        userId: String,
+        photoUri: Uri,
+        metadata: StorageMetadata,
+        onResponseCallback: OnResponseCallback<Uri, Exception>
+    ) =
+        runOnIOThread {
+            val ref = db.getReference(
+                Constants.CloudPaths.getUserProfilePicturesPath(userId)
+            )
+            ref.putFile(photoUri, metadata)
+                .addOnSuccessListener {
+                    InternalLogger.logI(TAG, "Successfully uploaded Profile PICTURE for user.")
+                    ref.downloadUrl
+                        .addOnSuccessListener {
+                            InternalLogger.logI(TAG, "Successfully retrieved Profile PICTURE URL for user.")
+                            runOnMainThread { onResponseCallback.onSuccess(it) }
+                        }
+                }
+                .addOnFailureListener {
+                    InternalLogger.logE(TAG, "Unable to upload Profile PICTURE for user.", it)
                     onResponseCallback.onFailure(it)
                 }
         }

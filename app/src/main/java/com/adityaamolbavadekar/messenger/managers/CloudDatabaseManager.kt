@@ -96,13 +96,13 @@ class CloudDatabaseManager {
     fun updateUserProfileInfo(
         map: HashMap<String, Any?>,
         userId: String,
-        onResult: (Boolean) -> Unit={}
+        onResult: (Boolean) -> Unit = {}
     ) =
         CoroutineScope(Dispatchers.Default).launch {
-           
+
             map.forEach { pair ->
                 Firebase.database.getReference(Constants.CloudPaths.getUserPath(userId))
-                .child(pair.key).setValue(pair.value)
+                    .child(pair.key).setValue(pair.value)
                     .addOnSuccessListener {
                         InternalLogger.logI(
                             TAG,
@@ -279,6 +279,30 @@ class CloudDatabaseManager {
             return Firebase.database
                 .getReference(Constants.CloudPaths.getGroupPropertiesPath(groupInfo.conversationId))
                 .setValue(groupInfo)
+                .addOnSuccessListener {
+                    val threadName = ("createGroupConversation${groupInfo.conversationId}")
+                    val t = Thread {
+                        groupInfo.getRemoteRecipients()
+                            .forEach { recipient ->
+                                Firebase.database
+                                    .getReference(
+                                        Constants.CloudPaths.getUserConversationsPath(
+                                            recipient.uid
+                                        )
+                                    )
+                                    .child(groupInfo.conversationId)
+                                    .setValue(true)
+                                    .addOnSuccessListener {
+                                        InternalLogger.logD(
+                                            TAG,
+                                            "Thread :$threadName -> Success(${recipient.uid})"
+                                        )
+                                    }
+                            }
+                    }
+                    t.name = threadName
+                    t.start()
+                }
         }
 
         fun updateGroupConversation(groupInfo: RemoteConversation): Task<Void> {
@@ -362,6 +386,10 @@ class CloudDatabaseManager {
                 listener = (object : ValueEventListener {
 
                     override fun onDataChange(snapshot: DataSnapshot) {
+                        InternalLogger.logI(
+                            TAG,
+                            "P2P Messages snapshot: ${snapshot.getValue<HashMap<Any?, Any?>>()}"
+                        )
                         val messagesList = mutableListOf<MessageRecord>()
                         snapshot.getValue<MessageRecord>()?.let { message ->
                             InternalLogger.logI(TAG, "P2P Message : $message")
@@ -532,7 +560,6 @@ class CloudDatabaseManager {
                     )
                 }
         }
-
     }
 
     private val usersManager = Users()

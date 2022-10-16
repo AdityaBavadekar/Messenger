@@ -52,12 +52,13 @@ object Constants {
     }
 
     internal object CloudPaths {
-        private const val CLOUD_PATH_USERS_SHARABLE_DATA = "users_sharable_data"
+        private const val CLOUD_PATH_USERS_SHARABLE_DATA = "usersPublicData"
         const val CLOUD_PATH_USERS = "users"
         private const val CLOUD_PATH_CONTACTS = "contactsOf"
-        private const val CLOUD_PATH_USER_ACTIVITY = "users_activity"
+        private const val CLOUD_PATH_USER_ACTIVITY = "usersActivity"
         private const val CLOUD_PATH_PROFILE_PICS = "profilePictures"
         private const val CLOUD_PATH_MESSAGES = "messages"
+        private const val CLOUD_PATH_P2P_MESSAGES = "p2pMessages"
         private const val CLOUD_PATH_GROUPS = "groups"
         private const val CLOUD_PATH_PROPERTIES = "properties"
         private const val CLOUD_PATH_CONVERSATIONS = "conversations"
@@ -97,11 +98,11 @@ object Constants {
         }
 
         fun getP2PMessagesPath(of: String, with: String): String {
-            return ("$CLOUD_PATH_MESSAGES/$of/$with/$CLOUD_PATH_MESSAGES/")
+            return ("$CLOUD_PATH_P2P_MESSAGES/$of/$with/$CLOUD_PATH_MESSAGES/")
         }
 
         fun getP2PPropertiesPath(of: String, with: String): String {
-            return ("$CLOUD_PATH_MESSAGES/$of/$with/$CLOUD_PATH_PROPERTIES/")
+            return ("$CLOUD_PATH_P2P_MESSAGES/$of/$with/$CLOUD_PATH_PROPERTIES/")
         }
 
         fun getUserProfilePicturesPath(uid: String): String {

@@ -88,7 +88,7 @@ class AuthViewModel : ViewModel() {
             PhoneNumberUtils.loadCountryInfo(context)?.let {
                 _countryInfoList.postValue(it)
                 countryCodesArray = it.map { info -> info.code.removePrefix("+") }.toTypedArray()
-                shortNamesArray = countryInfoList.value!!.map {info-> info.short }.toTypedArray()
+                shortNamesArray = countryInfoList.value!!.map { info -> info.short }.toTypedArray()
                 PhoneNumberUtils.getCurrentCountry(context)?.also { countryShort ->
                     if (!TextUtils.isEmpty(countryShort)) {
                         InternalLogger.d(TAG, "Default Device Country : $countryShort")
@@ -124,7 +124,7 @@ class AuthViewModel : ViewModel() {
 
     fun saveProfilePicture(uri: Uri, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
         lastProfilePictureUrl?.let { cloudStorageManager.delete(it) }
-        cloudStorageManager.savePicture(uri,
+        cloudStorageManager.saveProfilePicture(getUser().value!!.UID, uri,
             StorageMetadata.Builder()
                 .setCustomMetadata("uid", authManager.uid)
                 .build(),

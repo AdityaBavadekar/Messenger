@@ -53,7 +53,7 @@ android {
             keyAlias = properties.getProperty("KEY_ALIAS")
             keyPassword = properties.getProperty("KEY_PASSWORD")
             storePassword = properties.getProperty("STORE_PASSWORD")
-            storeFile = properties.getProperty("STORE_FILE")
+            storeFile = file(properties.getProperty("STORE_FILE"))
         }
     }
 
