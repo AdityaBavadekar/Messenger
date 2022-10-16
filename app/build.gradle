@@ -26,6 +26,9 @@ android {
     compileSdkVersion COMPILE_SDK
     buildToolsVersion BUILD_TOOLS_VERSION
 
+    Properties properties = new Properties()
+    properties.load(project.rootProject.file("local.properties").newDataInputStream())
+
     defaultConfig {
         applicationId "com.adityaamolbavadekar.messenger"
         minSdkVersion MIN_SDK
@@ -39,8 +42,6 @@ android {
 
         buildConfigField "String", "DATE", "\"${new Date()}\""
 
-        Properties properties = new Properties()
-        properties.load(project.rootProject.file("local.properties").newDataInputStream())
         buildConfigField "String", "FCM_MESSAGING_BASE_URL", "\"${properties.getProperty("FCM_MESSAGING_BASE_URL")}\""
         buildConfigField "String", "FCM_MESSAGING_SERVER_KEY", "\"${properties.getProperty("FCM_MESSAGING_SERVER_KEY")}\""
         buildConfigField "String", "FCM_MESSAGING_CONTENT_TYPE", "\"${properties.getProperty("FCM_MESSAGING_CONTENT_TYPE")}\""
@@ -49,12 +50,10 @@ android {
 
     signingConfigs {
         releaseConfig {
-            Properties keystoreProperties = new Properties()
-            properties.load(project.rootProject.file("keystore.properties").newDataInputStream())
-            keyAlias = keystoreProperties.getProperty("KEY_ALIAS")
-            keyPassword = keystoreProperties.getProperty("KEY_PASSWORD")
-            storePassword = keystoreProperties.getProperty("STORE_PASSWORD")
-            storeFile = keystoreProperties.getProperty("STORE_FILE")
+            keyAlias = properties.getProperty("KEY_ALIAS")
+            keyPassword = properties.getProperty("KEY_PASSWORD")
+            storePassword = properties.getProperty("STORE_PASSWORD")
+            storeFile = properties.getProperty("STORE_FILE")
         }
     }
 
