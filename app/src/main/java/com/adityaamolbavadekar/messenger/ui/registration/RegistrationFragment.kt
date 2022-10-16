@@ -167,7 +167,7 @@ class RegistrationFragment : BindingHelperFragment<FragmentSignupPhoneBinding>()
         val editable = binding.phone.text
         val countryCode = viewModel.selectedCountryInfo.value!!
         binding.nextButton.isEnabled =
-            editable != null && editable.length > 9 && countryCode.isNotEmpty()
+            editable != null && editable.length > 9 && countryCode.isNotEmpty() && binding.countryCode.text.toString().trim().isNotEmpty()
     }
 
     private fun initDisclaimer() {
@@ -341,6 +341,7 @@ class RegistrationFragment : BindingHelperFragment<FragmentSignupPhoneBinding>()
     }
 
     private fun validate(phoneNumberWithoutCode: String, code: String) {
+        if (!isVisible) return
         val validation = Validator.checkPhoneNumber(phoneNumberWithoutCode, code)
         if (validation != null) {
             handleError(validation)
