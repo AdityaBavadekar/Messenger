@@ -97,11 +97,11 @@ object Constants {
         }
 
         fun getP2PMessagesPath(of: String, with: String): String {
-            return ("$CLOUD_PATH_MESSAGES/$of/$CLOUD_PATH_CONVERSATIONS/$with/$CLOUD_PATH_MESSAGES/")
+            return ("$CLOUD_PATH_MESSAGES/$of/$with/$CLOUD_PATH_MESSAGES/")
         }
 
-        fun getP2PPropertiesPath(id: String): String {
-            return ("$CLOUD_PATH_GROUPS/$id/$CLOUD_PATH_PROPERTIES")
+        fun getP2PPropertiesPath(of: String, with: String): String {
+            return ("$CLOUD_PATH_MESSAGES/$of/$with/$CLOUD_PATH_PROPERTIES/")
         }
 
         fun getUserProfilePicturesPath(uid: String): String {
