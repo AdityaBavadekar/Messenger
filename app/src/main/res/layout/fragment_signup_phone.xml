@@ -91,7 +91,7 @@
                             android:layout_height="wrap_content"
                             android:autofillHints="phone"
                             android:inputType="number"
-                            android:maxLength="3"
+                            android:maxLength="4"
                             android:textAppearance="@style/TextAppearance.Messenger.LabelRegistrationEditText"
                             tools:background="@android:color/transparent"
                             tools:text="91">
