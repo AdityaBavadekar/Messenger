@@ -386,14 +386,13 @@ class CloudDatabaseManager {
                 listener = (object : ValueEventListener {
 
                     override fun onDataChange(snapshot: DataSnapshot) {
-                        InternalLogger.logI(
-                            TAG,
-                            "P2P Messages snapshot: ${snapshot.getValue<HashMap<Any?, Any?>>()}"
-                        )
+                        
                         val messagesList = mutableListOf<MessageRecord>()
-                        snapshot.getValue<MessageRecord>()?.let { message ->
-                            InternalLogger.logI(TAG, "P2P Message : $message")
-                            messagesList.add(message)
+                        snapshot.children.forEach { m->
+                          m.getValue<MessageRecord>()?.let { message ->
+                              InternalLogger.logI(TAG, "P2P Message : $message")
+                              messagesList.add(message)
+                          }
                         }
                         onResponseCallback.onSuccess(messagesList)
                         runOnIOThread {
