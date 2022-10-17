@@ -1,0 +1,5 @@
+code-change:
+- any: ['src/main/java/**/*']
+
+resources-change:
+- any: ['src/main/res/**/*']
