@@ -1,8 +1,10 @@
 
-name-template: 'Messenger v$RESOLVED_VERSION'
+name-template: '$REPOSITORY v$RESOLVED_VERSION'
 tag-template: '$RESOLVED_VERSION'
 
 template: |
   ## What’s Changed
 
   $CHANGES
+
+change-template: '- $TITLE (#$NUMBER) $BODY'
