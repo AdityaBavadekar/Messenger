@@ -1,5 +1,5 @@
 code-change:
-- any: ['src/main/java/**/*']
+- any: ['app/src/main/**/*']
 
 resources-change:
-- any: ['src/main/res/**/*']
+- any: ['app/src/main/res/**/*']
