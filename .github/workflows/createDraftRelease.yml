@@ -1,12 +1,6 @@
-name: Compile APK
+name: Create Release Draft
 
 on:
-  pull_request:
-    types:
-      - closed
-    branches:
-      - 'master'
-
   push:
     branches: 
       - 'master'
