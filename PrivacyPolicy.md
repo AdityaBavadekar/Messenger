@@ -1,4 +1,4 @@
-# Privacy Policy for Wave-Messenger
+# Privacy Policy for Wave Messenger
 
 This Privacy Policy is meant to help you understand what information we collect, why we collect it and how you can update, manage, export and delete your information.
 
