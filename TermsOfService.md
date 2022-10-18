@@ -1,1 +1,1 @@
-# Terms of Service for Messenger
+# Terms of Service for Wave Messenger
