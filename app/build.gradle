@@ -61,7 +61,9 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled true
+            //disable minify because it crashes the app on release build, with
+            // a NullPointerException pointing to  AuthViewModel#getCountryCodeInfo() -> line 2
+            minifyEnabled false
             shrinkResources true
             signingConfig signingConfigs.releaseConfig
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
@@ -71,14 +73,7 @@ android {
         debug {            
             buildConfigField "String", "BUILD_TYPE_NAME", "\"Debug\""
         }
-       
-        staging {            
-            initWith debug
-            matchingFallbacks = ['debug']
-            
-            buildConfigField "String", "BUILD_TYPE_NAME", "\"Staging\""
-        }
-
+      
     }
 
     testBuildType "staging"

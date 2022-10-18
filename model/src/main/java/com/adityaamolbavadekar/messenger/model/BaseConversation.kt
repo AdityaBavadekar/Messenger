@@ -64,7 +64,7 @@ abstract class BaseConversation constructor(
         return recipientUids.last()
     }
 
-    fun getRemoteRecipients(): MutableList<RemoteRecipient> {
+    fun remoteRecipients(): MutableList<RemoteRecipient> {
         val remoteRecipients = mutableListOf<RemoteRecipient>()
         recipientsInfo.forEach { remoteRecipients.add(RemoteRecipient.fromHashMap(it)) }
         return remoteRecipients
@@ -85,7 +85,7 @@ abstract class BaseConversation constructor(
     }
 
     fun isManager(uid: String): Boolean {
-        getRemoteRecipients().forEach { remoteRecipient ->
+        remoteRecipients().forEach { remoteRecipient ->
             if (remoteRecipient.uid == uid) {
                 return remoteRecipient.isManager()
             }

@@ -173,7 +173,6 @@ class AuthViewModel : ViewModel() {
                 updateUser(
                     userFrom(it.user!!).setFcmToken(deviceFcmToken)
                         .setLastLoginOrNow(it.user!!.metadata?.lastSignInTimestamp)
-                        .incrementActivityIndex()
                         .build()
                 )
                 onSuccess()
@@ -203,6 +202,7 @@ class AuthViewModel : ViewModel() {
             .setFirstName(t.firstName)
             .setLastName(t.lastName)
             .setUsername(t.username)
+            .setActivityIndex(t.activityCount)
             .build()
         updateUser(u)
         return u
