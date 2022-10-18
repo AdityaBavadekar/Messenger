@@ -250,7 +250,7 @@ class ConversationViewModel : ViewModel() {
         } else {
             messagesManager
                 .observeMessagesFromDatabase(
-                    conversationRecord.conversationId,
+                    me.uid,
                     conversationRecord.p2PRecipientUid(), onGetObservedMessagesResponseCallback
                 )
         }
