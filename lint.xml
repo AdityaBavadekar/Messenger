@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lint>
+    <issue id="UselessParent"  severity="ignore" />
+    <issue id="UseCompoundDrawables"  severity="ignore" />
+    <issue id=" DuplicateIncludedIds"  severity="error" />
+    <issue id="HardcodedText" severity="warning" />
+</lint>

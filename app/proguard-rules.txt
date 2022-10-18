@@ -12,6 +12,11 @@
 #   public *;
 #}
 
+# Keep Data classes.
+-keep class com.adityaamolbavadekar.messenger.** { *; }
+
+-keep class androidx.window** { *; }
+
 # Uncomment this to preserve the line number information for
 # debugging stack traces.
 -keepattributes SourceFile,LineNumberTable
