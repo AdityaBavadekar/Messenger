@@ -106,6 +106,7 @@
             android:name=".ui.picture_upload_preview.PictureUploadPreviewActivity"
             android:exported="false"
             android:label="@string/app_name"
+            android:windowSoftInputMode="adjustResize"
             android:parentActivityName=".ui.conversation.ConversationActivity"
             android:theme="@style/Messenger.Material3.NoActionBar">
 
@@ -144,6 +145,7 @@
         <activity
             android:name=".ui.zoom.ZoomableImageViewerActivity"
             android:exported="false"
+            android:windowSoftInputMode="stateHidden"
             android:label="@string/app_name"
             android:theme="@style/Messenger.Material3.NoActionBar" />
 
@@ -233,7 +235,6 @@
 
         <activity
             android:name=".MainActivity"
-            android:launchMode="singleInstance"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Messenger.NoActionBarBarSplashScreen" />
