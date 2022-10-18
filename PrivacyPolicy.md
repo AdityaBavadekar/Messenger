@@ -1,10 +1,10 @@
-# Privacy Policy for Messenger-Android
+# Privacy Policy for Wave-Messenger
 
 This Privacy Policy is meant to help you understand what information we collect, why we collect it and how you can update, manage, export and delete your information.
 
 ---
--  **Last updated : 16 Oct 2022**
--  **Effective on : 18 Oct 2022**
+-  **Last updated : 19 Oct 2022**
+-  **Effective on : 20 Oct 2022**
 
 ---
 ## This Privacy Policy describes :
@@ -26,7 +26,7 @@ with your personal data, we encourage you to primarily contact us through the su
 
 Alternatively, you may contact us :
 
-- **Name** : Messenger-Android 
+- **Name** : Wave Messenger-Android
 - **Address**: Pune, Maharashtra, India
 - **Subject**: Query regarding Privacy Policy
 - **Email**: bvkraditya@gmail.com
@@ -49,7 +49,7 @@ The categories of personal data we collect depend on the Services you use, and t
 
 ### Data we collect automatically.
 
-On each login to Messenger we collect your activity using following data for protection and security :
+On each login to Wave Messenger we collect your activity using following data for protection and security :
 
   - Data about your account and app usage and an automatically generated internal account ID
   - Your IP address 
@@ -59,8 +59,8 @@ On each login to Messenger we collect your activity using following data for pro
 
 ### We use data to build a better service
 
-We use data to improve Messenger such as data regarding 
-the times of application crashed previously etc.
+We use data to improve Wave Messenger such as data regarding 
+the number of times application crashed previously etc.
 
 ### Create and verify accounts authenticity
 
@@ -83,10 +83,10 @@ already signed in onto one.
 In order to help ensure a secure and safe player experience, we are continuously developing and implementing administrative, 
 technical and physical security measures to protect your data from unauthorized access or against loss, misuse or alteration.
 
-### Protect Messenger, our users and the public
+### Protect Wave Messenger, our users and the public
 
 We use information to help improve the safety and reliability of our service. This includes detecting, preventing and responding to fraud, abuse, 
-security risks, and technical issues that could harm Messenger, our users or the public. This also includes identification of spam or dummy accounts.
+security risks, and technical issues that could harm Wave Messenger, our users or the public. This also includes identification of spam or dummy accounts.
 
 ### Managing, reviewing, and updating your information
 
@@ -95,7 +95,7 @@ you can update your profile information or keep a check on your account login ac
 
 ### Exporting & deleting your information
 
-You can export a copy of content in your Messenger Account if you want to back it up or use it with a service outside of Messenger.
+You can export a copy of content in your Wave Messenger Account if you want to back it up or use it with a service outside of Wave Messenger.
 
 To delete or request account information : please send us and email to email address provided in contact us section.
 
