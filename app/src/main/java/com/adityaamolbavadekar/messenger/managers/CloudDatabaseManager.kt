@@ -282,7 +282,7 @@ class CloudDatabaseManager {
                 .addOnSuccessListener {
                     val threadName = ("createGroupConversation${groupInfo.conversationId}")
                     val t = Thread {
-                        groupInfo.getRemoteRecipients()
+                        groupInfo.remoteRecipients()
                             .forEach { recipient ->
                                 Firebase.database
                                     .getReference(
