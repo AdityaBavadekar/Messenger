@@ -54,8 +54,7 @@ class ContactsReader(private val context: Context) {
 
     private fun getContact(c: Cursor): ContactInfo? {
         val name = c.getStringOrNull(0)
-        val number = c.getStringOrNull(1)
-        InternalLogger.logD("ContactsReader", "Contact : $name -> $number")
+        val number = c.getStringOrNull(1)       
         return if (number == null || number.trim().isEmpty()) null
         else ContactInfo(name, number)
     }
