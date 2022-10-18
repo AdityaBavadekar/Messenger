@@ -75,8 +75,8 @@ data class User(
         return hashMapOf(
             "lastLogin" to lastLogin,
             "firstName" to firstName,
-            "firstName" to firstName,
             "lastName" to lastName,
+            "activityCount" to activityCount+1,
             "photoUrl" to photoUrl,
             "fcmToken" to fcmToken,
         )
@@ -188,6 +188,11 @@ data class User(
 
         fun incrementActivityIndex(): Builder {
             this.user.activityCount = this.user.activityCount + 1
+            return this
+        }
+
+        fun setActivityIndex(index:Int): Builder {
+            this.user.activityCount = index
             return this
         }
 

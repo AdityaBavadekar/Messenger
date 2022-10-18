@@ -27,14 +27,14 @@ jobs:
       env: 
          DATA: ${{ secrets.LOCAL_PROPERTIES }}
       run: echo $DATA > ./local.properties
-    - name: Create google-services.json 1
+    - name: Create google-services.json
       run: touch ./app/src/google-services.json
     - name: Add data to google-services.json
       env: 
          DATA2: ${{ secrets.GOOGLE_SERVICES_JSON }}
       run: echo $DATA2 > ./app/src/google-services.json
     - name: Build with Gradle
-      run: ./gradlew assembleDebug
+      run: ./gradlew assembleDebug --stacktrace
     - name: Print files created by the successful build
       if: ${{ success() }}      
       run: tree ./app/build/outputs/apk/debug
