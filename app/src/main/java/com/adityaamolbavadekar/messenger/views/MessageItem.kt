@@ -93,6 +93,7 @@ class MessageItem @JvmOverloads constructor(
     private var hasLinkPreview: Boolean = false
     private var hasMessage: Boolean = false
     private var hasAttachments: Boolean = false
+    private var hasReactions: Boolean = false
 
     private var wasBindedPreviously: Boolean = false
     private var isSelectedMessageItem: Boolean = false
@@ -118,6 +119,7 @@ class MessageItem @JvmOverloads constructor(
         this.hasLinkPreview = requireMessageRecord().hasLinkPreview()
         this.hasMessage = requireMessageRecord().hasMessage()
         this.hasAttachments = requireMessageRecord().hasAttachments()
+        this.hasReactions = requireMessageRecord().hasReactions()
         this.selectionKey = itemSelectionKey
 
         if (!this.wasBindedPreviously) {
@@ -129,6 +131,7 @@ class MessageItem @JvmOverloads constructor(
                         "hasLinkPreview=$hasLinkPreview" + "\n" +
                         "hasMessage=$hasMessage" + "\n" +
                         "hasAttachments=$hasAttachments" + "\n" +
+                        "hasReactions=$hasReactions" + "\n" +
                         "isTextOnly=${messageRecord!!.isTextOnly()}" + "\n"
             )
         }
