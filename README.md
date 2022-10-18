@@ -1,11 +1,11 @@
-![](https://img.shields.io/github/v/release/AdityaBavadekar/Messenger?include_prereleases&label=Messenger-Android)
-[![Android CI](https://github.com/AdityaBavadekar/Messenger/actions/workflows/android.yml/badge.svg)](https://github.com/AdityaBavadekar/Messenger/actions/workflows/android.yml)
+![](https://img.shields.io/github/v/release/AdityaBavadekar/Wave-Messenger-Android?include_prereleases&label=Wave-Messenger)
+[![Android CI](https://github.com/AdityaBavadekar/Messenger/actions/workflows/android.yml/badge.svg)](https://github.com/AdityaBavadekar/Wave-Messenger-Android/actions/workflows/android.yml)
 
-# Messenger
-Messenger is simple and easy-to-use real-time messaging app for android, make for private and group conversations.
-This is open-source repository of Messenger-Android.
+# Wave Messenger
+Wave Messenger is simple and easy-to-use real-time messaging app for android, make for private and group conversations.
+This is open-source repository of Wave-Messenger-Android.
 
-Note that Messenger does not have encryption facility for now but we are working to provide support for secure end-2-end encryption.
+Note that Wave Messenger does not have encryption facility for now but we are working to provide support for secure end-2-end encryption.
 
 ## Development status
 - Application development is in progress for v0.0.4
@@ -14,7 +14,7 @@ Note that Messenger does not have encryption facility for now but we are working
 
 ## Structure
 The project contains 2 modules :
-- [```:app```](/app) module which is the main **Messenger Application**
+- [```:app```](/app) module which is the main **Wave Messenger Application**
 - [```:model```](/model) module containing all data classes for messenger
 
 
@@ -40,7 +40,7 @@ The project contains 2 modules :
 ## Versioning
 Messenger uses [SemVer](http://semver.org/) for versioning. 
 For the versions available, see the 
-[tags section](https://github.com/AdityaBavadekar/Messenger/tags).
+[tags section](https://github.com/AdityaBavadekar/Wave-Messenger-Android/tags).
 
 
 ## Author
