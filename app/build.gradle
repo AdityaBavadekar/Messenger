@@ -64,7 +64,9 @@ android {
             //disable minify because it crashes the app on release build, with
             // a NullPointerException pointing to  AuthViewModel#getCountryCodeInfo() -> line 2
             minifyEnabled false
-            shrinkResources true
+            // Removing unused resources requires unused code shrinking to be turned on.
+           //And so even disable shrinkResources
+            shrinkResources false
             signingConfig signingConfigs.releaseConfig
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             buildConfigField "String", "BUILD_TYPE_NAME", "\"Release\""
