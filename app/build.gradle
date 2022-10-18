@@ -76,8 +76,6 @@ android {
       
     }
 
-    testBuildType "staging"
-
     lintOptions {
 
         // Running lint over the debug variant is enough
