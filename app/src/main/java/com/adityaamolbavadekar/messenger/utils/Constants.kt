@@ -86,7 +86,7 @@ object Constants {
         }
 
         fun getUserConversationsPath(uid: String): String {
-            return ("$CLOUD_PATH_MESSAGES/$uid/$CLOUD_PATH_CONVERSATIONS/")
+            return ("$CLOUD_PATH_CONVERSATIONS/$uid/")
         }
 
         fun getGroupMessagesPath(id: String): String {
