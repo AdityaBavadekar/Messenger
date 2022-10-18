@@ -52,6 +52,7 @@ class PictureUploadPreviewActivity : BaseActivity() {
             requireNotNull(intent.getStringArrayExtra(EXTRA_STREAM), { "Urls are required." })
         binding.input.setOnSendListener {
             val extras = Intent()
+            // TODO binding.composeBar.extraLinkInfo?.let { info -> message.addLinkInfo(info) }
             if (binding.input.composeText?.toString()?.trim()?.isNotEmpty() == true) {
                 extras.putExtra(EXTRA_TEXT, binding.input.composeText!!.toString())
             }
