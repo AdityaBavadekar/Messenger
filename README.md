@@ -1,9 +1,9 @@
-![](https://img.shields.io/github/v/release/AdityaBavadekar/Wave-Messenger-Android?include_prereleases&label=Wave-Messenger)
+![](https://img.shields.io/github/v/release/AdityaBavadekar/waveapp?include_prereleases&label=Wave-Messenger)
 [![Android CI](https://github.com/AdityaBavadekar/Messenger/actions/workflows/android.yml/badge.svg)](https://github.com/AdityaBavadekar/Wave-Messenger-Android/actions/workflows/android.yml)
 
 # Wave Messenger
 Wave Messenger is simple and easy-to-use real-time messaging app for android, make for private and group conversations.
-This is open-source repository of Wave-Messenger-Android.
+This is open-source repository of Wave Messenger.
 
 Note that Wave Messenger does not have encryption facility for now but we are working to provide support for secure end-2-end encryption.
 
@@ -22,7 +22,7 @@ The project contains 2 modules :
 - Material Design
 - Rooom Database
 - Google's libphonenumber
-- Androidx libraries ([view build.gradle](https://github.com/AdityaBavadekar/Messenger/app/build.gradle))
+- Androidx libraries ([view build.gradle](/app/build.gradle))
 - AOSP
 - Firebase Auth, Messaging, Storage and Realtime Database
 - PhotoView
@@ -40,7 +40,7 @@ The project contains 2 modules :
 ## Versioning
 Messenger uses [SemVer](http://semver.org/) for versioning. 
 For the versions available, see the 
-[tags section](https://github.com/AdityaBavadekar/Wave-Messenger-Android/tags).
+[tags section](https://github.com/AdityaBavadekar/waveapp/tags).
 
 
 ## Author
