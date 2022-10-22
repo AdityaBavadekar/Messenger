@@ -2,8 +2,6 @@
 .gradle
 /local.properties
 /keystore.properties
-/.idea/caches
-/.idea/libraries
 /.idea/*
 .idea/*
 !.idea/copyright
@@ -12,7 +10,11 @@
 /buildSrc/build
 .DS_Store
 /build
+build/
 /app/google-sevices.json
 /captures
 .externalNativeBuild
 .cxx
+*.apk
+*.dex
+*.class
