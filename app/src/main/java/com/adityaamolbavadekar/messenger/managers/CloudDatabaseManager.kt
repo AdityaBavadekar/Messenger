@@ -553,6 +553,7 @@ class CloudDatabaseManager {
     inner class Contacts {
 
         fun save(list: List<String>) {
+            //TODO : Ask user if its okay for him to do that.
             Firebase.database.getReference(Constants.CloudPaths.getUserContactsPath(AuthManager().uid))
                 .setValue(list)
                 .addOnSuccessListener { InternalLogger.logD(TAG, "Saved user contacts.") }
