@@ -3,7 +3,6 @@ name: Create Release Draft
 on:
   push:
     tags:
-      - v**
 
 jobs:
   build:
@@ -11,32 +10,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: set up JDK 11
-      uses: actions/setup-java@v3
-      with:
-        java-version: '11'
-        distribution: 'temurin'
-        cache: gradle
-
-    - name: Grant execute permission for gradlew
-      run: chmod +x gradlew
-
-    - name: Add data to local.properties
-      env: 
-         DATA: ${{ secrets.LOCAL_PROPERTIES }}
-      run: echo $DATA > ./local.properties
-    - name: Create google-services.json
-      run: touch ./app/src/google-services.json
-    - name: Add data to google-services.json
-      env: 
-         DATA2: ${{ secrets.GOOGLE_SERVICES_JSON }}
-      run: echo $DATA2 > ./app/src/google-services.json
-
-    - name: Build with Gradle
-      run: ./gradlew assembleDebug --stacktrace
-
-    - name: Print created file names
-      run: tree ./app/build/outputs/apk/
 
   draft_release:
      name: Release APK
