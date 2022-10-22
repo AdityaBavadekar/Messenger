@@ -33,6 +33,8 @@ jobs:
       env: 
          DATA2: ${{ secrets.GOOGLE_SERVICES_JSON }}
       run: echo $DATA2 > ./app/src/google-services.json
+    - name: Lint check
+      run: ./gradlew lint
     - name: Build with Gradle
       run: ./gradlew assembleDebug --stacktrace
     - name: Print files created by the successful build
