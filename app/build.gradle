@@ -140,7 +140,7 @@ dependencies {
     implementation Dependencies.NAVIGATION_UI
     implementation Dependencies.PHOTOVIEW
     implementation Dependencies.PINLOG
-    implementation Dependencies.PINLOG_ACTIVITY
+    debugImplementation Dependencies.PINLOG_ACTIVITY
     implementation Dependencies.PLAY_SERVICES_AUTH
     implementation Dependencies.PREFERENCE
     implementation Dependencies.RECYCLER_VIEW
