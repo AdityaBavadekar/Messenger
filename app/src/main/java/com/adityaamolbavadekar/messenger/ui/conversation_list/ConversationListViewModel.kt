@@ -21,25 +21,29 @@ package com.adityaamolbavadekar.messenger.ui.conversation_list
 import androidx.lifecycle.ViewModel
 import com.adityaamolbavadekar.messenger.managers.AuthManager
 import com.adityaamolbavadekar.messenger.managers.CloudDatabaseManager
+import com.adityaamolbavadekar.messenger.model.Recipient
 import com.adityaamolbavadekar.messenger.utils.OnResponseCallback
 import com.adityaamolbavadekar.messenger.utils.logging.InternalLogger
 
 class ConversationListViewModel : ViewModel(),
-    OnResponseCallback<List<String>, Exception> {
+    OnResponseCallback<List<CloudDatabaseManager.ConversationResponse>, Exception> {
 
     private val cloudDatabaseManager = CloudDatabaseManager()
     private val authManager = AuthManager()
+    private var isLoading = false
 
-    init {
-        cloudDatabaseManager.Conversations().observeConversations(authManager.uid, this)
-    }
-
-    override fun onSuccess(t: List<String>) {
+    override fun onSuccess(t: List<CloudDatabaseManager.ConversationResponse>) {
         InternalLogger.logD(TAG, "ConversationsList : $t")
     }
 
     override fun onFailure(e: Exception) {
         InternalLogger.logD(TAG, "ConversationsList : Failure :$e")
+    }
+
+    fun load(me: Recipient) {
+        if (isLoading) return
+        cloudDatabaseManager.Conversations().observeConversations(authManager.uid, this)
+        isLoading = true
     }
 
     companion object {

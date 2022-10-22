@@ -4,10 +4,12 @@
 /keystore.properties
 /.idea/caches
 /.idea/libraries
-/.idea/modules.xml
-/.idea/workspace.xml
-/.idea/navEditor.xml
-/.idea/assetWizardSettings.xml
+/.idea/*
+.idea/*
+!.idea/copyright
+!.idea/codeStyles
+/buildSrc/.gradle
+/buildSrc/build
 .DS_Store
 /build
 /app/google-sevices.json

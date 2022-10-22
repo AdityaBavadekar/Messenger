@@ -21,14 +21,14 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 
 android {
-    compileSdkVersion COMPILE_SDK
-    buildToolsVersion BUILD_TOOLS_VERSION
+    compileSdkVersion Versions.COMPILE_SDK
+    buildToolsVersion Versions.BUILD_TOOLS_VERSION
 
     defaultConfig {
-        minSdkVersion MIN_SDK
-        targetSdkVersion TARGET_SDK
-        versionCode appVersionCode
-        versionName appVersionName
+        minSdkVersion Versions.MIN_SDK
+        targetSdkVersion Versions.TARGET_SDK
+        versionCode Versions.VERSION_CODE
+        versionName Versions.VERSION_NAME
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -55,13 +55,10 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    //Kotlin
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-
-    //Room
-    api "androidx.room:room-runtime:$androidx_room"
-    api "androidx.room:room-ktx:$androidx_room"
-    kapt "androidx.room:room-compiler:$androidx_room"
+    implementation Dependencies.KOTLIN
+    api Dependencies.ROOM_RUNTIME
+    api Dependencies.ROOM_KTX
+    kapt Dependencies.ROOM_COMPILER
     //implementation "androidx.room:room-paging:$room_version"
 
 }

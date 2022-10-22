@@ -37,8 +37,6 @@ object AppForegroundObserver {
                 onForeground()
             }
 
-
-
             override fun onStop(owner: LifecycleOwner) {
                 onBackground()
             }

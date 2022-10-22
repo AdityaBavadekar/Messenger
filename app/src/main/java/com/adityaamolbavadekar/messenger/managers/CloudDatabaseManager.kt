@@ -243,6 +243,8 @@ class CloudDatabaseManager {
 
     }
 
+    data class ConversationResponse(val id:String,val isGroup:Boolean)
+
     inner class Conversations {
 
         private var listener: ValueEventListener? = null
@@ -250,7 +252,7 @@ class CloudDatabaseManager {
 
         fun observeConversations(
             myUid: String,
-            onResponseCallback: OnResponseCallback<List<String>, Exception>
+            onResponseCallback: OnResponseCallback<List<ConversationResponse>, Exception>
         ) {
             ref =
                 Firebase.database.getReference(Constants.CloudPaths.getUserConversationsPath(myUid))
@@ -258,11 +260,14 @@ class CloudDatabaseManager {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     InternalLogger.logD(TAG, "onDataChange ${snapshot.children}")
                     if (!snapshot.exists()) return
-                    val list = mutableListOf<String>()
+                    val list = mutableListOf<ConversationResponse>()
                     try {
                         snapshot.children.forEach { m ->
                             InternalLogger.logI(TAG, "ConversationDataSnapshotValue: ${m.value}")
                             InternalLogger.logI(TAG, "Conversation: $m")
+                            m.getValue<ConversationResponse>()?.let{
+                                list.add(it)
+                            }
                         }
                     } catch (e: Exception) {
                     }

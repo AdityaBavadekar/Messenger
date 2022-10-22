@@ -128,6 +128,13 @@ data class ConversationRecord(
         if (isGroup) title = s
     }
 
+    fun p2PRecipientUid(): String {
+        if(!isP2P){
+            throw IllegalArgumentException("P2PUid was requested while the conversation was not a P2P.")
+        }
+        return recipientUids.last()
+    }
+
     fun loadDisplayName(youString: String): String {
         return when {
             isSelf -> youString
@@ -305,6 +312,16 @@ data class ConversationRecord(
             messagingPermissionType,
             editingPermissionType
         )
+    }
+
+    enum class ConversationType { GROUP, P2P, SELF }
+
+    fun conversationType(): ConversationType {
+        return when {
+            isGroup -> ConversationType.GROUP
+            isP2P -> ConversationType.P2P
+            else -> ConversationType.SELF
+        }
     }
 
 }

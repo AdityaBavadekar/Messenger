@@ -21,14 +21,18 @@ package com.adityaamolbavadekar.messenger.ui.conversation
 import com.adityaamolbavadekar.messenger.managers.CloudDatabaseManager
 import com.adityaamolbavadekar.messenger.model.ConversationRecord
 import com.adityaamolbavadekar.messenger.model.MessageRecord
+import com.adityaamolbavadekar.messenger.utils.Constants
 import com.adityaamolbavadekar.messenger.utils.extensions.runOnIOThread
 import com.adityaamolbavadekar.messenger.utils.logging.InternalLogger
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 
 class MessageSender {
 
     private val cloudDatabaseManager = CloudDatabaseManager()
     private val messagesManager = cloudDatabaseManager.getMessagesManager()
     private var lastMessage: MessageRecord? = null
+    private val conversationsAdded = mutableListOf<String>()
 
     fun sendP2PMessage(
         message: MessageRecord,
@@ -76,6 +80,17 @@ class MessageSender {
             uidB = m.senderUid,
             responseCallback
         )
+
+        if (!conversationsAdded.contains(receiverUid)) {
+            Firebase.database.getReference(Constants.CloudPaths.getUserConversationsPath(m.senderUid))
+                .child(receiverUid)
+                .setValue(true)
+            Firebase.database.getReference(Constants.CloudPaths.getUserConversationsPath(receiverUid))
+                .child(m.senderUid)
+                .setValue(true)
+            conversationsAdded.add(receiverUid)
+        }
+
     }
 
     private fun saveMessageFromSelf(
@@ -91,6 +106,14 @@ class MessageSender {
             uidB = m.senderUid,
             responseCallback
         )
+        if (!conversationsAdded.contains(m.senderUid)) {
+            Firebase.database.getReference(Constants.CloudPaths.getUserConversationsPath(m.senderUid))
+                .child(m.senderUid)
+                .setValue(true)
+                .addOnSuccessListener {
+                    conversationsAdded.add(m.senderUid)
+                }
+        }
     }
 
     private fun saveMessageToGroup(
@@ -121,7 +144,7 @@ class MessageSender {
         }
     }
 
-    companion object{
+    companion object {
         private val TAG = MessageSender::class.java.simpleName
     }
 

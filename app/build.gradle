@@ -23,24 +23,25 @@ apply plugin: 'com.google.gms.google-services'
 apply plugin: 'androidx.navigation.safeargs.kotlin'
 
 android {
-    compileSdkVersion COMPILE_SDK
-    buildToolsVersion BUILD_TOOLS_VERSION
+    compileSdkVersion Versions.COMPILE_SDK
+    buildToolsVersion Versions.BUILD_TOOLS_VERSION
 
     Properties properties = new Properties()
     properties.load(project.rootProject.file("local.properties").newDataInputStream())
 
     defaultConfig {
         applicationId "com.adityaamolbavadekar.messenger"
-        minSdkVersion MIN_SDK
-        targetSdkVersion TARGET_SDK
-        versionCode appVersionCode
-        versionName appVersionName
+        minSdkVersion Versions.MIN_SDK
+        targetSdkVersion Versions.TARGET_SDK
+        versionCode Versions.VERSION_CODE
+        versionName Versions.VERSION_NAME
         vectorDrawables.useSupportLibrary = true
         multiDexEnabled true
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         buildConfigField "String", "DATE", "\"${new Date()}\""
+        buildConfigField "Long", "TIMESTAMP", "Long.parse(\"${System.currentTimeMillis()}\")"
 
         buildConfigField "String", "FCM_MESSAGING_BASE_URL", "\"${properties.getProperty("FCM_MESSAGING_BASE_URL")}\""
         buildConfigField "String", "FCM_MESSAGING_SERVER_KEY", "\"${properties.getProperty("FCM_MESSAGING_SERVER_KEY")}\""
@@ -53,7 +54,7 @@ android {
             keyAlias = properties.getProperty("KEY_ALIAS")
             keyPassword = properties.getProperty("KEY_PASSWORD")
             storePassword = properties.getProperty("STORE_PASSWORD")
-            if (properties.getProperty("STORE_FILE") !=null) {
+            if (properties.getProperty("STORE_FILE") != null) {
                 storeFile = file(properties.getProperty("STORE_FILE"))
             }
         }
@@ -65,17 +66,17 @@ android {
             // a NullPointerException pointing to  AuthViewModel#getCountryCodeInfo() -> line 2
             minifyEnabled false
             // Removing unused resources requires unused code shrinking to be turned on.
-           //And so even disable shrinkResources
+            //And so even disable shrinkResources
             shrinkResources false
             signingConfig signingConfigs.releaseConfig
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             buildConfigField "String", "BUILD_TYPE_NAME", "\"Release\""
         }
 
-        debug {            
+        debug {
             buildConfigField "String", "BUILD_TYPE_NAME", "\"Debug\""
         }
-      
+
     }
 
     lintOptions {
@@ -87,10 +88,10 @@ android {
     }
 
     android.applicationVariants.all { variant ->
-        
+
         variant.outputs.each { output ->
             output.outputFileName = output.outputFileName.replace(".apk", "-${variant.versionName}.apk")
-            print(output.outputFileName)
+            print("${output.outputFileName} [Versions code : ${variant.versionCode},Version name : ${variant.versionName}] " + "\n")
         }
     }
 
@@ -114,74 +115,40 @@ dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation project(":model")
 
-    //Kotlin
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation(Dependencies.KOTLIN)
+    implementation(Dependencies.ANDROIDX_CORE)
+    implementation(Dependencies.ANDROIDX_APPCOMPAT)
+    implementation Dependencies.ACTIVITY_KTX
+    implementation Dependencies.CONSTRAINT_LAYOUT
+    implementation Dependencies.EMOJI2
+    implementation platform(Dependencies.FIREBASE_BOM)
+    implementation Dependencies.FIREBASE_AUTH
+    implementation Dependencies.FIREBASE_DATABASE
+    implementation Dependencies.FIREBASE_STORAGE
+    implementation Dependencies.FIREBASE_MESSAGING
+    implementation Dependencies.FRAGMENT_KTX
+    implementation Dependencies.GLIDE
+    kapt Dependencies.GLIDE_COMPILER
+    implementation Dependencies.JSOUP
+    implementation Dependencies.KOTLIN
+    implementation Dependencies.LIBPHONENUMBER
+    implementation Dependencies.LIFECYCLE_EXT
+    implementation Dependencies.LIFECYCLE_VIEWMODEL
+    implementation Dependencies.LOTTIE
+    implementation Dependencies.MATERIAL
+    implementation Dependencies.NAVIGATION_FRAGMENT
+    implementation Dependencies.NAVIGATION_UI
+    implementation Dependencies.PHOTOVIEW
+    implementation Dependencies.PINLOG
+    implementation Dependencies.PINLOG_ACTIVITY
+    implementation Dependencies.PLAY_SERVICES_AUTH
+    implementation Dependencies.PREFERENCE
+    implementation Dependencies.RECYCLER_VIEW
+    implementation Dependencies.RECYCLER_VIEW_SELECTION
+    implementation Dependencies.RETROFIT
+    implementation Dependencies.RETROFIT_CONVERTER_GSON
+    kapt Dependencies.ROOM_COMPILER
+    implementation Dependencies.ROOM_RUNTIME
+    implementation Dependencies.ROOM_KTX
 
-    /*Androidx*/
-    implementation "androidx.core:core-ktx:$androidx_core"
-    implementation "androidx.appcompat:appcompat:$androidx_appcompat"
-    implementation "androidx.activity:activity-ktx:$androidx_fragment"
-    implementation "androidx.fragment:fragment-ktx:$androidx_activity"
-    implementation "androidx.constraintlayout:constraintlayout:$androidx_constraint_layout"
-    //Lifecycle
-    implementation "androidx.lifecycle:lifecycle-extensions:$androidx_lifecycle_ext"
-    //Room
-    kapt "androidx.room:room-compiler:$androidx_room"
-    //ViewModel
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$androidx_viewmodel"
-    //RecyclerView
-    implementation "androidx.recyclerview:recyclerview:$androidx_recyclerview"
-    implementation "androidx.recyclerview:recyclerview-selection:$androidx_recyclerview_selection"
-    //Dynamication
-    implementation "androidx.dynamicanimation:dynamicanimation-ktx:$androidx_dynamication"
-    //Prefs
-    implementation "androidx.preference:preference:$androidx_prefs"
-    //Navigation
-    implementation "androidx.navigation:navigation-fragment:$nav_version"
-    implementation "androidx.navigation:navigation-ui:$nav_version"
-    //Emoji2
-    implementation "androidx.emoji2:emoji2:$androidx_emoji2"
-
-    //Material Design
-    implementation "com.google.android.material:material:$material_version"
-
-    //Coroutines
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_core")
-
-    //PinLog
-    implementation "com.github.AdityaBavadekar.PinLog:pinlog:$pinlog_version"
-    debugImplementation "com.github.AdityaBavadekar.PinLog:pinlog-activity:$pinlog_version"
-
-    //Glide
-    implementation "com.github.bumptech.glide:glide:$glide_version"
-    kapt "com.github.bumptech.glide:compiler:$glide_version"
-
-    //Google-Auth
-    implementation "com.google.android.gms:play-services-auth:$gmsauth_version"
-
-    //Retrofit
-    implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
-    implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
-
-    //PhoneLib
-    implementation "com.googlecode.libphonenumber:libphonenumber:$libphonenumber_version"
-
-    //Firebase
-    implementation platform("com.google.firebase:firebase-bom:$firebase_bom_version")
-    implementation 'com.google.firebase:firebase-auth-ktx'
-    implementation 'com.google.firebase:firebase-storage-ktx'
-    implementation 'com.google.firebase:firebase-database-ktx'
-    implementation ('com.google.firebase:firebase-messaging-ktx'){
-        exclude group: 'com.google.firebase', module: 'firebase-analytics'
-        exclude group: 'com.google.firebase', module: 'firebase-measurement-connector'
-    }
-
-    //PhotoView
-    implementation "com.github.chrisbanes:PhotoView:$photo_view"
-
-    //Jsoup
-    implementation "org.jsoup:jsoup:$jsoup_version"
-
-    //Lottie
-    implementation "com.airbnb.android:lottie:$lottie_version"
 }

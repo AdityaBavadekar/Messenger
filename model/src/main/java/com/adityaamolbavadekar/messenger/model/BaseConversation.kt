@@ -60,10 +60,6 @@ abstract class BaseConversation constructor(
 
     ) {
 
-    fun p2PRecipientUid(): String {
-        return recipientUids.last()
-    }
-
     fun remoteRecipients(): MutableList<RemoteRecipient> {
         val remoteRecipients = mutableListOf<RemoteRecipient>()
         recipientsInfo.forEach { remoteRecipients.add(RemoteRecipient.fromHashMap(it)) }

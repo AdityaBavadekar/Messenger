@@ -32,6 +32,7 @@ object Constants {
         const val EXTRA_UID = "extra_uid"
         const val EXTRA_IS_GROUP = "extra_is_group"
         const val EXTRA_IS_P2P = "extra_is_p2p"
+        const val EXTRA_CONVERSATION_TYPE = "extra_conversation_type"
         const val EXTRA_USERNAME = "extra_username"
         const val EXTRA_USER_UID = "extra_user_uid"
         const val EXTRA_TIMESTAMP = "extra_timestamp"

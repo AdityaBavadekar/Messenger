@@ -23,6 +23,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.coroutineScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.adityaamolbavadekar.messenger.MainActivity
@@ -48,10 +49,12 @@ class ConversationListFragment : BindingHelperFragment<ConversationListFragmentB
 
     private lateinit var conversationListAdapter: ConversationListAdapter
     private lateinit var linearLayoutManager: LinearLayoutManager
+    private val viewModel : ConversationListViewModel by activityViewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupViews()
+        viewModel.load(me)
     }
 
     private fun setupViews() {

@@ -144,7 +144,10 @@ class ConversationActivity : BaseActivity() {
         prefsManager = PrefsManager(this)
         val user = prefsManager.getUserObject()!!
         me = Recipient.Builder(user).build()
+        val conversationType = intent.getStringExtra(Constants.Extras.EXTRA_CONVERSATION_TYPE)
+        val p2pUid = intent.getStringExtra(Constants.Extras.EXTRA_USER_UID)
         viewModel.configure(me, conversationId, database)
+        viewModel.configureExtras(me, conversationId, database)
 
         /* Get the recipients and conversation info for conversationId. */
         database.getRecipientsOfConversation(conversationId)
@@ -463,6 +466,16 @@ class ConversationActivity : BaseActivity() {
         fun createNewIntent(context: Context, conversationId: String): Intent {
             return Intent(context, ConversationActivity::class.java)
                 .putExtra(EXTRA_CONVERSATION_ID, conversationId)
+        }
+
+        fun createNewIntent(context: Context, conversation: ConversationRecord): Intent {
+            val i =  Intent(context, ConversationActivity::class.java)
+                .putExtra(EXTRA_CONVERSATION_ID, conversation.conversationId)
+                .putExtra(Constants.Extras.EXTRA_CONVERSATION_TYPE, conversation.conversationType())
+            if(conversation.isP2P){
+                i.putExtra(Constants.Extras.EXTRA_USER_UID,conversation.p2PRecipientUid())
+            }
+            return i
         }
 
         private val TAG = ConversationActivity::class.java.simpleName

@@ -163,6 +163,17 @@ class ConversationViewModel : ViewModel() {
         configured = true
     }
 
+
+    fun configureExtras(
+        conversationType: String?,
+        p2pUid: String?,
+    ) {
+        conversationType?.let {
+            val type = ConversationRecord.ConversationType.valueOf(it)
+            startObservingRemoteData(type,p2pUid)
+        }
+    }
+
     fun onLocalConversationDataChanged(data: ConversationWithRecipients) {
         _isMessagingRestrictedForMe.postValue(
             data.conversationRecord.isMessagingRestrictedForUser(
@@ -171,7 +182,7 @@ class ConversationViewModel : ViewModel() {
         )
         _conversationPhoto.postValue(data.conversationRecord.photoUrl)
         _conversationTitle.postValue(data.conversationRecord.title)
-        startObservingRemoteData(data.conversationRecord)
+        startObservingRemoteData(data.conversationRecord.conversationType(),data.conversationRecord.p2PRecipientUid())
         this._conversationWithRecipients.postValue(data)
     }
 
@@ -233,33 +244,46 @@ class ConversationViewModel : ViewModel() {
             database.insertOrUpdateMessages(newList)
         }
 
-    private fun startObservingRemoteData(conversationRecord: ConversationRecord) {
+    private fun startObservingRemoteData(
+        conversationType: ConversationRecord.ConversationType,
+        p2pUid: String?
+    ) {
         if (isObservingRemoteDatabase) return
-        if (conversationRecord.isGroup) {
-            conversationsManager
-                .observeGroupConversationProperties(
-                    conversationRecord.conversationId,
-                    onGroupConversationDataChangedCallback
-                )
-            messagesManager
-                .observeMessagesFromGroupDatabase(
-                    conversationRecord.conversationId,
-                    me.uid,
-                    onGetObservedMessagesResponseCallback
-                )
-        } else {
-            messagesManager
-                .observeMessagesFromDatabase(
-                    me.uid,
-                    conversationRecord.p2PRecipientUid(), onGetObservedMessagesResponseCallback
-                )
+        when (conversationType) {
+            ConversationRecord.ConversationType.GROUP -> startObservingRemoteGroupData()
+            ConversationRecord.ConversationType.P2P -> startObservingRemoteP2PData(
+                requireNotNull(
+                    p2pUid
+                ) { "P2PUid cannot be null" })
+            ConversationRecord.ConversationType.SELF -> startObservingRemoteP2PData(me.uid, false)
         }
         isObservingRemoteDatabase = true
-        if (conversationRecord.isP2P) {
-            statusManager.observeStatus(conversationRecord.p2PRecipientUid()) {
+    }
+
+    private fun startObservingRemoteP2PData(p2pUid: String, observeStatus: Boolean = true) {
+        messagesManager
+            .observeMessagesFromDatabase(
+                me.uid, p2pUid, onGetObservedMessagesResponseCallback
+            )
+        if (observeStatus) {
+            statusManager.observeStatus(p2pUid) {
                 _status.postValue(it)
             }
         }
+    }
+
+    private fun startObservingRemoteGroupData() {
+        conversationsManager
+            .observeGroupConversationProperties(
+                conversationId,
+                onGroupConversationDataChangedCallback
+            )
+        messagesManager
+            .observeMessagesFromGroupDatabase(
+                conversationId,
+                me.uid,
+                onGetObservedMessagesResponseCallback
+            )
     }
 
     fun sendMessage(
