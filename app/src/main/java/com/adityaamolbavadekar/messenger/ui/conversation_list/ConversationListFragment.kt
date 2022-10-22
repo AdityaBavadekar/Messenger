@@ -94,7 +94,7 @@ class ConversationListFragment : BindingHelperFragment<ConversationListFragmentB
         return startActivity(
             ConversationActivity.createNewIntent(
                 requireContext(),
-                item.conversationId
+                item
             )
         )
     }

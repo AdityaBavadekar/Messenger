@@ -124,7 +124,7 @@ class ShareActionPicker : BaseActivity() {
                 startActivity(
                     ConversationActivity.createNewIntent(
                         requireContext(),
-                        conversation.conversationId
+                        conversation
                     ).putExtra(Intent.EXTRA_TEXT, extraText)
                 )
                 return requireActivity().finish()

@@ -43,6 +43,7 @@ import com.adityaamolbavadekar.messenger.model.Recipient
 import com.adityaamolbavadekar.messenger.ui.conversation_info.ConversationInfoActivity
 import com.adityaamolbavadekar.messenger.ui.picture_upload_preview.PictureUploadPreviewActivity
 import com.adityaamolbavadekar.messenger.utils.Constants.EXTRA_CONVERSATION_ID
+import com.adityaamolbavadekar.messenger.utils.Constants
 import com.adityaamolbavadekar.messenger.utils.KeyboardUtils
 import com.adityaamolbavadekar.messenger.utils.OnResponseCallback
 import com.adityaamolbavadekar.messenger.utils.base.BaseActivity
@@ -147,7 +148,7 @@ class ConversationActivity : BaseActivity() {
         val conversationType = intent.getStringExtra(Constants.Extras.EXTRA_CONVERSATION_TYPE)
         val p2pUid = intent.getStringExtra(Constants.Extras.EXTRA_USER_UID)
         viewModel.configure(me, conversationId, database)
-        viewModel.configureExtras(me, conversationId, database)
+        viewModel.configureExtras(conversationType, p2pUid)
 
         /* Get the recipients and conversation info for conversationId. */
         database.getRecipientsOfConversation(conversationId)

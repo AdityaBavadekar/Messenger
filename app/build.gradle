@@ -41,7 +41,7 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         buildConfigField "String", "DATE", "\"${new Date()}\""
-        buildConfigField "Long", "TIMESTAMP", "Long.parse(\"${System.currentTimeMillis()}\")"
+        buildConfigField "Long", "TIMESTAMP", "Long.parseLong(\"${System.currentTimeMillis()}\")"
 
         buildConfigField "String", "FCM_MESSAGING_BASE_URL", "\"${properties.getProperty("FCM_MESSAGING_BASE_URL")}\""
         buildConfigField "String", "FCM_MESSAGING_SERVER_KEY", "\"${properties.getProperty("FCM_MESSAGING_SERVER_KEY")}\""

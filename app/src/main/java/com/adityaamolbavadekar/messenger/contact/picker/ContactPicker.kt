@@ -134,20 +134,31 @@ class ContactPicker : BaseActivity() {
                             startActivity(
                                 ConversationActivity.createNewIntent(
                                     requireContext(),
-                                    conversationRecord.conversationId
+                                    conversationRecord
                                 )
                             )
                             requireActivity().finish()
                             return@directGetConversationsOfRecipient
                         }
                     }
+
+                    val conversation = ConversationRecord.newPerson2Person(item, me)
+                    database.insertConversation(conversation, listOf(item, me))
+                    startActivity(
+                            ConversationActivity.createNewIntent(
+                                    requireContext(),
+                                    conversation
+                            )
+                    )
+                    requireActivity().finish()
+                    return@directGetConversationsOfRecipient
                 } else {
                     val conversation = ConversationRecord.newPerson2Person(item, me)
                     database.insertConversation(conversation, listOf(item, me))
                     startActivity(
                         ConversationActivity.createNewIntent(
                             requireContext(),
-                            conversation.conversationId
+                            conversation
                         )
                     )
                     requireActivity().finish()
