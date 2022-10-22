@@ -3,7 +3,6 @@ name: Create Release Draft
 on:
   push:
     tags:
-      - **
 
 jobs:
   build:
