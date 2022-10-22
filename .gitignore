@@ -8,8 +8,11 @@
 !.idea/codeStyles/codeStyleConfig.xml
 .DS_Store
 /build
+build/
 /app/google-sevices.json
 /captures
 .externalNativeBuild
 .cxx
 *.apk
+*.dex
+*.class
