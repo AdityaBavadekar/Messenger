@@ -8,7 +8,7 @@ This is open-source repository of Wave Messenger.
 Note that Wave Messenger does not have encryption facility for now but we are working to provide support for secure end-2-end encryption.
 
 ## Development status
-- Application development is in progress for v0.0.4
+- Application development is in progress for v0.0.5
 - Any version increments would be reflected in github's releases section.
 
 
