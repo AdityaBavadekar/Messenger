@@ -243,7 +243,9 @@ class CloudDatabaseManager {
 
     }
 
-    data class ConversationResponse(val id:String,val isGroup:Boolean)
+    data class ConversationResponse(val id:String,val isGroup:Boolean){
+        constructor(snapshot: DataSnapshot):this(snapshot.key!!,snapshot.value as Boolean)
+    }
 
     inner class Conversations {
 
@@ -263,11 +265,8 @@ class CloudDatabaseManager {
                     val list = mutableListOf<ConversationResponse>()
                     try {
                         snapshot.children.forEach { m ->
-                            InternalLogger.logI(TAG, "ConversationDataSnapshotValue: ${m.value}")
                             InternalLogger.logI(TAG, "Conversation: $m")
-                            m.getValue<ConversationResponse>()?.let{
-                                list.add(it)
-                            }
+                            list.add(ConversationResponse(m))
                         }
                     } catch (e: Exception) {
                     }
