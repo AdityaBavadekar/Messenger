@@ -42,10 +42,13 @@ object Dependencies {
     const val MATERIAL = Libs.MATERIAL + ":" + Versions.MATERIAL
     const val NAVIGATION_FRAGMENT = Libs.NAVIGATION_FRAGMENT + ":" + Versions.NAVIGATION
     const val NAVIGATION_UI = Libs.NAVIGATION_UI + ":" + Versions.NAVIGATION
+    const val PAGING = Libs.PAGING + ":" + Versions.PAGING
     const val PHOTOVIEW = Libs.PHOTOVIEW + ":" + Versions.PHOTOVIEW
     const val PINLOG = Libs.PINLOG + ":" + Versions.PINLOG
     const val PINLOG_ACTIVITY = Libs.PINLOG_ACTIVITY + ":" + Versions.PINLOG
     const val PLAY_SERVICES_AUTH = Libs.PLAY_SERVICES_AUTH + ":" + Versions.PLAY_SERVICES_AUTH
+    const val PLAY_SERVICES_SAFETY_NET =
+        Libs.PLAY_SERVICES_SAFETY_NET + ":" + Versions.PLAY_SERVICES_SAFETY_NET
     const val PREFERENCE = Libs.PREFERENCE + ":" + Versions.PREFERENCE
     const val RECYCLER_VIEW = Libs.RECYCLER_VIEW + ":" + Versions.RECYCLER_VIEW
     const val RECYCLER_VIEW_SELECTION =
@@ -55,6 +58,5 @@ object Dependencies {
     const val ROOM_COMPILER = Libs.ROOM_COMPILER + ":" + Versions.ROOM
     const val ROOM_RUNTIME = Libs.ROOM_RUNTIME + ":" + Versions.ROOM
     const val ROOM_KTX = Libs.ROOM_KTX + ":" + Versions.ROOM
-
 
 }

@@ -25,7 +25,7 @@ import com.adityaamolbavadekar.messenger.utils.logging.InternalLogger
 import com.adityaamolbavadekar.messenger.utils.startup.AppStartup
 import com.adityaamolbavadekar.pinlog.PinLog
 
-class App : Application() {
+class App : Application(),Thread.UncaughtExceptionHandler {
 
     val database: ApplicationDatabase by lazy {
         ApplicationDatabase.get(this)
@@ -34,25 +34,17 @@ class App : Application() {
     override fun onCreate() {
         AppStartup.onApplicationCreated(this)
         super.onCreate()
-        setupExceptionHandler()
         AppStartup.startApplicationInitialisation()
     }
 
-    private fun setupExceptionHandler() {
-        Thread.setDefaultUncaughtExceptionHandler { t, e ->
-            InternalLogger.logE(
-                TAG,
-                "**********************\nCRASH\n**********************\n$e\n",
-                e
-            )
-            PrefsManager(this.applicationContext).saveCrashInfo()
-            PinLog.CrashReporter().sendCrashReportWithEmail(t, e, arrayOf(), null, null)
-        }
-    }
-
-    override fun onTerminate() {
-        super.onTerminate()
-        InternalLogger.logD(TAG, "onTerminate")
+    override fun uncaughtException(t: Thread, e: Throwable) {
+        InternalLogger.logE(
+            TAG,
+            "**********************\nCRASH\n**********************\n$e\n",
+            e
+        )
+        PrefsManager(this.applicationContext).saveCrashInfo()
+        PinLog.CrashReporter().sendCrashReportWithEmail(t, e, arrayOf(), null, null)
     }
 
     companion object {

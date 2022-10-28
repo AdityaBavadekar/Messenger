@@ -5,7 +5,9 @@
 Wave Messenger is simple and easy-to-use real-time messaging app for android, make for private and group conversations.
 This is open-source repository of Wave Messenger.
 
-Note that Wave Messenger does not have encryption facility for now but we are working to provide support for secure end-2-end encryption.
+## Important Notes
+- Messenger does not have encryption facility for now but we are working to provide support for secure end-2-end encryption.
+- The application does not provide a way to delete the user data as of 22 Oct.
 
 ## Development status
 - Application development is in progress for v0.0.5

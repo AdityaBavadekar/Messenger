@@ -17,23 +17,6 @@
  */
 
 @file:Suppress("unused")
-/*
-*
-*    Copyright 2022 Aditya Bavadekar
-*
-*    Licensed under the Apache License, Version 2.0 (the "License");
-*    you may not use this file except in compliance with the License.
-*    You may obtain a copy of the License at
-*
-*        http://www.apache.org/licenses/LICENSE-2.0
-*
-*    Unless required by applicable law or agreed to in writing, software
-*    distributed under the License is distributed on an "AS IS" BASIS,
-*    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-*    See the License for the specific language governing permissions and
-*    limitations under the License.
-*
-*/
 
 object Libs {
 
@@ -60,10 +43,12 @@ object Libs {
     const val MATERIAL = "com.google.android.material:material"
     const val NAVIGATION_FRAGMENT = "androidx.navigation:navigation-fragment"
     const val NAVIGATION_UI = "androidx.navigation:navigation-ui"
+    const val PAGING = "androidx.paging:paging-runtime"
     const val PHOTOVIEW = "com.github.chrisbanes:PhotoView"
     const val PINLOG = "com.github.AdityaBavadekar.PinLog:pinlog"
     const val PINLOG_ACTIVITY = "com.github.AdityaBavadekar.PinLog:pinlog-activity"
     const val PLAY_SERVICES_AUTH = "com.google.android.gms:play-services-auth"
+    const val PLAY_SERVICES_SAFETY_NET = "com.google.android.gms:play-services-safetynet"
     const val PREFERENCE = "androidx.preference:preference"
     const val RECYCLER_VIEW = "androidx.recyclerview:recyclerview"
     const val RECYCLER_VIEW_SELECTION = "androidx.recyclerview:recyclerview-selection"

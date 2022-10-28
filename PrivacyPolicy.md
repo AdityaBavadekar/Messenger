@@ -3,8 +3,8 @@
 This Privacy Policy is meant to help you understand what information we collect, why we collect it and how you can update, manage, export and delete your information.
 
 ---
--  **Last updated : 19 Oct 2022**
--  **Effective on : 20 Oct 2022**
+-  **Last updated : 22 Oct 2022**
+-  **Effective on : When v0.0.5 is released.**
 
 ---
 ## This Privacy Policy describes :

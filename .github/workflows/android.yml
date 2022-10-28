@@ -3,7 +3,7 @@ name: Android CI
 on:
   push:
     branches: [ "master","dev"]
-    paths-ignore: ["**.md"]
+    paths-ignore: ["**.md",".gitignore"]
   pull_request:
     branches: [ "master"]
 

@@ -25,7 +25,7 @@ import androidx.room.PrimaryKey
 data class MessageRecord(
     @PrimaryKey(autoGenerate = false)
     override val id: String = Id.get(),
-    override val conversationId: String="",
+    override var conversationId: String="",
     override var message: String? = null,
     override val attachments: List<String> = listOf(),
     override var reactions: MutableList<ReactionRecord> = mutableListOf(),
