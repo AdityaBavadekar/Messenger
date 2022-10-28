@@ -29,7 +29,7 @@ Alternatively, you may contact us :
 - **Name** : Wave Messenger-Android
 - **Address**: Pune, Maharashtra, India
 - **Subject**: Query regarding Privacy Policy
-- **Email**: bvkraditya@gmail.com
+- **Email**: projectsandstudiesaditya@gmail.com
 
 ## The data we collect
 
