@@ -16,13 +16,13 @@
  *
  */
 
-apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-kapt'
-
+plugins {
+    id 'com.android.library' version '7.4.1'
+    id 'org.jetbrains.kotlin.android' version '1.7.0'
+    id 'kotlin-kapt'
+}
 android {
-    compileSdkVersion Versions.COMPILE_SDK
-    buildToolsVersion Versions.BUILD_TOOLS_VERSION
+    compileSdk Versions.COMPILE_SDK
 
     defaultConfig {
         minSdkVersion Versions.MIN_SDK
@@ -55,7 +55,6 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation Dependencies.KOTLIN
     api Dependencies.ROOM_RUNTIME
     api Dependencies.ROOM_KTX
     kapt Dependencies.ROOM_COMPILER

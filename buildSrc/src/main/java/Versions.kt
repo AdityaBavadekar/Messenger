@@ -37,13 +37,13 @@
 
 object Versions {
 
-    const val VERSION_NAME = "0.0.4" //XX.YY.ZZ [X:Major][Y:Minor][Z:Patch]
+    const val VERSION_NAME = "0.0.5" //XX.YY.ZZ [X:Major][Y:Minor][Z:Patch]
     val VERSION_CODE = versionCodeGet()
 
-    const val COMPILE_SDK = 31
+    const val COMPILE_SDK = 33
     const val BUILD_TOOLS_VERSION = "30.0.3"
     const val MIN_SDK = 21
-    const val TARGET_SDK = 31
+    const val TARGET_SDK = 33
 
     const val PLUGIN_ANDROID_GRADLE = "4.0.0-alpha09"
     const val PLUGIN_KOTLIN_GRADLE = "1.4.21"
@@ -55,7 +55,7 @@ object Versions {
     const val CONSTRAINT_LAYOUT = "1.4.0"
     const val COROUTINES_CORE = "1.5.2"
     const val EMOJI2 = "1.2.0-alpha04"
-    const val FIREBASE_BOM = "29.1.0"
+    const val FIREBASE_BOM = "31.2.0"
     const val FRAGMENT_KTX = "1.4.0"
     const val GLIDE = "4.12.0"
     const val JSOUP = "1.11.3"
@@ -64,16 +64,16 @@ object Versions {
     const val LIFECYCLE_EXT = "2.2.0"
     const val LIFECYCLE_VIEWMODEL = "2.4.0"
     const val LOTTIE = "3.6.0"
-    const val MATERIAL = "1.6.0"
-    const val NAVIGATION = "2.3.5"
+    const val MATERIAL = "1.7.0"
+    const val NAVIGATION = "2.5.3"
     const val PHOTOVIEW = "2.0.0"
     const val PINLOG = "1.0.1"
     const val PLAY_SERVICES_AUTH = "20.2.0"
     const val PREFERENCE = "1.1.1"
     const val RECYCLER_VIEW = "1.2.1"
-    const val RECYCLER_VIEW_SELECTION = "1.0.0"
+    const val RECYCLER_VIEW_SELECTION = "1.1.0"
     const val RETROFIT = "2.6.2"
-    const val ROOM = "2.3.0"
+    const val ROOM = "2.5.0"
 
     private fun versionCodeGet(): Int {
         val size = 10000
