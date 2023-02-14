@@ -172,7 +172,7 @@ class RegistrationFragment : BindingHelperFragment<FragmentSignupPhoneBinding>()
 
     private fun initDisclaimer() {
 
-        val privacyPolicyClickableSpan = CustomLinkHandlerSpan("https://google.com")
+        val privacyPolicyClickableSpan = CustomLinkHandlerSpan("https://github.com/AdityaBavadekar/Messenger/blob/dev/PrivacyPolicy.md")
         val termsClickableSpan = CustomLinkHandlerSpan("https://google.com")
 
         val privacyPolicyText = getString(R.string.privacy_policy)

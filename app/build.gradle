@@ -21,6 +21,7 @@ plugins {
     id 'org.jetbrains.kotlin.android' version '1.7.0'
     id 'kotlin-kapt'
     id 'com.google.gms.google-services'
+    id 'com.google.android.gms.oss-licenses-plugin'
     id 'androidx.navigation.safeargs.kotlin'
 }
 
@@ -138,10 +139,12 @@ dependencies {
     implementation Dependencies.MATERIAL
     implementation Dependencies.NAVIGATION_FRAGMENT
     implementation Dependencies.NAVIGATION_UI
+    implementation Dependencies.PAGING
     implementation Dependencies.PHOTOVIEW
     implementation Dependencies.PINLOG
-    implementation Dependencies.PINLOG_ACTIVITY
+    debugImplementation Dependencies.PINLOG_ACTIVITY
     implementation Dependencies.PLAY_SERVICES_AUTH
+    implementation Dependencies.PLAY_SERVICES_SAFETY_NET
     implementation Dependencies.PREFERENCE
     implementation Dependencies.RECYCLER_VIEW
     implementation Dependencies.RECYCLER_VIEW_SELECTION
