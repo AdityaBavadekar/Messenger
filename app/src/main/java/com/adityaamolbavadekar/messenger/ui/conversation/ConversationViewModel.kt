@@ -66,13 +66,22 @@ class ConversationViewModel : ViewModel() {
     private val onGetObservedMessagesResponseCallback =
         object : OnResponseCallback<List<MessageRecord>, Exception> {
             override fun onSuccess(t: List<MessageRecord>) {
-                createDateHeaders(t)
+                createDateHeaders(updateConversationId(t))
             }
 
             override fun onFailure(e: Exception) {
                 InternalLogger.logE(TAG, "Unable observe messages.", e)
             }
         }
+
+    private fun updateConversationId(list: List<MessageRecord>): MutableList<MessageRecord> {
+        val newList = mutableListOf<MessageRecord>()
+        list.forEach {
+            it.conversationId = conversationId
+            newList.add(it)
+        }
+        return newList
+    }
 
     private val onGroupConversationDataChangedCallback: (RemoteConversation) -> Unit =
         { remoteConversation ->

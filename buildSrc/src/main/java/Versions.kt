@@ -17,27 +17,10 @@
  */
 
 @file:Suppress("unused")
-/*
-*
-*    Copyright 2022 Aditya Bavadekar
-*
-*    Licensed under the Apache License, Version 2.0 (the "License");
-*    you may not use this file except in compliance with the License.
-*    You may obtain a copy of the License at
-*
-*        http://www.apache.org/licenses/LICENSE-2.0
-*
-*    Unless required by applicable law or agreed to in writing, software
-*    distributed under the License is distributed on an "AS IS" BASIS,
-*    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-*    See the License for the specific language governing permissions and
-*    limitations under the License.
-*
-*/
 
 object Versions {
 
-    const val VERSION_NAME = "0.0.4" //XX.YY.ZZ [X:Major][Y:Minor][Z:Patch]
+    const val VERSION_NAME = "0.0.5" //XX.YY.ZZ [X:Major][Y:Minor][Z:Patch]
     val VERSION_CODE = versionCodeGet()
 
     const val COMPILE_SDK = 31
@@ -48,6 +31,7 @@ object Versions {
     const val PLUGIN_ANDROID_GRADLE = "4.0.0-alpha09"
     const val PLUGIN_KOTLIN_GRADLE = "1.4.21"
     const val PLUGIN_GOOGLE_PLAY_SERVICES = "4.3.10"
+    const val PLUGIN_GOOGLE_OSS_LICENSES = "0.10.4"
 
     const val ANDROIDX_CORE = "1.7.0"
     const val ANDROIDX_APPCOMPAT = "1.4.1"
@@ -66,9 +50,11 @@ object Versions {
     const val LOTTIE = "3.6.0"
     const val MATERIAL = "1.6.0"
     const val NAVIGATION = "2.3.5"
+    const val PAGING = "2.0.0"
     const val PHOTOVIEW = "2.0.0"
     const val PINLOG = "1.0.1"
     const val PLAY_SERVICES_AUTH = "20.2.0"
+    const val PLAY_SERVICES_SAFETY_NET = "17.0.0"
     const val PREFERENCE = "1.1.1"
     const val RECYCLER_VIEW = "1.2.1"
     const val RECYCLER_VIEW_SELECTION = "1.0.0"

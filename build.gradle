@@ -7,6 +7,7 @@ buildscript {
     dependencies {
         classpath "com.android.tools.build:gradle:${Versions.PLUGIN_ANDROID_GRADLE}"
         classpath "com.google.gms:google-services:${Versions.PLUGIN_GOOGLE_PLAY_SERVICES}"
+        classpath "com.google.android.gms:oss-licenses-plugin:${Versions.PLUGIN_GOOGLE_OSS_LICENSES}"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${Versions.PLUGIN_KOTLIN_GRADLE}"
         classpath "androidx.navigation:navigation-safe-args-gradle-plugin:${Versions.NAVIGATION}"
         // NOTE: Do not place your application dependencies here; they belong
