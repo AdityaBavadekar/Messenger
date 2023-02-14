@@ -159,7 +159,7 @@ fun NavigationBarView.disableTooltip() {
     setOnLongClickListener { true }
     val menuSize = menu.size()
     for (menuItemIndex in menuSize until menuSize - 1) {
-        TooltipCompat.setTooltipText(menu.getItem(menuItemIndex).actionView, null)
+        menu.getItem(menuItemIndex).actionView?.let{TooltipCompat.setTooltipText(it, null)}
     }
 }
 
