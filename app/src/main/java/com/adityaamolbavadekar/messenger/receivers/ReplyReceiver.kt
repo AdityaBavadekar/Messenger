@@ -46,7 +46,7 @@ class ReplyReceiver : BroadcastReceiver() {
         }
         val messageSender = MessageSender()
         val results = RemoteInput.getResultsFromIntent(intent)
-        val input = results.getCharSequence(KEY_REPLY) ?: return
+        val input = results?.getCharSequence(KEY_REPLY) ?: return
         val path = intent.getStringExtra(EXTRA_PATH)!!
         val conversationId = intent.getStringExtra(EXTRA_CONVERSATION_ID)!!
         InternalLogger.logD(TAG, "ConversationId -> $conversationId")
