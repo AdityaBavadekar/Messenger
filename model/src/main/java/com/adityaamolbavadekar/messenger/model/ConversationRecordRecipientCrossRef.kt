@@ -18,10 +18,12 @@
 
 package com.adityaamolbavadekar.messenger.model
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 
 @Entity(primaryKeys = ["conversationId","uid"])
 data class ConversationRecordRecipientCrossRef(
     val conversationId: String,
+    @ColumnInfo(index=true)
     val uid: String,
 )
