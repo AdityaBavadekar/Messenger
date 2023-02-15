@@ -40,6 +40,7 @@ object Versions {
     const val COROUTINES_CORE = "1.5.2"
     const val EMOJI2 = "1.2.0-alpha04"
     const val FIREBASE_BOM = "31.2.0"
+    const val FIREBASE_APPCHECK = "16.1.1"
     const val FRAGMENT_KTX = "1.4.0"
     const val GLIDE = "4.12.0"
     const val JSOUP = "1.11.3"

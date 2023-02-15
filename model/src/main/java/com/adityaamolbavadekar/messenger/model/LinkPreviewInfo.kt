@@ -55,7 +55,7 @@ data class LinkPreviewInfo(
     }
 
     fun getHost(): String? {
-        return Uri.parse(url).host?.toLowerCase(Locale.ROOT)
+        return Uri.parse(url).host?.lowercase(Locale.ROOT)
     }
 
     fun uri(): Uri {

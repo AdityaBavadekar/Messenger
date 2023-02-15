@@ -26,10 +26,12 @@ object Dependencies {
     const val COROUTINES_CORE = Libs.COROUTINES_CORE + ":" + Versions.COROUTINES_CORE
     const val EMOJI2 = Libs.EMOJI2 + ":" + Versions.EMOJI2
     const val FIREBASE_BOM = Libs.FIREBASE_BOM + ":" + Versions.FIREBASE_BOM
+    const val FIREBASE_APPCHECK = Libs.FIREBASE_APPCHECK + ":" + Versions.FIREBASE_APPCHECK
+    const val FIREBASE_APPCHECK_PLAY = Libs.FIREBASE_APPCHECK_PLAY
     const val FIREBASE_AUTH = Libs.FIREBASE_AUTH
     const val FIREBASE_DATABASE = Libs.FIREBASE_DATABASE
-    const val FIREBASE_STORAGE = Libs.FIREBASE_STORAGE
     const val FIREBASE_MESSAGING = Libs.FIREBASE_MESSAGING
+    const val FIREBASE_STORAGE = Libs.FIREBASE_STORAGE
     const val FRAGMENT_KTX = Libs.FRAGMENT_KTX + ":" + Versions.FRAGMENT_KTX
     const val GLIDE = Libs.GLIDE + ":" + Versions.GLIDE
     const val GLIDE_COMPILER = Libs.GLIDE + ":" + Versions.GLIDE

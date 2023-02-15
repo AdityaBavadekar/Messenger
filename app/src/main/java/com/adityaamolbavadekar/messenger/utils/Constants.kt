@@ -129,9 +129,9 @@ object Constants {
     }
 
     internal object FcmMessaging {
-        const val FCM_MESSAGING_BASE_URL = com.adityaamolbavadekar.messenger.BuildConfig.FCM_MESSAGING_BASE_URL
+        const val FCM_MESSAGING_BASE_URL = "https://fcm.googleapis.com/fcm/send"
         const val FCM_MESSAGING_SERVER_KEY =com.adityaamolbavadekar.messenger.BuildConfig.FCM_MESSAGING_SERVER_KEY
-        const val FCM_MESSAGING_CONTENT_TYPE =com.adityaamolbavadekar.messenger.BuildConfig.FCM_MESSAGING_CONTENT_TYPE
+        const val FCM_MESSAGING_CONTENT_TYPE ="application/json"
     }
 
     internal object Application {

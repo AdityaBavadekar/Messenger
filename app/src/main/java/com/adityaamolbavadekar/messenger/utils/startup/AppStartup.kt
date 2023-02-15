@@ -79,7 +79,7 @@ object AppStartup {
         MessengerAccountAuthenticator.account(application.applicationContext)?.let {
             try {
                 ContentResolver.requestSync(it, Constants.DATA_SYNC_AUTHORITY, Bundle())
-            } catch (e: Exception) {
+            } catch (_: Exception) {
             }
         }
         methodTracer.putTraceData("onApplicationCreated", "finished").end()

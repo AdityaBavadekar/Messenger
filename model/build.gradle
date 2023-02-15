@@ -23,6 +23,7 @@ plugins {
 }
 android {
     compileSdk Versions.COMPILE_SDK
+    namespace "com.adityaamolbavadekar.messenger.model"
 
     defaultConfig {
         minSdkVersion Versions.MIN_SDK
