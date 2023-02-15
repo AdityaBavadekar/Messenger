@@ -27,6 +27,7 @@ plugins {
 
 android {
     compileSdk Versions.COMPILE_SDK
+    namespace "com.adityaamolbavadekar.messenger"
 
     Properties properties = new Properties()
     properties.load(project.rootProject.file("local.properties").newDataInputStream())
@@ -45,9 +46,8 @@ android {
         buildConfigField "String", "DATE", "\"${new Date()}\""
         buildConfigField "Long", "TIMESTAMP", "Long.parseLong(\"${System.currentTimeMillis()}\")"
 
-        buildConfigField "String", "FCM_MESSAGING_BASE_URL", "\"${properties.getProperty("FCM_MESSAGING_BASE_URL")}\""
         buildConfigField "String", "FCM_MESSAGING_SERVER_KEY", "\"${properties.getProperty("FCM_MESSAGING_SERVER_KEY")}\""
-        buildConfigField "String", "FCM_MESSAGING_CONTENT_TYPE", "\"${properties.getProperty("FCM_MESSAGING_CONTENT_TYPE")}\""
+        buildConfigField "String", "MESSENGER_URL", "\"https://github.com/AdityaBavadekar/Messenger\""
 
     }
 
@@ -123,10 +123,12 @@ dependencies {
     implementation Dependencies.CONSTRAINT_LAYOUT
     implementation Dependencies.EMOJI2
     implementation platform(Dependencies.FIREBASE_BOM)
+    implementation Dependencies.FIREBASE_APPCHECK
+    implementation Dependencies.FIREBASE_APPCHECK_PLAY
     implementation Dependencies.FIREBASE_AUTH
     implementation Dependencies.FIREBASE_DATABASE
-    implementation Dependencies.FIREBASE_STORAGE
     implementation Dependencies.FIREBASE_MESSAGING
+    implementation Dependencies.FIREBASE_STORAGE
     implementation Dependencies.FRAGMENT_KTX
     implementation Dependencies.GLIDE
     kapt Dependencies.GLIDE_COMPILER
