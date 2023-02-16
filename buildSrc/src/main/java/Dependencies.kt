@@ -44,6 +44,7 @@ object Dependencies {
     const val MATERIAL = Libs.MATERIAL + ":" + Versions.MATERIAL
     const val NAVIGATION_FRAGMENT = Libs.NAVIGATION_FRAGMENT + ":" + Versions.NAVIGATION
     const val NAVIGATION_UI = Libs.NAVIGATION_UI + ":" + Versions.NAVIGATION
+    const val OSS_LICENSES = Libs.OSS_LICENSES + ":" + Versions.OSS_LICENSES
     const val PAGING = Libs.PAGING + ":" + Versions.PAGING
     const val PHOTOVIEW = Libs.PHOTOVIEW + ":" + Versions.PHOTOVIEW
     const val PINLOG = Libs.PINLOG + ":" + Versions.PINLOG

@@ -18,6 +18,7 @@
 
 package com.adityaamolbavadekar.messenger.ui.about
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -27,6 +28,7 @@ import com.adityaamolbavadekar.messenger.BuildConfig
 import com.adityaamolbavadekar.messenger.R
 import com.adityaamolbavadekar.messenger.databinding.AboutFragmentBinding
 import com.adityaamolbavadekar.messenger.utils.base.LifecycleLoggerFragment
+import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 
 class AboutMessengerFragment : LifecycleLoggerFragment() {
 
@@ -44,7 +46,7 @@ class AboutMessengerFragment : LifecycleLoggerFragment() {
         binding.imageHolder.setOnClickListener { }
         binding.version.text = getString(R.string.app_version_formatted, BuildConfig.VERSION_NAME)
         binding.licenses.setOnClickListener {
-
+            startActivity(Intent(requireActivity(), OssLicensesMenuActivity::class.java))
         }
         return binding.root
     }

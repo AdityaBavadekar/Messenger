@@ -179,7 +179,7 @@ class ConversationViewModel : ViewModel() {
     ) {
         conversationType?.let {
             val type = ConversationRecord.ConversationType.valueOf(it)
-            startObservingRemoteData(type,p2pUid)
+            startObservingRemoteData(type, p2pUid)
         }
     }
 
@@ -191,7 +191,10 @@ class ConversationViewModel : ViewModel() {
         )
         _conversationPhoto.postValue(data.conversationRecord.photoUrl)
         _conversationTitle.postValue(data.conversationRecord.title)
-        startObservingRemoteData(data.conversationRecord.conversationType(),data.conversationRecord.p2PRecipientUid())
+        startObservingRemoteData(
+            data.conversationRecord.conversationType(),
+            data.conversationRecord.p2PRecipientUid()
+        )
         this._conversationWithRecipients.postValue(data)
     }
 
@@ -200,58 +203,42 @@ class ConversationViewModel : ViewModel() {
     }
 
     private fun createDateHeaders(list: List<MessageRecord>): Job {
-        return database.insertOrUpdateMessages(list)
+        return generateDateHeaders(list)
     }
 
-    private fun createDateHeadersOld(list: List<MessageRecord>) =
-        runOnIOThread {
-            var currentMessageTimestamp = ""
+    private fun generateDateHeaders(list: List<MessageRecord>): Job {
+        return runOnIOThread {
             val newList = mutableListOf<MessageRecord>()
-            list.sortedBy { it.timestamp }.forEach { messageRecord ->
-                val date = getDateStub(messageRecord.timestamp)
-                if (currentMessageTimestamp == date) {
-                    // We found a message that has same timestamp as the earlier one
-                    // Add message under the similar timestamp if message is not a timestamp
-                    newList.add(messageRecord)
-                } else {
-                    // Add message as well as new header for the timestamp
-                    currentMessageTimestamp = date
-                    if (messageRecord.isTimestampHeader()) {
-                        //If we find a timestamp, add it to list.
-                        newList.add(messageRecord)
-                    } else {
-                        //If we find a message item, add the message as well as a new timestamp to list.
-                        newList.add(
-                            MessageRecord.timestampHeader(
-                                messageRecord.timestamp,
-                                conversationId
-                            )
-                        )
-                        newList.add(messageRecord)
-                    }
-                }
-            }
-            database.insertOrUpdateMessages(newList)
-        }
+            list.sortedBy { it.timestamp }
+                .forEachIndexed { index, messageRecord ->
+                    val currentTimestampString = getDateStub(messageRecord.timestamp)
+                    // Previous index is +1 as we set reverseLayout=true
+                    val prev = list.getOrNull(index + 1)
 
-    private fun createDateHeadersNew(list: List<MessageRecord>) =
-        runOnIOThread {
-            var currentMessageTimestamp = ""
-            val newList = list.toMutableList()
-            for ((i, messageRecord) in list.sortedBy { it.timestamp }.withIndex()) {
-                val date = getDateStub(messageRecord.timestamp)
-                if (currentMessageTimestamp != date) {
-                    currentMessageTimestamp = date
-                    newList.add(
-                        i, MessageRecord.timestampHeader(
+                    if (index == 0 && !messageRecord.isTimestampHeader()) {
+                        //index is 0 means that there is no previous message, so we add
+                        // a timestamp for current message.
+                        val stamp = MessageRecord.timestampHeader(
                             messageRecord.timestamp,
                             conversationId
                         )
-                    )
+                        newList.add(stamp)
+                    } else if (prev != null && !prev.isTimestampHeader() && !messageRecord.isTimestampHeader()) {
+                        val prevTimestampString = getDateStub(prev.timestamp)
+                        if (prevTimestampString != currentTimestampString) {
+                            //A timestamp is needed
+                            val stamp = MessageRecord.timestampHeader(
+                                prev.timestamp,
+                                conversationId
+                            )
+                            newList.add(stamp)
+                        }
+                    }
+                    newList.add(messageRecord)
                 }
-            }
             database.insertOrUpdateMessages(newList)
         }
+    }
 
     private fun startObservingRemoteData(
         conversationType: ConversationRecord.ConversationType,

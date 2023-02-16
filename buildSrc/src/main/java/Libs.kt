@@ -45,6 +45,7 @@ object Libs {
     const val MATERIAL = "com.google.android.material:material"
     const val NAVIGATION_FRAGMENT = "androidx.navigation:navigation-fragment"
     const val NAVIGATION_UI = "androidx.navigation:navigation-ui"
+    const val OSS_LICENSES = "com.google.android.gms:play-services-oss-licenses"
     const val PAGING = "androidx.paging:paging-runtime"
     const val PHOTOVIEW = "com.github.chrisbanes:PhotoView"
     const val PINLOG = "com.github.AdityaBavadekar.PinLog:pinlog"

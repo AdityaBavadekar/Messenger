@@ -131,6 +131,7 @@ dependencies {
     implementation Dependencies.FIREBASE_STORAGE
     implementation Dependencies.FRAGMENT_KTX
     implementation Dependencies.GLIDE
+    testImplementation 'org.junit.jupiter:junit-jupiter'
     kapt Dependencies.GLIDE_COMPILER
     implementation Dependencies.JSOUP
     implementation Dependencies.KOTLIN
@@ -141,6 +142,7 @@ dependencies {
     implementation Dependencies.MATERIAL
     implementation Dependencies.NAVIGATION_FRAGMENT
     implementation Dependencies.NAVIGATION_UI
+    implementation Dependencies.OSS_LICENSES
     implementation Dependencies.PAGING
     implementation Dependencies.PHOTOVIEW
     implementation Dependencies.PINLOG

@@ -136,6 +136,9 @@ abstract class BaseMessage public constructor(
         return messageReplyRecord
     }
 
+    /**
+     * Indicates whether this message has its [type] equal to [RecyclerViewType.TYPE_TIMESTAMP_HEADER]
+     * */
     fun isTimestampHeader(): Boolean {
         return type == RecyclerViewType.TYPE_TIMESTAMP_HEADER
     }

@@ -23,6 +23,7 @@ import android.content.ContentProvider
 import android.content.ContentValues
 import android.database.Cursor
 import android.net.Uri
+import com.adityaamolbavadekar.messenger.utils.AppCheckUtil
 import com.adityaamolbavadekar.messenger.utils.logging.InternalLogger
 import com.adityaamolbavadekar.messenger.utils.logging.InternalLogger.initializeInternalLogger
 
@@ -36,6 +37,7 @@ class InstallationProvider : ContentProvider() {
         val c = checkNotNull(context) { "[$TAG] Context cannot be null." }
         context!!.initializeInternalLogger()
         InstallationInfo.getOrCreateId(c)
+        AppCheckUtil.activate(c)
         return false
     }
 

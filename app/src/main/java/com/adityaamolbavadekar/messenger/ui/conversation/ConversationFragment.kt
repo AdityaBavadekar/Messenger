@@ -106,7 +106,6 @@ class ConversationFragment : BindingHelperFragment<ConversationFragmentBinding>(
             messagesAdapter.submitList(it)
             onShouldChangeFabVisibility(shouldHide = (it.isEmpty() || it.size <= 4))
         }
-
     }
 
 

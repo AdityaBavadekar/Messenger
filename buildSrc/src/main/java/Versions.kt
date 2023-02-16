@@ -51,6 +51,7 @@ object Versions {
     const val LOTTIE = "3.6.0"
     const val MATERIAL = "1.7.0"
     const val NAVIGATION = "2.5.3"
+    const val OSS_LICENSES = "17.0.0"
     const val PAGING = "2.0.0"
     const val PHOTOVIEW = "2.0.0"
     const val PINLOG = "1.0.1"
