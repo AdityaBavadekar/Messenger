@@ -87,7 +87,8 @@ data class ConversationRecord(
     /*Whether a Recipient allowed to edit conversation information*/
     override var editingPermissionType: Int = EditingPermissionType.permitAll(),
 
-    ) :
+    override var temp: Boolean = false
+) :
     BaseConversation(conversationId, title, photoUrl, description, databasePath, created, updated) {
 
     constructor() : this(
@@ -113,7 +114,8 @@ data class ConversationRecord(
         recipientUids = mutableListOf<String>(),
         recipientsInfo = mutableListOf<HashMap<String, Any?>>(),
         messagingPermissionType = MessagingPermissionType.permitAll(),
-        editingPermissionType = EditingPermissionType.permitAll()
+        editingPermissionType = EditingPermissionType.permitAll(),
+        temp = false
     )
 
     fun defaultIcon(): Int {
@@ -129,7 +131,7 @@ data class ConversationRecord(
     }
 
     fun p2PRecipientUid(): String {
-        if(!isP2P){
+        if (!isP2P) {
             throw IllegalArgumentException("P2PUid was requested while the conversation was not a P2P.")
         }
         return recipientUids.last()
@@ -167,6 +169,7 @@ data class ConversationRecord(
                 creatorUid = loggedInRecipient.uid,
                 recipientUids = mutableListOf(loggedInRecipient.uid, recipient.uid),
                 recipientsInfo = recipientInfoHashMap.remoteRecipientToHashMapList(),
+                temp = true
             )
             return c
         }

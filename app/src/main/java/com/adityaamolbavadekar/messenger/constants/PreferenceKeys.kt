@@ -62,6 +62,11 @@ object PreferenceKeys {
     const val ABOUT_OPEN_SOURCE_LICENCES = "about.open_source"
     const val ABOUT_TERMS = "about.terms"
     const val ABOUT_POLICY = "about.policy"
+    const val APP_UPDATE_CHECKED = "app.update.lastChecked"
+    const val APP_UPDATE_VERSION_NAME = "app.update.versionName"
+    const val APP_UPDATE_VERSION_CODE = "app.update.versionCode"
+    const val APP_UPDATE_TIMESTAMP = "app.update.timestamp"
+    const val APP_UPDATE_LINK = "app.update.link"
     const val IME_KEYBOARD_HEIGHT = "messenger.value.ime.height"
     const val DEV_MODE_ENABLE_FROM_SETTINGS = "app.dev.enabled"
     /*app data*/

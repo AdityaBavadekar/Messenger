@@ -119,9 +119,13 @@ class ConversationViewModel : ViewModel() {
          * If a P2P conversation has zero messages, delete conversation from database.
          * */
         conversationWithRecipients.value?.let {
-            if (!it.conversationRecord.isGroup && _messages.value!!.isEmpty()) {
+            if (!it.conversationRecord.isGroup && _messages.value!!.isEmpty() && it.conversationRecord.temp) {
                 InternalLogger.logD(TAG, "Deleting empty non-group conversation.")
                 database.deleteConversation(conversationId)
+            } else {
+                val record = it.conversationRecord
+                record.temp = false
+                database.updateConversation(record)
             }
         }
     }

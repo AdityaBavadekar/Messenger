@@ -214,6 +214,7 @@ class SettingsActivity : BaseActivity() {
 
     annotation class SettingsKeys {
         companion object {
+            const val HELP_FEEDBACK = "help_feedback"
             const val THEME = "key_theme"
             const val NOTIFICATIONS = "key_notifications"
             const val TEXT_SIZE = "key_text_size"

@@ -66,22 +66,23 @@ class ConversationListFragment : BindingHelperFragment<ConversationListFragmentB
             layoutManager = linearLayoutManager
         }
         lifecycle.coroutineScope.launch {
-
             database.getConversations().collect {
-                conversationListAdapter.submitList(it)
-                if (it.isEmpty()) {
-                    binding.conversationRecyclerView.isGone = true
-                    binding.noConversationsLayout.isVisible = true
-                } else {
-                    binding.conversationRecyclerView.isVisible = true
-                    binding.noConversationsLayout.isGone = true
-                }
+                viewModel.updateConversations(it)
             }
-
             database.getRecipients().collect {
                 conversationListAdapter.setRecipients(it)
             }
+        }
 
+        viewModel.conversations.observe(viewLifecycleOwner){
+            conversationListAdapter.submitList(it)
+            if (it.isEmpty()) {
+                binding.conversationRecyclerView.isGone = true
+                binding.noConversationsLayout.isVisible = true
+            } else {
+                binding.conversationRecyclerView.isVisible = true
+                binding.noConversationsLayout.isGone = true
+            }
         }
 
         (requireActivity() as MainActivity).setOnFabClickListener {
@@ -105,6 +106,11 @@ class ConversationListFragment : BindingHelperFragment<ConversationListFragmentB
                 database.deleteConversationAndMessages(item)
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.refreshList()
     }
 
 }

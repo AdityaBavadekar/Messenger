@@ -21,6 +21,7 @@ package com.adityaamolbavadekar.messenger
 import android.app.Application
 import com.adityaamolbavadekar.messenger.database.conversations.ApplicationDatabase
 import com.adityaamolbavadekar.messenger.managers.PrefsManager
+import com.adityaamolbavadekar.messenger.utils.Constants
 import com.adityaamolbavadekar.messenger.utils.logging.InternalLogger
 import com.adityaamolbavadekar.messenger.utils.startup.AppStartup
 import com.adityaamolbavadekar.pinlog.PinLog
@@ -44,7 +45,7 @@ class App : Application(),Thread.UncaughtExceptionHandler {
             e
         )
         PrefsManager(this.applicationContext).saveCrashInfo()
-        PinLog.CrashReporter().sendCrashReportWithEmail(t, e, arrayOf(), null, null)
+        PinLog.CrashReporter().sendCrashReportWithEmail(t, e, arrayOf(Constants.SUPPORT_EMAIL), null, null)
     }
 
     companion object {

@@ -44,14 +44,14 @@ object Dialogs {
 
     fun showLoadingDialog(
         context: Context,
-        message: String? = null
+        message: String? = null,show:Boolean=true
     ): AlertDialog {
         val dialog = MaterialAlertDialogBuilder(context)
             .setCancelable(false)
             .setMessage(message)
             .setView(R.layout.dialog_loading)
             .create()
-        dialog.show()
+        if(show) dialog.show()
         return dialog
     }
 

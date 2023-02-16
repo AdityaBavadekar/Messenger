@@ -18,9 +18,12 @@
 
 package com.adityaamolbavadekar.messenger.ui.conversation_list
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.adityaamolbavadekar.messenger.managers.AuthManager
 import com.adityaamolbavadekar.messenger.managers.CloudDatabaseManager
+import com.adityaamolbavadekar.messenger.model.ConversationRecord
 import com.adityaamolbavadekar.messenger.model.Recipient
 import com.adityaamolbavadekar.messenger.utils.OnResponseCallback
 import com.adityaamolbavadekar.messenger.utils.logging.InternalLogger
@@ -31,7 +34,12 @@ class ConversationListViewModel : ViewModel(),
     private val cloudDatabaseManager = CloudDatabaseManager()
     private val authManager = AuthManager()
     private var isLoading = false
+    private val _conversations :MutableLiveData<List<ConversationRecord>> = MutableLiveData(mutableListOf())
+    val conversations : LiveData<List<ConversationRecord>> = _conversations
 
+    fun updateConversations(conversations:List<ConversationRecord>){
+        _conversations.postValue(conversations)
+    }
     override fun onSuccess(t: List<CloudDatabaseManager.ConversationResponse>) {
         InternalLogger.logD(TAG, "ConversationsList : $t")
     }
@@ -44,6 +52,15 @@ class ConversationListViewModel : ViewModel(),
         if (isLoading) return
         cloudDatabaseManager.Conversations().observeConversations(authManager.uid, this)
         isLoading = true
+    }
+
+    fun refreshList() {
+        val list = _conversations.value
+        val newList = mutableListOf<ConversationRecord>()
+        list!!.forEach {
+            if(!it.temp) newList.add(it)
+        }
+        _conversations.postValue(newList.sortedBy { it.lastMessageTimestamp })
     }
 
     companion object {

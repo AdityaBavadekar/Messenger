@@ -55,6 +55,7 @@ object Constants {
     internal object CloudPaths {
         private const val CLOUD_PATH_USERS_SHARABLE_DATA = "usersPublicData"
         const val CLOUD_PATH_USERS = "users"
+        const val CLOUD_PATH_UPDATES = "updates/messenger/latest/versionCode"
         private const val CLOUD_PATH_CONTACTS = "contactsOf"
         private const val CLOUD_PATH_USER_ACTIVITY = "usersActivity"
         private const val CLOUD_PATH_PROFILE_PICS = "profilePictures"
@@ -152,5 +153,7 @@ object Constants {
         const val ID_OTHER_NOTIFICATIONS = "channel_other_notifications"
         const val ID_TESTING_NOTIFICATIONS = "testing"
     }
+
+    const val SUPPORT_EMAIL = "adityarbavadekar@gmail.com"
 
 }

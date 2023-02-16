@@ -57,7 +57,7 @@ abstract class BaseConversation constructor(
 
     /*Whether a Recipient allowed to edit conversation information*/
     open var editingPermissionType: Int = EditingPermissionType.permitAll(),
-
+    open var temp: Boolean = false,
     ) {
 
     fun remoteRecipients(): MutableList<RemoteRecipient> {

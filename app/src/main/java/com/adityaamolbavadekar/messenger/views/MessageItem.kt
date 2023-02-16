@@ -36,10 +36,12 @@ import com.adityaamolbavadekar.messenger.model.ConversationRecord
 import com.adityaamolbavadekar.messenger.model.MessageRecord
 import com.adityaamolbavadekar.messenger.model.Recipient
 import com.adityaamolbavadekar.messenger.model.valueOf
+import com.adityaamolbavadekar.messenger.ui.conversation.MessageDeletionListener
 import com.adityaamolbavadekar.messenger.ui.conversation.MessagesAdapter.Companion.applyMessageBodyFontSize
 import com.adityaamolbavadekar.messenger.ui.conversation.MessagesAdapter.Companion.applyMessageTitleFontSize
 import com.adityaamolbavadekar.messenger.ui.conversation.OnReactionListener
 import com.adityaamolbavadekar.messenger.ui.zoom.ZoomableImageViewerActivity
+import com.adityaamolbavadekar.messenger.utils.ClipboardUtil
 import com.adityaamolbavadekar.messenger.utils.Constants.TimestampFormats.MESSAGE_TIMESTAMP_FORMAT
 import com.adityaamolbavadekar.messenger.utils.CustomLinkHandlerSpan
 import com.adityaamolbavadekar.messenger.utils.ImageLoader
@@ -81,6 +83,7 @@ class MessageItem @JvmOverloads constructor(
     private var titleClickListener: TitleClickListener? = null
     private var replyClickListener: ReplyClickListener? = null
     private var reactionListener: OnReactionListener = getEmptyOnReactionListener()
+    private var deletionListener: MessageDeletionListener = getEmptyDeletionListener()
     private val imageLoader = ImageLoader.with(this)
     private var selectionKey: Long = 0
     private var selectionTrackerProvider: (() -> SelectionTracker<Long>)? = null
@@ -193,6 +196,12 @@ class MessageItem @JvmOverloads constructor(
         return object : OnReactionListener {
             override fun onShouldShowReactionChooser(messageRecord: MessageRecord) {}
             override fun onShouldShowReactionsInfo(messageRecord: MessageRecord) {}
+        }
+    }
+    private fun getEmptyDeletionListener(): MessageDeletionListener {
+        return object : MessageDeletionListener {
+            override fun onShouldDelete(messageRecord: MessageRecord) {}
+            override fun onShouldDeleteForEveryone(messageRecord: MessageRecord) {}
         }
     }
 
@@ -349,11 +358,15 @@ class MessageItem @JvmOverloads constructor(
         val inflater = popup.menuInflater
         inflater.inflate(R.menu.popup_message_item, popup.menu)
         popup.setOnMenuItemClickListener {
-            if (it.itemId == R.id.action_react) {
-                reactionListener.onShouldShowReactionChooser(requireMessageRecord())
-            }else if(it.itemId == R.id.action_copy){
-                val cm = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                cm.setPrimaryClip(ClipData.newPlainText("message",requireMessageRecord().message?:""))
+            when (it.itemId) {
+                R.id.action_react -> {
+                    reactionListener.onShouldShowReactionChooser(requireMessageRecord())
+                }
+                R.id.action_copy -> {
+                    ClipboardUtil.with(context).clip(requireMessageRecord().message?:"")
+                }
+
+                else -> return@setOnMenuItemClickListener false
             }
             true
         }
@@ -450,6 +463,10 @@ class MessageItem @JvmOverloads constructor(
 
     fun setOnReactionListener(listener: OnReactionListener) {
         this.reactionListener = listener
+    }
+
+    fun setOnDeletionListener(listener: MessageDeletionListener){
+        this.deletionListener = listener
     }
 
     fun setPreviousMessageRecord(message: MessageRecord?) {

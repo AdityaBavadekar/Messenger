@@ -140,18 +140,11 @@ class ConversationFragment : BindingHelperFragment<ConversationFragmentBinding>(
      * Observes the scrolling and updates `fabScrollToBottom` and timestampHeader accordingly.
      * */
     private val onScrollListener = object : RecyclerView.OnScrollListener() {
-        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-            super.onScrollStateChanged(recyclerView, newState)
-            if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                conversationOnScrollDateHeader.hide()
-                onShouldChangeFabVisibility()
-            }
-        }
-
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
             super.onScrolled(recyclerView, dx, dy)
             conversationOnScrollDateHeader.updateTimestamp(getFirstVisibleMessage()?.timestamp)
-            onShouldChangeFabVisibility()
+            val hide = messageRecyclerView.findLastVisibleItemPosition() == 0
+            onShouldChangeFabVisibility(hide, true)
         }
     }
 
@@ -194,6 +187,7 @@ class ConversationFragment : BindingHelperFragment<ConversationFragmentBinding>(
         try {
             messageRecyclerView.scrollLinearLayoutToPosition(0)
         } catch (e: Exception) {
+            InternalLogger.e(TAG,"Unable to scroll to position 0.",e)
         }
     }
 
@@ -207,12 +201,12 @@ class ConversationFragment : BindingHelperFragment<ConversationFragmentBinding>(
 
     override fun onShouldShowReactionChooser(messageRecord: MessageRecord) {
         Dialogs.showReactionChooserDialog(requireContext()) { reaction ->
-           val currentList = messagesAdapter.currentList.toMutableList()
-           if (currentList.contains(messageRecord)) {
-                val index = currentList.indexOf(messageRecord)    
+            val currentList = messagesAdapter.currentList.toMutableList()
+            if (currentList.contains(messageRecord)) {
+                val index = currentList.indexOf(messageRecord)
                 val reactionRecord = ReactionRecord.new(messageRecord.id, reaction, me.uid)
                 messageRecord.addReaction(reactionRecord)
-                viewModel.updateMessage(messageRecord)                
+                viewModel.updateMessage(messageRecord)
                 currentList[index] = messageRecord
                 messagesAdapter.submitList(currentList.toList())
             }
@@ -228,7 +222,7 @@ class ConversationFragment : BindingHelperFragment<ConversationFragmentBinding>(
         )
     }
 
-    companion object{
+    companion object {
         private const val TAG = "ConversationFragment"
     }
 

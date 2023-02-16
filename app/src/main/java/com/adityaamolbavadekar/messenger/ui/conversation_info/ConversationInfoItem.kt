@@ -18,4 +18,11 @@
 
 package com.adityaamolbavadekar.messenger.ui.conversation_info
 
-data class ConversationInfoItem(val id: Int, val title: String, val action: () -> Unit)
+data class ConversationInfoItem(
+    val id: Int,
+    val title: String,
+    /**
+     *  `true` if Long click , `false` otherwise.
+     *  */
+    val action: (Boolean) -> Unit
+)

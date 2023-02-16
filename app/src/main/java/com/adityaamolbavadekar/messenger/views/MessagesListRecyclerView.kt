@@ -28,7 +28,7 @@ class MessagesListRecyclerView @JvmOverloads constructor(
     attrs: AttributeSet? = null
 ) : RecyclerView(context, attrs) {
 
-    private val linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, true)
+    private val linearLayoutManager = LinearLayoutManager(context, /*orientation*/LinearLayoutManager.VERTICAL,/*reveseLayout*/ true)
 
     init {
         background = null

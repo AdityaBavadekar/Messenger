@@ -33,6 +33,8 @@ import com.adityaamolbavadekar.messenger.databinding.P2pConversationInfoFragment
 import com.adityaamolbavadekar.messenger.managers.CloudDatabaseManager
 import com.adityaamolbavadekar.messenger.model.ConversationRecord
 import com.adityaamolbavadekar.messenger.model.Recipient
+import com.adityaamolbavadekar.messenger.ui.zoom.ZoomableImageViewerActivity
+import com.adityaamolbavadekar.messenger.utils.ClipboardUtil
 import com.adityaamolbavadekar.messenger.utils.Constants
 import com.adityaamolbavadekar.messenger.utils.base.BindingHelperFragment
 import com.adityaamolbavadekar.messenger.utils.extensions.load
@@ -100,11 +102,24 @@ class P2PConversationInfoFragment : BindingHelperFragment<P2pConversationInfoFra
 
     private fun createList(): MutableList<ConversationInfoItem> {
         val list = mutableListOf<ConversationInfoItem>()
-        list.add(ConversationInfoItem(0, "Phone number : +${recipient.phone ?: "Not added"}") {})
-        list.add(ConversationInfoItem(1, "Description : ${recipient.tempAbout}") {})
+        list.add(
+            ConversationInfoItem(
+                0,
+                "Phone number : +${recipient.phone ?: "Not added"}"
+            ) { longClicked ->
+                if (longClicked && recipient.phone != null) ClipboardUtil.with(requireContext())
+                    .clip(recipient.phone!!)
+            })
+        list.add(
+            ConversationInfoItem(
+                1,
+                "Description : ${recipient.tempAbout ?: "Not provided"}"
+            ) {})
         list.add(ConversationInfoItem(2, "Audio call") {})
         list.add(ConversationInfoItem(3, "Video call") {})
-        list.add(ConversationInfoItem(4, "Share") {})
+        list.add(ConversationInfoItem(4, "Share") {
+
+        })
         list.add(ConversationInfoItem(5, "View in address book") {})
         list.add(ConversationInfoItem(6, "Block") {})
         list.add(ConversationInfoItem(7, "Report") {})
@@ -123,7 +138,19 @@ class P2PConversationInfoFragment : BindingHelperFragment<P2pConversationInfoFra
                     true,
                     ConversationRecord.DEFAULT_P2P_DRAWABLE
                 )
-            } else binding.profilePictureImageView.setImageResource(ConversationRecord.DEFAULT_P2P_DRAWABLE)
+                binding.profilePictureImageView.setOnClickListener { _ ->
+                    startActivity(
+                        ZoomableImageViewerActivity.createNewIntent(
+                            requireContext(),
+                            listOf(it.photoUrl!!),
+                            it.tempName
+                        )
+                    )
+                }
+            } else {
+                binding.profilePictureImageView.setImageResource(ConversationRecord.DEFAULT_P2P_DRAWABLE)
+                binding.profilePictureImageView.setOnClickListener(null)
+            }
         }
     }
 
@@ -136,7 +163,11 @@ class P2PConversationInfoFragment : BindingHelperFragment<P2pConversationInfoFra
             RecyclerView.ViewHolder(view.rootCard) {
             fun bind(item: ConversationInfoItem) {
                 view.text.text = item.title
-                view.rootCard.setOnClickListener { item.action() }
+                view.rootCard.setOnClickListener { item.action(false) }
+                view.rootCard.setOnLongClickListener {
+                    item.action(true)
+                    true
+                }
             }
         }
 

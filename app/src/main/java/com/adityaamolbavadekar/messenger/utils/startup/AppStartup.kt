@@ -21,11 +21,15 @@ package com.adityaamolbavadekar.messenger.utils.startup
 import android.content.ContentResolver
 import android.os.Bundle
 import com.adityaamolbavadekar.messenger.App
+import com.adityaamolbavadekar.messenger.BuildConfig
 import com.adityaamolbavadekar.messenger.account.MessengerAccountAuthenticator
 import com.adityaamolbavadekar.messenger.managers.FcmTokenManager
 import com.adityaamolbavadekar.messenger.managers.InternetManager
+import com.adityaamolbavadekar.messenger.model.UpdateInfo
 import com.adityaamolbavadekar.messenger.notifications.NotificationHelper
 import com.adityaamolbavadekar.messenger.utils.Constants
+import com.adityaamolbavadekar.messenger.utils.OnResponseCallback
+import com.adityaamolbavadekar.messenger.utils.UpdateUtil
 import com.adityaamolbavadekar.messenger.utils.logging.InternalLogger
 import com.adityaamolbavadekar.messenger.utils.shake.AppShakeDetector
 import com.adityaamolbavadekar.messenger.utils.theming.ThemeInfo.Companion.getPreferredThemeInfo
@@ -74,6 +78,7 @@ object AppStartup {
         AppForegroundObserver.addListener(appForegroundListener)
         AppForegroundObserver.begin()
         FcmTokenManager().instance()
+        UpdateUtil.checkForUpdates(application.applicationContext, UpdateInfoResponseCallback)
         AppShakeDetector.register(application).start()
         NotificationHelper(application.applicationContext)
         MessengerAccountAuthenticator.account(application.applicationContext)?.let {
@@ -85,5 +90,21 @@ object AppStartup {
         methodTracer.putTraceData("onApplicationCreated", "finished").end()
     }
 
+    object UpdateInfoResponseCallback :
+        OnResponseCallback<UpdateInfo, Exception> {
+        override fun onSuccess(t: UpdateInfo) {
+            if (BuildConfig.VERSION_CODE < t.versionCode) {
+                InternalLogger.logW(
+                    TAG,
+                    "A newer version (CURRENT[${BuildConfig.VERSION_CODE}],LATEST=${t.versionCode}) is available." +
+                            " NAME[CURRENT=${BuildConfig.VERSION_NAME},LATEST=[${t.versionName}]"
+                )
+            }
+        }
+
+        override fun onFailure(e: Exception) {
+            InternalLogger.logE(TAG,"Unable to check for updates",e)
+        }
+    }
 
 }
