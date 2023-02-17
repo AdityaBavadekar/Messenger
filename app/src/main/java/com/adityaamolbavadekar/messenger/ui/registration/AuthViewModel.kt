@@ -151,7 +151,7 @@ class AuthViewModel : ViewModel() {
             u.toBuilder()
             cloudDatabaseManager.updateUserProfileInfo(
                 u.loggedInDataHashMap(), u.UID
-            ) {}
+            )
         }
 
         cloudDatabaseManager.getUsersManager()

@@ -1,6 +1,5 @@
 package com.adityaamolbavadekar.messenger.utils
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -16,10 +15,10 @@ class IntentsUtils {
             attachments: ArrayList<Uri>,
             toEmail: String
         ): Intent {
-            return Intent(Intent.ACTION_SEND_MULTIPLE).apply {
+            return Intent(Intent.ACTION_SEND).apply {
                 putExtra(Intent.EXTRA_SUBJECT, subject)
                 putParcelableArrayListExtra(Intent.EXTRA_STREAM, attachments)
-                putExtra(Intent.EXTRA_EMAIL, toEmail)
+                putExtra(Intent.EXTRA_EMAIL, arrayOf(toEmail))
                 putExtra(Intent.EXTRA_TEXT, textContent)
                 addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
@@ -43,7 +42,7 @@ class IntentsUtils {
                         Intent.FLAG_GRANT_READ_URI_PERMISSION
                     )
                     InternalLogger.logD(
-                        javaClass.simpleName,
+                        IntentsUtils::class.java.simpleName,
                         "Granted permission to ($attachmentUri): ${resolveInfo.resolvePackageName}"
                     )
                 }

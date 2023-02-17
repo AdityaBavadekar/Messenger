@@ -24,7 +24,6 @@ import com.google.firebase.messaging.ktx.messaging
 
 class FcmTokenManager {
     private val m = Firebase.messaging
-
     fun instance() {
         subscribe("Testing")
     }

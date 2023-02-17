@@ -188,6 +188,11 @@
     <string name="app_version_formatted">Version %s</string>
     <string name="open_source_licenses">Open-source licenses</string>
     <string name="loading">Loading...</string>
+    <string name="enable_sync_message">Do you want to enable contacts sync? Your contacts will be stored to Messenger\'s secure database. Enabling sync will help you and your friends find each other on Messenger.</string>
+    <string name="sync_contacts">Sync contacts</string>
+    <string name="skip">Skip</string>
+    <string name="enable_sync">Enable sync</string>
+    <string name="deleted_message_placeholder">This message was deleted</string>
 
     <string-array name="theme_chooser">
         <item>System Default</item>

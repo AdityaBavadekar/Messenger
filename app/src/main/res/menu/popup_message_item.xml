@@ -28,11 +28,19 @@
         android:title="Delete for everyone" />
 
     <item
+        android:id="@+id/action_delete"
+        android:title="Delete" />
+
+    <item
         android:id="@+id/action_copy"
         android:title="Copy text" />
 
     <item
         android:id="@+id/action_reply"
         android:title="Reply" />
+
+    <item
+        android:id="@+id/message_info"
+        android:title="Message Info" />
 
 </menu>

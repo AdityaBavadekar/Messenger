@@ -34,7 +34,8 @@ interface RecyclableMessageItem {
         conversationRecord: ConversationRecord?,
         sender: Recipient?,
         isIncomingMessage:Boolean,
-        itemSelectionKey:Long
+        itemSelectionKey:Long,
+        index:Int
     )
 
     fun unbind()

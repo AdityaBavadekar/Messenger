@@ -97,10 +97,10 @@ abstract class BaseMessage public constructor(
         return this
     }
 
-    fun delete(deletionMessage: String): BaseMessage {
+    fun delete(): BaseMessage {
         isDeleted = true
         mentions = listOf()
-        message = deletionMessage
+        message = null
         return this
     }
 

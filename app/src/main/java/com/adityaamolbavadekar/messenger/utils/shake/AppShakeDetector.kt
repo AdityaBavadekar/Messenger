@@ -34,7 +34,6 @@ object AppShakeDetector : ShakeDetector.Listener {
 
     private var context: Context? = null
     private var detector: ShakeDetector? = null
-
     fun register(c: Context): AppShakeDetector {
         context = c
         detector = ShakeDetector(this)

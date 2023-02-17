@@ -43,7 +43,7 @@ import com.adityaamolbavadekar.messenger.views.MessagesListRecyclerView
  * Requires Extra : [EXTRA_CONVERSATION_ID]
  * */
 class ConversationFragment : BindingHelperFragment<ConversationFragmentBinding>(),
-    OnReactionListener {
+    OnReactionListener, MessageDeletionListener {
 
     override fun onShouldInflateBinding(): ConversationFragmentBinding {
         return ConversationFragmentBinding.inflate(layoutInflater)
@@ -87,6 +87,7 @@ class ConversationFragment : BindingHelperFragment<ConversationFragmentBinding>(
         }
         setupSelectionTracker()
         messagesAdapter.setOnReactionListener(this)
+        messagesAdapter.setDeletionListener(this)
         /* Helps in showing the date header onScrolling.  */
         conversationOnScrollDateHeader =
             ConversationOnScrollDateHeader(binding.dateHeader, requireContext())
@@ -183,7 +184,7 @@ class ConversationFragment : BindingHelperFragment<ConversationFragmentBinding>(
         return null
     }
 
-    fun onNewMessageSent(index: Int) {
+    fun onNewMessageSent() {
         try {
             messageRecyclerView.scrollLinearLayoutToPosition(0)
         } catch (e: Exception) {
@@ -220,6 +221,14 @@ class ConversationFragment : BindingHelperFragment<ConversationFragmentBinding>(
             messageRecord.reactions,
             viewModel.conversationWithRecipients.value!!.recipients
         )
+    }
+
+    override fun onShouldDelete(messageRecord: MessageRecord) {
+        viewModel.delete(messageRecord,/*forEveryone*/false)
+    }
+
+    override fun onShouldDeleteForEveryone(messageRecord: MessageRecord) {
+        viewModel.delete(messageRecord,/*forEveryone*/true)
     }
 
     companion object {

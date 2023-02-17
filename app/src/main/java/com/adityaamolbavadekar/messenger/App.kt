@@ -25,6 +25,7 @@ import com.adityaamolbavadekar.messenger.utils.Constants
 import com.adityaamolbavadekar.messenger.utils.logging.InternalLogger
 import com.adityaamolbavadekar.messenger.utils.startup.AppStartup
 import com.adityaamolbavadekar.pinlog.PinLog
+import com.google.firebase.FirebaseApp
 
 class App : Application(),Thread.UncaughtExceptionHandler {
 
@@ -33,6 +34,7 @@ class App : Application(),Thread.UncaughtExceptionHandler {
     }
 
     override fun onCreate() {
+        FirebaseApp.initializeApp(this) // If called from another thread or process
         AppStartup.onApplicationCreated(this)
         super.onCreate()
         AppStartup.startApplicationInitialisation()

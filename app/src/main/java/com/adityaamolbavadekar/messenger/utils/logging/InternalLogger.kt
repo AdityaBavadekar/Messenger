@@ -97,23 +97,22 @@ object InternalLogger {
         TAG: String,
         m: String,
         logType: PinLog.LogLevel,
-        e: Throwable? = null
+        e: Throwable? = null,
+        persist: Boolean = true
     ) {
         val text = "$TAG : $m"
         val logger = getAppLevelLogger()
 
-        if (logType == PinLog.LogLevel.ERROR) logger.d(text, e)
-
-        persistLog(TAG, m, logType, e)
-
-        if (isStrictErrorOnlyLogging()) return
+        if (logType == PinLog.LogLevel.ERROR) logger.e(text, e)
+        if (persist) persistLog(TAG, m, logType, e)
+        if (isStrictErrorOnlyLogging) return
 
         return when (logType) {
             PinLog.LogLevel.INFO -> logger.i(text, e)
             PinLog.LogLevel.WARN -> logger.w(text, e)
-            else -> logger.d(text, e)
+            PinLog.LogLevel.ERROR -> logger.d(text, e)
+            else -> {}
         }
-
     }
 
     private fun persistLog(
@@ -161,6 +160,16 @@ object InternalLogger {
     fun e(TAG: String, e: Throwable) {
         internalAndroidLog(TAG, "", PinLog.LogLevel.ERROR, e)
     }
+
+    /**
+     * - Only log if [isDebugBuild] = `true`
+     * - Log Level : Info
+     * */
+    fun debugInfo(TAG: String, m: String, e: Throwable? = null) {
+        if (isDebugBuild) {
+            return internalAndroidLog(TAG, m, PinLog.LogLevel.INFO, e, false)
+        }
+    }
     /*LOGGING METHODS END*/
 
     fun postOnApplicationCreated() {
@@ -177,6 +186,7 @@ object InternalLogger {
         isInternalLoggerInitialized = true
         initializationTime = System.currentTimeMillis()
         d(internalLoggerTag, "Initializing...")
+        if (isDebugBuild) initialiseDebug(applicationContext as Application)
         initialiseProduction(this.applicationContext as Application)
     }
 
@@ -188,6 +198,11 @@ object InternalLogger {
             BuildConfig::class.java
         )
         d(internalLoggerTag, "Initialized ProductionLogging.")
+    }
+
+    private fun initialiseDebug(application: Application) {
+        PinLog.initialiseDebug(application, BuildConfig::class.java)
+        d(internalLoggerTag, "Initialized DebugLogging.")
     }
 
     fun getShareLogsIntent(c: Context, onResultListener: (Intent) -> Unit) = runOnIOThread {
@@ -236,15 +251,12 @@ object InternalLogger {
 
     fun getAppLevelLogger() = MessengerLogger.getLogger()
 
-    private fun isStrictErrorOnlyLogging(): Boolean {
-        return !isDebugBuild
-    }
 
     fun canLog(level: Int): Boolean {
-        return if (isStrictErrorOnlyLogging()) level == Log.ERROR else true
+        return if (isStrictErrorOnlyLogging) level == Log.ERROR else true
     }
 
     val isDebugBuild: Boolean = BuildConfig.DEBUG
-
+    private val isStrictErrorOnlyLogging: Boolean = !isDebugBuild
 
 }

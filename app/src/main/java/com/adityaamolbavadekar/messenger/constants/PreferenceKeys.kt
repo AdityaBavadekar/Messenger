@@ -21,6 +21,7 @@ package com.adityaamolbavadekar.messenger.constants
 
 object PreferenceKeys {
 
+
     /*app crash data*/
     const val APP_DID_CRASH = "app.crash.happened"
     const val APP_LAST_CRASH_TIMESTAMP = "app.crash.timestamp"
@@ -67,6 +68,7 @@ object PreferenceKeys {
     const val APP_UPDATE_VERSION_CODE = "app.update.versionCode"
     const val APP_UPDATE_TIMESTAMP = "app.update.timestamp"
     const val APP_UPDATE_LINK = "app.update.link"
+    const val CONTACTS_SYNC = "app.contacts.sync"
     const val IME_KEYBOARD_HEIGHT = "messenger.value.ime.height"
     const val DEV_MODE_ENABLE_FROM_SETTINGS = "app.dev.enabled"
     /*app data*/

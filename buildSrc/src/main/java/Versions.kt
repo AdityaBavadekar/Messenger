@@ -20,7 +20,7 @@
 
 object Versions {
 
-    const val VERSION_NAME = "0.0.5" //XX.YY.ZZ [X:Major][Y:Minor][Z:Patch]
+    const val VERSION_NAME = "0.0.6" //XX.YY.ZZ [X:Major][Y:Minor][Z:Patch]
     val VERSION_CODE = versionCodeGet()
 
     const val COMPILE_SDK = 33
@@ -67,16 +67,16 @@ object Versions {
         val size = 10000
         var returnVersionCode = ""
 
-        //Indicates a pre-release
-        if (VERSION_NAME.startsWith("0")) {
-            return 1 * size
-        }
-
-        VERSION_NAME.forEach {
+        VERSION_NAME.forEachIndexed { index,it->
             if (it.isDigit()) {
+                if(index == 0 && it == '0'){
+                    returnVersionCode = (1*(size*100)).toString()
+                }
                 if (returnVersionCode == "" || returnVersionCode.startsWith("0")) {
                     returnVersionCode = it.toString()
-                } else returnVersionCode += it.toString()
+                } else {
+                    returnVersionCode += it.toString()
+                }
             }
         }
 

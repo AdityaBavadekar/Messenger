@@ -22,6 +22,16 @@ package com.adityaamolbavadekar.messenger.model
  * For identifying Delivery Status of a message.
  * */
 object DeliveryStatus {
+    fun getStatusString(deliveryStatus: Int): Int {
+        return when (deliveryStatus) {
+            NOT_SENT -> R.string.not_sent
+            SENT -> R.string.sent
+            READ -> R.string.read
+            FAILED -> R.string.failed
+            else -> R.string.unknown
+        }
+    }
+
     const val NOT_SENT = 0
     const val SENT = 1
     const val READ = 2

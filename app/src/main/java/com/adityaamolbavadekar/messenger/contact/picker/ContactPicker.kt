@@ -25,6 +25,8 @@ import android.text.format.DateUtils
 import android.view.*
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.core.content.ContextCompat.startActivity
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
@@ -49,6 +51,9 @@ import com.adityaamolbavadekar.messenger.utils.extensions.load
 import com.adityaamolbavadekar.messenger.utils.logging.InternalLogger
 import com.adityaamolbavadekar.messenger.utils.recyclerview.BaseItemHolder
 import com.adityaamolbavadekar.messenger.utils.recyclerview.BaseListAdapter
+import com.google.android.gms.tasks.Task
+import com.google.android.gms.tasks.TaskCompletionSource
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import java.util.*
 
 class ContactPicker : BaseActivity() {
@@ -63,7 +68,8 @@ class ContactPicker : BaseActivity() {
         }
     }
 
-    class ContactPickerFragment : BindingHelperFragment<ContactPickerFragmentBinding>(), OnResponseCallback<List<User>, Exception?>,
+    class ContactPickerFragment : BindingHelperFragment<ContactPickerFragmentBinding>(),
+        OnResponseCallback<List<User>, Exception?>,
         BaseItemHolder.OnItemClickCallback<Recipient> {
 
         private lateinit var contactsPickerAdapter: ContactsPickerAdapter
@@ -76,22 +82,54 @@ class ContactPicker : BaseActivity() {
         private val contactsPermissionLauncher =
             registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
                 if (isGranted) {
-                    ContactsReader(requireContext()).read {
-                        if (it.isNotEmpty()) {
-                            contactsPickerAdapter.setContactList(it)
-                            val lastUploaded = prefsManager.getLastContactsUploaded()
-                            if (lastUploaded == Constants.UNKNOWN_VALUE_LONG || !DateUtils.isToday(
-                                    lastUploaded
-                                )
-                            ) {
-                                prefsManager.saveLastContactsUploaded(System.currentTimeMillis())
-                                cloudDatabaseManager.getContactsManager()
-                                    .save(it.map { contactInfo -> contactInfo.number.trim() })
+
+                    ContactsReader(requireContext()).read { contactsList ->
+                        if (contactsList.isNotEmpty()) {
+                            contactsPickerAdapter.setContactList(contactsList)
+                        }
+                        when (prefsManager.isContactsSyncAllowed()) {
+                            Constants.CONTACTS_SYNC_NOT_PROMPTED -> {
+                                //Ask if user wants to sync
+                                askContactsSync { allowed ->
+                                    if (allowed) syncContacts(contactsList)
+                                }
                             }
+                            Constants.CONTACTS_SYNC_ALLOWED -> syncContacts(contactsList)
+                            else -> return@read
                         }
                     }
                 }
             }
+
+        private fun askContactsSync(
+            listener: (Boolean) -> Unit
+        ) {
+            MaterialAlertDialogBuilder(requireContext())
+                .setTitle(getString(R.string.sync_contacts))
+                .setMessage(getString(R.string.enable_sync_message))
+                .setCancelable(true)
+                .setNeutralButton(R.string.skip) { d, _ ->
+                    prefsManager.saveIsContactsSyncAllowed(Constants.CONTACTS_SYNC_DENIED)
+                    listener(false)
+                    return@setNeutralButton d.dismiss()
+                }
+                .setPositiveButton(R.string.enable_sync) { d, _ ->
+                    d.dismiss()
+                    prefsManager.saveIsContactsSyncAllowed(Constants.CONTACTS_SYNC_ALLOWED)
+                    listener(true)
+                }
+                .create()
+                .show()
+        }
+
+        private fun syncContacts(contactsList: List<ContactsReader.ContactInfo>) {
+            val lastUploaded = prefsManager.getLastContactsUploaded()
+            if (!DateUtils.isToday(lastUploaded)) {
+                prefsManager.saveLastContactsUploaded(System.currentTimeMillis())
+                cloudDatabaseManager.getContactsManager()
+                    .save(contactsList.map { contactInfo -> contactInfo.number.trim() })
+            }
+        }
 
         override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
             super.onViewCreated(view, savedInstanceState)
@@ -145,10 +183,10 @@ class ContactPicker : BaseActivity() {
                     val conversation = ConversationRecord.newPerson2Person(item, me)
                     database.insertConversation(conversation, listOf(item, me))
                     startActivity(
-                            ConversationActivity.createNewIntent(
-                                    requireContext(),
-                                    conversation
-                            )
+                        ConversationActivity.createNewIntent(
+                            requireContext(),
+                            conversation
+                        )
                     )
                     requireActivity().finish()
                     return@directGetConversationsOfRecipient
@@ -259,7 +297,7 @@ class ContactPicker : BaseActivity() {
 
     }
 
-    companion object{
+    companion object {
         private val TAG = ContactPicker::class.java.simpleName
     }
 

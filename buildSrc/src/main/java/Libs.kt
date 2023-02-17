@@ -36,6 +36,7 @@ object Libs {
     const val FRAGMENT_KTX = "androidx.fragment:fragment-ktx"
     const val GLIDE = "com.github.bumptech.glide:glide"
     const val GLIDE_COMPILER = "com.github.bumptech.glide:compiler"
+    const val GUAVA = "com.google.guava:guava"
     const val JSOUP = "org.jsoup:jsoup"
     const val KOTLIN = "org.jetbrains.kotlin:kotlin-stdlib"
     const val LIBPHONENUMBER = "com.googlecode.libphonenumber:libphonenumber"

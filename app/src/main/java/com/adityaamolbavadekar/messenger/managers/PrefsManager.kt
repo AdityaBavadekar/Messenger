@@ -22,6 +22,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.net.Uri
 import android.widget.TextView
+import androidx.annotation.IntDef
 import androidx.core.content.edit
 import androidx.core.widget.TextViewCompat
 import androidx.preference.PreferenceManager
@@ -360,33 +361,48 @@ class PrefsManager(private val context: Context) {
     }
 
     fun getLastUpdateChecked(): Long? {
-        val l = context.prefs.getLong(PreferenceKeys.APP_UPDATE_CHECKED,-1)
-        val ln :Long= -1
-        if(l == ln) return null
+        val l = context.prefs.getLong(PreferenceKeys.APP_UPDATE_CHECKED, -1)
+        val ln: Long = -1
+        if (l == ln) return null
         else return l
     }
+
     fun saveUpdateInfo(updateInfo: UpdateInfo) {
         context.prefs.edit {
-            putLong(PreferenceKeys.APP_UPDATE_CHECKED,System.currentTimeMillis())
-            putString(PreferenceKeys.APP_UPDATE_VERSION_NAME,updateInfo.versionName)
-            putInt(PreferenceKeys.APP_UPDATE_VERSION_CODE,updateInfo.versionCode)
-            putLong(PreferenceKeys.APP_UPDATE_TIMESTAMP,updateInfo.timestamp)
-            putString(PreferenceKeys.APP_UPDATE_LINK,updateInfo.link)
+            putLong(PreferenceKeys.APP_UPDATE_CHECKED, System.currentTimeMillis())
+            putString(PreferenceKeys.APP_UPDATE_VERSION_NAME, updateInfo.versionName)
+            putInt(PreferenceKeys.APP_UPDATE_VERSION_CODE, updateInfo.versionCode)
+            putLong(PreferenceKeys.APP_UPDATE_TIMESTAMP, updateInfo.timestamp)
+            putString(PreferenceKeys.APP_UPDATE_LINK, updateInfo.link)
         }
     }
 
     fun getUpdateInfo(): UpdateInfo? {
-        context.prefs.apply{
-            val versionName = getString(PreferenceKeys.APP_UPDATE_VERSION_NAME,null)
-            val versionCode = getInt(PreferenceKeys.APP_UPDATE_VERSION_CODE,-1)
-            val timestamp = getLong(PreferenceKeys.APP_UPDATE_TIMESTAMP,-1)
-            val link = getString(PreferenceKeys.APP_UPDATE_LINK,null)
-            val l :Long= -1
-            if (versionName != null && versionCode != -1 && timestamp != l && link != null){
+        context.prefs.apply {
+            val versionName = getString(PreferenceKeys.APP_UPDATE_VERSION_NAME, null)
+            val versionCode = getInt(PreferenceKeys.APP_UPDATE_VERSION_CODE, -1)
+            val timestamp = getLong(PreferenceKeys.APP_UPDATE_TIMESTAMP, -1)
+            val link = getString(PreferenceKeys.APP_UPDATE_LINK, null)
+            val l: Long = -1
+            if (versionName != null && versionCode != -1 && timestamp != l && link != null) {
                 return UpdateInfo(versionName, versionCode, timestamp, link)
             }
         }
         return null
+    }
+
+    fun isContactsSyncAllowed(): Int {
+        return context.prefs.getInt(
+            PreferenceKeys.CONTACTS_SYNC,
+            Constants.CONTACTS_SYNC_NOT_PROMPTED
+        )
+    }
+
+    fun saveIsContactsSyncAllowed(value: Int) {
+        context.prefs
+            .edit {
+                putInt(PreferenceKeys.CONTACTS_SYNC, value)
+            }
     }
 
     companion object {

@@ -25,6 +25,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
 import com.adityaamolbavadekar.messenger.App
 import com.adityaamolbavadekar.messenger.R
+import com.adityaamolbavadekar.messenger.model.MessageRecord
 import com.adityaamolbavadekar.messenger.utils.AuthError
 import com.adityaamolbavadekar.messenger.utils.Validator
 import com.google.firebase.FirebaseNetworkException
@@ -94,4 +95,13 @@ fun Context.asApplicationClass(): App {
 
 fun Application.asApplicationClass(): App {
     return this as App
+}
+
+fun List<MessageRecord>.findFirstMessage(): MessageRecord? {
+    var index = 0
+    while (index != lastIndex){
+        if (!get(index).isTimestampHeader()) return get(index)
+        index++
+    }
+    return null
 }

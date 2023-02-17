@@ -118,6 +118,33 @@ data class ConversationRecord(
         temp = false
     )
 
+    constructor(r: RemoteConversation) : this(
+        conversationId = r.conversationId,
+        title = r.title,
+        lastMessageId = null,
+        lastMessageText = null,
+        lastMessageTimestamp = null,
+        lastMessageSenderUid = null,
+        photoUrl = r.photoUrl,
+        description = r.description,
+        archived = false,
+        pinned = false,
+        databasePath = null,
+        unreadCount = 0,
+        created = r.created,
+        updated = r.updated,
+        lastScrollPosition = 0,
+        isGroup = true,
+        isSelf = false,
+        isP2P = false,
+        creatorUid = r.creatorUid,
+        recipientUids = r.recipientUids,
+        recipientsInfo = r.recipientsInfo,
+        messagingPermissionType = r.messagingPermissionType,
+        editingPermissionType = r.editingPermissionType,
+        temp = false
+    )
+
     fun defaultIcon(): Int {
         return when {
             isGroup -> DEFAULT_GROUP_DRAWABLE
@@ -288,14 +315,14 @@ data class ConversationRecord(
      * Updates itself from provided [MessageRecord].
      * Fields [lastMessageId],[lastMessageText],[lastMessageTimestamp] and [lastMessageSenderUid] are updated.
      * */
-    fun updateLastMessageData(m: MessageRecord): ConversationRecord {
-        lastMessageId = m.id
-        lastMessageText = m.message
-        lastMessageTimestamp = m.timestamp
-        lastMessageSenderUid = m.senderUid
-        if (m.message?.trim()?.isEmpty() == true && m.attachments.isNotEmpty()) {
+    fun updateLastMessageData(m: MessageRecord?): ConversationRecord {
+        lastMessageId = m?.id
+        lastMessageText = m?.message
+        lastMessageTimestamp = m?.timestamp
+        lastMessageSenderUid = m?.senderUid
+        if (m?.message?.trim()?.isEmpty() == true && m.attachments.isNotEmpty()) {
             lastMessageText = m.attachments.last()
-        } else if (m.message?.trim()?.isEmpty() == true && m.reactions.isNotEmpty()) {
+        } else if (m?.message?.trim()?.isEmpty() == true && m.reactions.isNotEmpty()) {
             lastMessageText = m.reactions.last().reaction
         }
         return this
@@ -317,13 +344,11 @@ data class ConversationRecord(
         )
     }
 
-    enum class ConversationType { GROUP, P2P, SELF }
-
-    fun conversationType(): ConversationType {
+    fun conversationType(): Int {
         return when {
-            isGroup -> ConversationType.GROUP
-            isP2P -> ConversationType.P2P
-            else -> ConversationType.SELF
+            isGroup -> Constants.CONVERSATION_TYPE_GROUP
+            isP2P -> Constants.CONVERSATION_TYPE_P2P
+            else -> Constants.CONVERSATION_TYPE_SELF
         }
     }
 

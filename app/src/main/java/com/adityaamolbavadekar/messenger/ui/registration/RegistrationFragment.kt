@@ -103,7 +103,7 @@ class RegistrationFragment : BindingHelperFragment<FragmentSignupPhoneBinding>()
         binding.phone.filters = binding.phone.filters + PhoneNumberEditTextFilter()
         binding.header.text = getString(R.string.enter_sms_code_we_sent_to, phoneNumber)
         binding.codeView.addTextChangedListener {
-            if (it!=null && it.length == 6) {
+            if (it != null && it.length == 6) {
                 val code = it.toString()
                 onCodeViewFilled(code)
             }
@@ -117,7 +117,7 @@ class RegistrationFragment : BindingHelperFragment<FragmentSignupPhoneBinding>()
             if (!it.isEmpty()) {
                 val code = it.code.removePrefix("+")
                 binding.countryName.text = it.country
-                if (binding.countryCode.text!=null && binding.countryCode.text!!.toString() != code) {
+                if (binding.countryCode.text != null && binding.countryCode.text!!.toString() != code) {
                     binding.countryCode.setText(code)
                     binding.countryCode.setSelection(code.length)
                 }
@@ -152,28 +152,25 @@ class RegistrationFragment : BindingHelperFragment<FragmentSignupPhoneBinding>()
 
         binding.nextButton.setOnClickListener {
             val code = viewModel.selectedCountryInfo.value!!.code.removePrefix("+")
-            val simplePhoneNumber = binding.phone.text.toString().trim().toLowerCase(Locale.ROOT)
+            val simplePhoneNumber =
+                binding.phone.text.toString().trim().lowercase(Locale.getDefault())
             validate(simplePhoneNumber, code)
         }
-
-        try {
-            initDisclaimer()
-        } catch (e: Exception) {
-        }
-
+        initDisclaimer()
     }
 
     private fun validateAndEnableButton() {
         val editable = binding.phone.text
         val countryCode = viewModel.selectedCountryInfo.value!!
         binding.nextButton.isEnabled =
-            editable != null && editable.length > 9 && countryCode.isNotEmpty() && binding.countryCode.text.toString().trim().isNotEmpty()
+            editable != null && editable.length > 9 && countryCode.isNotEmpty() && binding.countryCode.text.toString()
+                .trim().isNotEmpty()
     }
 
     private fun initDisclaimer() {
 
-        val privacyPolicyClickableSpan = CustomLinkHandlerSpan("https://github.com/AdityaBavadekar/Messenger/blob/dev/PrivacyPolicy.md")
-        val termsClickableSpan = CustomLinkHandlerSpan("https://google.com")
+        val privacyPolicyClickableSpan = CustomLinkHandlerSpan(Constants.Application.POLICY_LINK)
+        val termsClickableSpan = CustomLinkHandlerSpan(Constants.Application.TERMS_LINK)
 
         val privacyPolicyText = getString(R.string.privacy_policy)
         val terms = getString(R.string.terms_of_service)

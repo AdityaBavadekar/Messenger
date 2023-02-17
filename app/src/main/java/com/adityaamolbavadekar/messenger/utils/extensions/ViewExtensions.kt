@@ -32,6 +32,7 @@ import androidx.core.view.updatePadding
 import com.adityaamolbavadekar.messenger.R
 import com.adityaamolbavadekar.messenger.utils.Constants.TimestampFormats.MESSAGE_TIMESTAMP_FORMAT
 import com.adityaamolbavadekar.messenger.utils.Constants.TimestampFormats.SLASHED_TIMESTAMP_FORMAT_FULL
+import com.adityaamolbavadekar.messenger.utils.Constants.TimestampFormats.TIMESTAMP_FORMAT_DAY
 import com.adityaamolbavadekar.messenger.utils.Constants.TimestampFormats.TIMESTAMP_FORMAT_DAY_MONTH
 import com.adityaamolbavadekar.messenger.utils.Constants.TimestampFormats.TIMESTAMP_FORMAT_DAY_MONTH_YEAR
 import com.bumptech.glide.Glide
@@ -139,14 +140,14 @@ fun getDateForConversationListLastUpdated(milis: Long, context: Context? = null)
 }
 
 fun getDateStub(milis: Long): String {
-    val m = Calendar.getInstance()
-    m.timeInMillis = milis
+    val now = Calendar.getInstance()
+    now.timeInMillis = milis
     val cal = Calendar.getInstance()
-    return if (cal[Calendar.YEAR] == m[Calendar.YEAR]) {
+    return if (cal[Calendar.YEAR] == now[Calendar.YEAR]) {
         when {
-            cal[Calendar.DAY_OF_MONTH] == m[Calendar.DAY_OF_MONTH] -> "T"
-            cal[Calendar.DAY_OF_MONTH] - 1 == m[Calendar.DAY_OF_MONTH] -> "Y"
-            else -> simpleDateFormat(milis, TIMESTAMP_FORMAT_DAY_MONTH)
+            cal[Calendar.DAY_OF_MONTH] == now[Calendar.DAY_OF_MONTH] -> "T" //Today
+            cal[Calendar.DAY_OF_MONTH] - 1 == now[Calendar.DAY_OF_MONTH] -> "Y" //Yesterday
+            else -> simpleDateFormat(milis, TIMESTAMP_FORMAT_DAY)
         }
     } else simpleDateFormat(milis, TIMESTAMP_FORMAT_DAY_MONTH_YEAR)
 }

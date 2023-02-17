@@ -23,13 +23,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.updateLayoutParams
 import com.adityaamolbavadekar.messenger.utils.base.BaseFragment
+import com.adityaamolbavadekar.messenger.utils.logging.InternalLogger
 
 abstract class ComposeBottomFragment(height: Int = 0) : BaseFragment() {
 
-    private var fragmentHeight : Int = height
-
+    private var fragmentHeight: Int = height
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        InternalLogger.logD(javaClass.simpleName, "onViewCreated")
         updateHeight(view)
     }
 

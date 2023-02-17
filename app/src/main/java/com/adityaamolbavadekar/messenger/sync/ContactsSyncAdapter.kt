@@ -76,7 +76,8 @@ class ContactsSyncAdapter @JvmOverloads constructor(
             TAG,
             "onPerformSync(account=[${account ?: "null"}]\nauthority=[${authority ?: "null"}])"
         )
-        if (!authManager.isLoggedIn) return
+        // Return if user is not logged in or if Contacts Sync is not allowed
+        if (!authManager.isLoggedIn || prefsManager.isContactsSyncAllowed() != Constants.CONTACTS_SYNC_ALLOWED) return
 
         cloudDatabaseManager.Users().getUser(authManager.uid, onGetUserInfoCallback)
 

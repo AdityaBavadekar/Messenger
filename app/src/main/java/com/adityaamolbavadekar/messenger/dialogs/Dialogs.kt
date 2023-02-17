@@ -398,10 +398,6 @@ object Dialogs {
         }
     }
 
-    fun showEmojiBottomSheet(context: Context) {
-
-    }
-
     fun showThemeChooserDialog(context: Context, onChanged: () -> Unit) {
         MaterialAlertDialogBuilder(context)
             .setCancelable(true)

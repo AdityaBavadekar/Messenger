@@ -38,6 +38,7 @@ import com.adityaamolbavadekar.messenger.managers.PrefsManager.Companion.applyFo
 import com.adityaamolbavadekar.messenger.managers.PrefsManager.Companion.prefs
 import com.adityaamolbavadekar.messenger.model.*
 import com.adityaamolbavadekar.messenger.utils.extensions.getDate
+import com.adityaamolbavadekar.messenger.utils.logging.InternalLogger
 import com.adityaamolbavadekar.messenger.utils.recyclerview.BaseItemHolder
 import com.adityaamolbavadekar.messenger.utils.recyclerview.Details
 import com.adityaamolbavadekar.messenger.views.MessageItem
@@ -48,9 +49,11 @@ class MessagesAdapter(private val lifecycleOwner: LifecycleOwner) :
     ) {
 
     private var isGroup: Boolean = false
+    private var isDebug: Boolean = InternalLogger.isDebugBuild
     private var recipients = listOf<Recipient>()
     private var conversationRecord: ConversationRecord? = null
     private var onReactionListener: OnReactionListener? = null
+    private var deletionListener: MessageDeletionListener? = null
 
     @Suppress("UNNECESSARY_SAFE_CALL")
     fun setConversationWithRecipients(conversationWithRecipients: ConversationWithRecipients) {
@@ -63,6 +66,10 @@ class MessagesAdapter(private val lifecycleOwner: LifecycleOwner) :
 
     fun setOnReactionListener(block: OnReactionListener) {
         this.onReactionListener = block
+    }
+
+    fun setDeletionListener(block: MessageDeletionListener) {
+        this.deletionListener = block
     }
 
     private val myUid: String = AuthManager().uid
@@ -204,6 +211,8 @@ class MessagesAdapter(private val lifecycleOwner: LifecycleOwner) :
             super.bind(messageRecord, position, onItemClickCallback)
             onReactionListener?.let { view.setOnReactionListener(it) }
             view.setSelectionTracker { getItemSelectionTracker() }
+            deletionListener?.let { view.setOnDeletionListener(it) }
+            view.setDebug(isDebug)
             view.bind(
                 lifecycleOwner = lifecycleOwner,
                 message = messageRecord,
@@ -212,7 +221,8 @@ class MessagesAdapter(private val lifecycleOwner: LifecycleOwner) :
                 conversationRecord = conversationRecord,
                 sender = recipients.valueOf(messageRecord.senderUid),
                 isIncomingMessage = messageRecord.senderUid != myUid,
-                getItemDetails().selectionKey
+                getItemDetails().selectionKey,
+                position
             )
         }
 

@@ -19,4 +19,9 @@
 
 <resources>
     <string name="default_description">Hey! I am on Messenger.</string>
+    <string name="unknown">Unknown</string>
+    <string name="failed">Failed</string>
+    <string name="read">Read</string>
+    <string name="sent">Sent</string>
+    <string name="not_sent">Not sent</string>
 </resources>
