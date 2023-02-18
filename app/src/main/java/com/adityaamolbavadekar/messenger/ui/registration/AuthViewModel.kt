@@ -115,7 +115,7 @@ class AuthViewModel : ViewModel() {
     }
 
     private fun onGetDeviceDefaultCountry(countryString: String) {
-        val country = countryString.toUpperCase(Locale.ENGLISH)
+        val country = countryString.uppercase(Locale.ENGLISH)
         if (shortNamesArray.contains(country)) {
             val i = shortNamesArray.indexOf(country)
             updatedSelectedCountryInfo(countryInfoList.value!![i].setSelected(true))

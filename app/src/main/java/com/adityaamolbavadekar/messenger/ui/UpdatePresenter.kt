@@ -24,20 +24,16 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.widget.FrameLayout
-import androidx.activity.viewModels
+import android.widget.Toast
+import com.adityaamolbavadekar.messenger.BuildConfig
 import com.adityaamolbavadekar.messenger.R
-import com.adityaamolbavadekar.messenger.ui.shake.ShakePresenterViewModel
-import com.adityaamolbavadekar.messenger.utils.Constants
-import com.adityaamolbavadekar.messenger.utils.ScreenCaptureUtil
-import com.adityaamolbavadekar.messenger.utils.ScreenCaptureUtil.Companion.to
+import com.adityaamolbavadekar.messenger.managers.PrefsManager
+import com.adityaamolbavadekar.messenger.utils.UpdateUtil
 import com.adityaamolbavadekar.messenger.utils.base.LifecycleLoggerActivity
-import com.adityaamolbavadekar.messenger.utils.logging.InternalLogger
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import java.io.File
 
-class ShakePresenter : LifecycleLoggerActivity() {
+class UpdatePresenter : LifecycleLoggerActivity() {
 
-    private val viewModel: ShakePresenterViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -49,18 +45,22 @@ class ShakePresenter : LifecycleLoggerActivity() {
         }
 
         setContentView(root)
-        val file = File.createTempFile("screen-capture-image", "jpeg")
-        val capture = ScreenCaptureUtil.cap(root).to(file)
-        if (capture) InternalLogger.logD(
-            TAG,
-            "Successfully saved screenCapture to ${file.absolutePath}"
-        )
+        val prefsManager = PrefsManager(this)
+        val currentVersionCode = BuildConfig.VERSION_CODE
+        val updateInfo = prefsManager.getUpdateInfo()
+        if (updateInfo == null || updateInfo.versionCode <= currentVersionCode) return finish()
 
         MaterialAlertDialogBuilder(this)
-            .setTitle(getString(R.string.shake_to_send_feedback))
-            .setMessage(getString(R.string.shake_presenter_dialog_message))
-            .setIcon(R.drawable.ic_feedback)
-            .setNeutralButton(R.string.dismiss) { d, _ ->
+            .setTitle(getString(R.string.update_available))
+            .setMessage(
+                getString(
+                    R.string.update_dialog_message,
+                    BuildConfig.VERSION_NAME,
+                    updateInfo.versionName
+                )
+            )
+            .setIcon(R.drawable.ic_chat_bubble)
+            .setNeutralButton(R.string.skip) { d, _ ->
                 d.cancel()
                 if (!isFinishing) finish()
             }
@@ -68,17 +68,12 @@ class ShakePresenter : LifecycleLoggerActivity() {
                 it.dismiss()
                 if (!isFinishing) finish()
             }
-            .setPositiveButton(getString(R.string.send_feedback)) { d, _ ->
+            .setPositiveButton(getString(R.string.update)) { d, _ ->
                 d.dismiss()
+                Toast.makeText(this, getString(R.string.updating_in_background), Toast.LENGTH_SHORT)
+                    .show()
+                UpdateUtil.startUpdate(this, updateInfo)
                 if (!isFinishing) finish()
-                val path = viewModel.filePath.value
-                Intent(Intent.ACTION_SEND).apply {
-                    putExtra(Intent.EXTRA_EMAIL, arrayListOf(Constants.SUPPORT_EMAIL))
-                    putExtra(Intent.EXTRA_SUBJECT, getString(R.string.messenger_feedback))
-                    putExtra(Intent.EXTRA_TEXT, "ID=${path ?: "F"}\nFeedback : \n")
-                    type = "message/rfc822"
-                    startActivity(Intent.createChooser(this, getString(R.string.send_feedback)))
-                }
             }
             .create()
             .show()
@@ -86,10 +81,8 @@ class ShakePresenter : LifecycleLoggerActivity() {
 
 
     companion object {
-        private val TAG = ShakePresenter::class.java.simpleName
-
         fun start(context: Context) {
-            Intent(context, ShakePresenter::class.java).apply {
+            Intent(context, UpdatePresenter::class.java).apply {
                 addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 context.startActivity(this)
             }

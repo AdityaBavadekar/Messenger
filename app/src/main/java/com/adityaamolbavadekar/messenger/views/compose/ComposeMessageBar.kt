@@ -157,6 +157,10 @@ class ComposeMessageBar @JvmOverloads constructor(
 
     fun setOnAttachListener(listener: OnClickListener?) {
         this.addButton.setOnClickListener(listener)
+        this.addButton.setOnLongClickListener {
+            listener?.onClick(it)
+            true
+        }
     }
 
     fun setOnAttachImagesListener(listener: () -> Unit) {
@@ -305,7 +309,7 @@ class ComposeMessageBar @JvmOverloads constructor(
         afterInputTextChangedListener()
     }
 
-    fun checkIfLinksChanged(it:Editable?){
+    fun checkIfLinksChanged(it: Editable?) {
         if (it.toString().containsUrls) {
             //Get urls to first url preview
             currentlyExtractedLinks = it.toString().extractUrls()

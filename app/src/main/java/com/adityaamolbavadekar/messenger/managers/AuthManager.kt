@@ -136,7 +136,7 @@ class AuthManager {
     }
 
     private fun printAuthResult(u: FirebaseUser) {
-        InternalLogger.logI(
+        InternalLogger.debugInfo(
             TAG, "FirebaseLoggedInUser => \n" +
                     "Name : ${u.displayName ?: "None"}\n" +
                     "Email : ${u.email ?: "None"}\n" +

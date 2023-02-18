@@ -21,9 +21,18 @@ package com.adityaamolbavadekar.messenger.model
 import java.util.*
 
 class Id {
-    companion object{
+    companion object {
         fun get(): String {
             return UUID.randomUUID().toString()
+        }
+
+        fun getSpecial(): String {
+            val id1 = get()
+            val len = id1.length
+            var id2 = get().trim('-', '_')
+            val id1Comps = id1.trim('-', '_').map { it }
+            while (id2.length != len) id2 += id1Comps.random().toString()
+            return id2
         }
     }
 }

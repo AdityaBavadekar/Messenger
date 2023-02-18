@@ -30,6 +30,8 @@ import com.adityaamolbavadekar.messenger.model.Recipient
 import com.adityaamolbavadekar.messenger.model.toUidList
 import com.adityaamolbavadekar.messenger.utils.Operation
 import com.adityaamolbavadekar.messenger.utils.logging.InternalLogger
+import com.google.android.gms.tasks.Task
+import com.google.android.gms.tasks.TaskCompletionSource
 
 class CreateGroupViewModel : ViewModel() {
 
@@ -43,9 +45,9 @@ class CreateGroupViewModel : ViewModel() {
         database: DatabaseAndroidViewModel,
         title: String,
         description: String,
-        photoUrl: String? = null,
-        operation: Operation<String>?
-    ) {
+        photoUrl: String? = null
+    ): Task<ConversationRecord> {
+        val source = TaskCompletionSource<ConversationRecord>()
         val recipientsList = recipients.value!!.toMutableList()
         if (!recipientsList.contains(me)) {
             recipientsList.add(me)
@@ -69,8 +71,9 @@ class CreateGroupViewModel : ViewModel() {
         database.insertOrUpdateMessage(groupCreationMessage)
         CloudDatabaseManager().Conversations()
             .createGroupConversation(conversation.toRemoteConversation())
-            .addOnSuccessListener { operation?.addOnSuccessListener(conversation.conversationId) }
-            .addOnFailureListener { operation?.addOnFailureListener(it) }
+            .addOnSuccessListener { source.setResult(conversation) }
+            .addOnFailureListener { source.setException(it) }
+        return source.task
     }
 
     fun setMeRecipient(meRecipient: Recipient) {
@@ -96,7 +99,7 @@ class CreateGroupViewModel : ViewModel() {
         _recipients.postValue(list)
     }
 
-    companion object{
+    companion object {
         private val TAG = CreateGroupViewModel::class.java.simpleName
     }
 

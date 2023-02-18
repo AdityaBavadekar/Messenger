@@ -489,7 +489,7 @@ class CloudDatabaseManager {
                         val messagesList = mutableListOf<MessageRecord>()
                         snapshot.children.forEach { m ->
                             m.getValue<MessageRecord>()?.let { message ->
-                                InternalLogger.logI(TAG, "Message : $message")
+                                InternalLogger.debugInfo(TAG, "Message : $message")
                                 messagesList.add(message)
                             }
                         }

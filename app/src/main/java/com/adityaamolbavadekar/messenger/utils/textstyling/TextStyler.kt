@@ -41,7 +41,7 @@ object TextStyler {
         try {
             listener(code(italic(bold(spannableStringBuilder, c), c), c))
         } catch (e: Exception) {
-            InternalLogger.logD("TextStyler", "Unable to parse string", e)
+            InternalLogger.logW("TextStyler", "Unable to parse string", e)
             listener(SpannableStringBuilder(string))
         }
     }

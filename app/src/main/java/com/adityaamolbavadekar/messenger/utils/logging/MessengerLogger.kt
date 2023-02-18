@@ -19,11 +19,14 @@
 package com.adityaamolbavadekar.messenger.utils.logging
 
 import android.util.Log
+import com.adityaamolbavadekar.messenger.BuildConfig
 
-class MessengerLogger(private val tag: String= MESSENGER_LOGGER_TAG) {
+class MessengerLogger(private val tag: String = MESSENGER_LOGGER_TAG) {
+
+    private val debug: Boolean = BuildConfig.DEBUG
 
     private fun canLog(level: Int): Boolean {
-        return InternalLogger.canLog(level) && Log.isLoggable(tag, level)
+        return if (debug) true else Log.isLoggable(tag, level)
     }
 
     fun d(text: String, throwable: Throwable? = null) {
@@ -34,25 +37,25 @@ class MessengerLogger(private val tag: String= MESSENGER_LOGGER_TAG) {
 
     fun v(text: String, throwable: Throwable? = null) {
         if (canLog(Log.DEBUG)) {
-            Log.d(tag, text, throwable)
+            Log.v(tag, text, throwable)
         }
     }
 
     fun i(text: String, throwable: Throwable? = null) {
         if (canLog(Log.INFO)) {
-            Log.d(tag, text, throwable)
+            Log.i(tag, text, throwable)
         }
     }
 
     fun w(text: String, throwable: Throwable? = null) {
         if (canLog(Log.WARN)) {
-            Log.d(tag, text, throwable)
+            Log.w(tag, text, throwable)
         }
     }
 
     fun e(text: String, throwable: Throwable? = null) {
         if (canLog(Log.ERROR)) {
-            Log.d(tag, text, throwable)
+            Log.e(tag, text, throwable)
         }
     }
 

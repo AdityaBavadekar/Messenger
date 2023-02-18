@@ -24,6 +24,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.ArrayRes
+import androidx.annotation.DrawableRes
 import androidx.core.view.isGone
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.GridLayoutManager
@@ -133,7 +134,7 @@ class EmojiBottomFragment(fragmentHeight: Int, private val onEmojiClicked: (Stri
 
     }
 
-    enum class EmojiCategeory(@ArrayRes private val resId: Int, val id: Int) {
+    enum class EmojiCategeory(@ArrayRes private val resId: Int, val id: Int,@DrawableRes private val drawableRes:Int=0) {
         Activities(R.array.emoji_activities, 0),
         Emotions(R.array.emoji_emotions, 1),
         Flags(R.array.emoji_flags, 2),

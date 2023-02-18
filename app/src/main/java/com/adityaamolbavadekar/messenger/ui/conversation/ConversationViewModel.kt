@@ -198,7 +198,7 @@ class ConversationViewModel : ViewModel() {
         _conversationPhoto.postValue(data.conversationRecord.photoUrl)
         _conversationTitle.postValue(data.conversationRecord.title)
         conversationType = data.conversationRecord.conversationType()
-        startObservingRemoteData(if (conversationType == Constants.CONVERSATION_TYPE_P2P) data.conversationRecord.p2PRecipientUid() else null)
+        startObservingRemoteData(if (conversationType == ConversationRecord.CONVERSATION_TYPE_P2P) data.conversationRecord.p2PRecipientUid() else null)
         this._conversationWithRecipients.postValue(data)
     }
 
@@ -256,12 +256,12 @@ class ConversationViewModel : ViewModel() {
     private fun startObservingRemoteData(p2pUid: String?) {
         if (isObservingRemoteDatabase) return
         when (conversationType) {
-            Constants.CONVERSATION_TYPE_GROUP -> startObservingRemoteGroupData()
-            Constants.CONVERSATION_TYPE_P2P -> startObservingRemoteP2PData(
+            ConversationRecord.CONVERSATION_TYPE_GROUP -> startObservingRemoteGroupData()
+            ConversationRecord.CONVERSATION_TYPE_P2P -> startObservingRemoteP2PData(
                 requireNotNull(
                     p2pUid
                 ) { "P2PUid cannot be null" })
-            Constants.CONVERSATION_TYPE_SELF -> startObservingRemoteP2PData(me.uid, false)
+            ConversationRecord.CONVERSATION_TYPE_SELF -> startObservingRemoteP2PData(me.uid, false)
             else -> throw IllegalStateException("ConversationType $conversationType is unknown.")
         }
         isObservingRemoteDatabase = true
@@ -374,13 +374,13 @@ class ConversationViewModel : ViewModel() {
 
     fun delete(messageRecord: MessageRecord, forEveryone: Boolean) {
         if (forEveryone) {
-            if(conversationType == Constants.CONVERSATION_TYPE_P2P){
+            if(conversationType == ConversationRecord.CONVERSATION_TYPE_P2P){
                 val p2pUid = conversationWithRecipients.value!!.conversationRecord.p2PRecipientUid()
                 messageDeleter.deleteForEveryoneP2P(p2pUid,messageRecord)
             }
-            if(conversationType == Constants.CONVERSATION_TYPE_GROUP)messageDeleter.deleteForEveryoneGroup(messageRecord)
+            if(conversationType == ConversationRecord.CONVERSATION_TYPE_GROUP)messageDeleter.deleteForEveryoneGroup(messageRecord)
         } else {
-            if (conversationType == Constants.CONVERSATION_TYPE_P2P) {
+            if (conversationType == ConversationRecord.CONVERSATION_TYPE_P2P) {
                 val p2pUid = conversationWithRecipients.value!!.conversationRecord.p2PRecipientUid()
                 messageDeleter.deleteForMe(p2pUid, messageRecord)
             }

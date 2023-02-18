@@ -23,7 +23,7 @@ package com.adityaamolbavadekar.messenger.model
  * */
 interface ConversationPermissionType {
 
-    companion object{
+    companion object {
         /* Default */
         private const val PERMIT_ALL = 100
 
@@ -34,14 +34,14 @@ interface ConversationPermissionType {
         private const val UNKNOWN = -1
     }
 
-    fun permitAll()= PERMIT_ALL
-    fun permitManagersOnly()= PERMIT_MANAGERS_ONLY
+    fun permitAll() = PERMIT_ALL
+    fun permitManagersOnly() = PERMIT_MANAGERS_ONLY
 
     fun isRestricted(permission: Int): Boolean {
         return permission == PERMIT_MANAGERS_ONLY
     }
 
-    fun getField(conversation:BaseConversation) : Int
+    fun getField(conversation: BaseConversation): Int
 
 
     fun getPermissionString(permission: Int): String {

@@ -27,6 +27,7 @@ import com.adityaamolbavadekar.messenger.managers.FcmTokenManager
 import com.adityaamolbavadekar.messenger.managers.InternetManager
 import com.adityaamolbavadekar.messenger.model.UpdateInfo
 import com.adityaamolbavadekar.messenger.notifications.NotificationHelper
+import com.adityaamolbavadekar.messenger.ui.UpdatePresenter
 import com.adityaamolbavadekar.messenger.utils.Constants
 import com.adityaamolbavadekar.messenger.utils.OnResponseCallback
 import com.adityaamolbavadekar.messenger.utils.UpdateUtil
@@ -84,7 +85,8 @@ object AppStartup {
         MessengerAccountAuthenticator.account(application.applicationContext)?.let {
             try {
                 ContentResolver.requestSync(it, Constants.DATA_SYNC_AUTHORITY, Bundle())
-            } catch (_: Exception) {
+            } catch (e: Exception) {
+                InternalLogger.logE(TAG,"Unable to request sync",e)
             }
         }
         methodTracer.putTraceData("onApplicationCreated", "finished").end()
@@ -99,6 +101,7 @@ object AppStartup {
                     "A newer version (CURRENT[${BuildConfig.VERSION_CODE}],LATEST=${t.versionCode}) is available." +
                             " NAME[CURRENT=${BuildConfig.VERSION_NAME},LATEST=[${t.versionName}]"
                 )
+                UpdatePresenter.start(application.applicationContext)
             }
         }
 

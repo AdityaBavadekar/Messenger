@@ -113,7 +113,7 @@ class ShareActionPicker : BaseActivity() {
                             ConversationActivity.createNewIntent(
                                 requireContext(),
                                 it.conversationId,
-                                Constants.CONVERSATION_TYPE_P2P
+                                ConversationRecord.CONVERSATION_TYPE_P2P
                             ).putExtra(Intent.EXTRA_TEXT, extraText)
                         )
                         return requireActivity().finish()

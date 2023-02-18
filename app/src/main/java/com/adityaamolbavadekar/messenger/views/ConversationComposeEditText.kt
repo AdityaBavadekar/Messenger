@@ -61,7 +61,7 @@ class ConversationComposeEditText @JvmOverloads constructor(
                     val uri = clip.getItemAt(0).uri
                     val label =
                         clip.description.label.toString()
-                    InternalLogger.logI(
+                    InternalLogger.debugInfo(
                         TAG,
                         "Insertion : Uri = $uri, Type = $mimeType Label = $label"
                     )

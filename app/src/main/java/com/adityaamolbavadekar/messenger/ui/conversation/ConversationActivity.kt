@@ -42,8 +42,8 @@ import com.adityaamolbavadekar.messenger.model.MessageRecord
 import com.adityaamolbavadekar.messenger.model.Recipient
 import com.adityaamolbavadekar.messenger.ui.conversation_info.ConversationInfoActivity
 import com.adityaamolbavadekar.messenger.ui.picture_upload_preview.PictureUploadPreviewActivity
-import com.adityaamolbavadekar.messenger.utils.Constants.EXTRA_CONVERSATION_ID
 import com.adityaamolbavadekar.messenger.utils.Constants
+import com.adityaamolbavadekar.messenger.utils.Constants.EXTRA_CONVERSATION_ID
 import com.adityaamolbavadekar.messenger.utils.Constants.Extras.EXTRA_CONVERSATION_TYPE
 import com.adityaamolbavadekar.messenger.utils.KeyboardUtils
 import com.adityaamolbavadekar.messenger.utils.OnResponseCallback
@@ -146,7 +146,8 @@ class ConversationActivity : BaseActivity() {
         prefsManager = PrefsManager(this)
         val user = prefsManager.getUserObject()!!
         me = Recipient.Builder(user).build()
-        val conversationType = intent.getIntExtra(Constants.Extras.EXTRA_CONVERSATION_TYPE)!!
+        val conversationType = intent.getIntExtra(EXTRA_CONVERSATION_TYPE, -1)
+        check(conversationType != -1) { "ConversationType cannot be null" }
         InternalLogger.logD(TAG, "ConversationType=$conversationType")
         val p2pUid = intent.getStringExtra(Constants.Extras.EXTRA_USER_UID)
         viewModel.configure(me, conversationId, database)
@@ -209,11 +210,10 @@ class ConversationActivity : BaseActivity() {
             } else removeAnyAddedBottomFragments()
         }
 
-        binding.composeBar.setOnEmojiButtonLongClickListener {
+        binding.composeBar.setOnEmojiButtonClickListener {
             EmojiPopupWindow.build({
                 binding.composeBar.appendComposeText(it)
             }, binding.root, this, latestKeyboardHeight)
-            true
         }
 
         /** Toggles visibility of add bottomsheet. */

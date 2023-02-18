@@ -23,10 +23,6 @@ import java.util.*
 
 object Constants {
 
-    const val CONVERSATION_TYPE_SELF: Int = 1
-    const val CONVERSATION_TYPE_P2P: Int = 2
-    const val CONVERSATION_TYPE_GROUP: Int = 3
-
     const val CONTACTS_SYNC_NOT_PROMPTED: Int = 1
     const val CONTACTS_SYNC_ALLOWED: Int = 2
     const val CONTACTS_SYNC_DENIED: Int = 3

@@ -22,7 +22,6 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.net.Uri
 import android.widget.TextView
-import androidx.annotation.IntDef
 import androidx.core.content.edit
 import androidx.core.widget.TextViewCompat
 import androidx.preference.PreferenceManager
@@ -250,7 +249,7 @@ class PrefsManager(private val context: Context) {
     }
 
     private fun logFieldValueSaved(s: String) {
-        InternalLogger.logI(TAG, "Value saved $s")
+        InternalLogger.debugInfo(TAG, "Value saved $s")
     }
 
     fun saveUserPhotoUrl(photoUrl: String?) {

@@ -27,8 +27,10 @@ import com.adityaamolbavadekar.messenger.utils.theming.ThemeInfo.Companion.getPr
 
 open class LifecycleLoggerActivity : AppCompatActivity() {
 
+    private val tag = javaClass.simpleName
+
     override fun onCreate(savedInstanceState: Bundle?) {
-        getLogger().d(ON_CREATE)
+        getLogger().d(tag+": "+ON_CREATE)
         logEvent(ON_CREATE)
         getPreferredThemeInfo().apply()
         super.onCreate(savedInstanceState)

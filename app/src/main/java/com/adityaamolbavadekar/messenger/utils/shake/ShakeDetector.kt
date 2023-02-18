@@ -96,8 +96,8 @@ class ShakeDetector(private val listener: Listener) : SensorEventListener {
         queue.add(timestamp, accelerating)
         if (queue.isShaking) {
             queue.clear()
-            InternalLogger.logW(TAG, "Shake was detected.")
-            InternalLogger.logW(TAG, "Notifying listener.")
+            InternalLogger.logI(TAG, "Shake was detected.")
+            InternalLogger.logI(TAG, "Notifying listener.")
             listener.onShakeDetected()
         }
     }

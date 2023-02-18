@@ -173,6 +173,10 @@ data class ConversationRecord(
 
     companion object {
 
+        const val CONVERSATION_TYPE_SELF: Int = 1
+        const val CONVERSATION_TYPE_P2P: Int = 2
+        const val CONVERSATION_TYPE_GROUP: Int = 3
+
         fun newPerson2Person(
             recipient: Recipient,
             loggedInRecipient: Recipient
@@ -184,7 +188,7 @@ data class ConversationRecord(
             recipientInfoHashMap.add(RemoteRecipient.fromRecipient(recipient))
             recipientInfoHashMap.add(RemoteRecipient.fromRecipient(loggedInRecipient))
             val c = ConversationRecord(
-                conversationId = UUID.randomUUID().toString(),
+                conversationId = Id.getSpecial(),
                 title = recipient.loadName(),
                 photoUrl = recipient.photoUrl,
                 description = recipient.tempAbout,
@@ -206,7 +210,7 @@ data class ConversationRecord(
         ): ConversationRecord {
             val recipientInfoHashMap = mutableListOf(RemoteRecipient.newManager(me.uid))
             return ConversationRecord(
-                UUID.randomUUID().toString(),
+                Id.getSpecial(),
                 me.loadName(),
                 photoUrl = me.photoUrl,
                 databasePath = null,
@@ -226,7 +230,7 @@ data class ConversationRecord(
             recipients: MutableList<String>,
             creatorUid: String,
             url: String? = null,
-            conversationId: String = UUID.randomUUID().toString(),
+            conversationId: String = Id.getSpecial(),
             description: String? = null,
         ): ConversationRecord {
             val desc: String? = if (description == null || description.trim().isEmpty()) {
@@ -346,9 +350,9 @@ data class ConversationRecord(
 
     fun conversationType(): Int {
         return when {
-            isGroup -> Constants.CONVERSATION_TYPE_GROUP
-            isP2P -> Constants.CONVERSATION_TYPE_P2P
-            else -> Constants.CONVERSATION_TYPE_SELF
+            isGroup -> CONVERSATION_TYPE_GROUP
+            isP2P -> CONVERSATION_TYPE_P2P
+            else -> CONVERSATION_TYPE_SELF
         }
     }
 

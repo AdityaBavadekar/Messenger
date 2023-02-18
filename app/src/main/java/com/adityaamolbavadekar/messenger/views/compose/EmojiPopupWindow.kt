@@ -67,6 +67,7 @@ private constructor(
             adapter = listAdapter
         }
 
+
         EmojiBottomFragment.EmojiCategeory.allTitles().forEachIndexed { index, s ->
             val item = binding.emojiCategoriesTabLayout.newTab()
                 .setText(s)
@@ -76,6 +77,7 @@ private constructor(
         }
 
         binding.emojiCategoriesTabLayout.addOnTabSelectedListener(this)
+        binding.emojiCategoriesTabLayout.tabMode = MODE_SCROLLABLE
         changeTab(0)
     }
 

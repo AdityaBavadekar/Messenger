@@ -236,7 +236,7 @@ class SettingsRootFragment : BindingHelperFragment<SettingsRootFragmentBinding>(
     }
 
     companion object {
-        private val TAG = SettingsRootFragment::class.javaClass.simpleName
+        private val TAG = SettingsRootFragment::class.java.simpleName
     }
 
 

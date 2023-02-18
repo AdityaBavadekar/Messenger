@@ -43,16 +43,12 @@ object InternalLogger {
         internalLog(TAG, m, PinLog.LogLevel.WARN)
     }
 
-    fun logW(TAG: String, m: String, e: Throwable) {
-        internalLog(TAG, m, PinLog.LogLevel.WARN, e)
-    }
-
     fun logD(TAG: String, m: String) {
         internalLog(TAG, m, PinLog.LogLevel.DEBUG)
     }
 
-    fun logD(TAG: String, m: String, e: Throwable) {
-        internalLog(TAG, m, PinLog.LogLevel.DEBUG, e)
+    fun logW(TAG: String, m: String, e: Throwable) {
+        internalLog(TAG, m, PinLog.LogLevel.WARN, e)
     }
 
     fun logI(TAG: String, m: String) {
@@ -105,13 +101,13 @@ object InternalLogger {
 
         if (logType == PinLog.LogLevel.ERROR) logger.e(text, e)
         if (persist) persistLog(TAG, m, logType, e)
-        if (isStrictErrorOnlyLogging) return
+        if (!isDebugBuild) return
 
         return when (logType) {
             PinLog.LogLevel.INFO -> logger.i(text, e)
             PinLog.LogLevel.WARN -> logger.w(text, e)
-            PinLog.LogLevel.ERROR -> logger.d(text, e)
-            else -> {}
+            PinLog.LogLevel.DEBUG -> logger.d(text, e)
+            else -> logger.v(text,e)
         }
     }
 
@@ -167,8 +163,12 @@ object InternalLogger {
      * */
     fun debugInfo(TAG: String, m: String, e: Throwable? = null) {
         if (isDebugBuild) {
-            return internalAndroidLog(TAG, m, PinLog.LogLevel.INFO, e, false)
+            return internalAndroidLog(TAG, m, PinLog.LogLevel.INFO, e, true)
         }
+    }
+
+    fun logPrivateInfo(TAG: String, m: String,e: Throwable?=null){
+        debugInfo(TAG,m,e)
     }
     /*LOGGING METHODS END*/
 
@@ -186,7 +186,6 @@ object InternalLogger {
         isInternalLoggerInitialized = true
         initializationTime = System.currentTimeMillis()
         d(internalLoggerTag, "Initializing...")
-        if (isDebugBuild) initialiseDebug(applicationContext as Application)
         initialiseProduction(this.applicationContext as Application)
     }
 
@@ -198,11 +197,6 @@ object InternalLogger {
             BuildConfig::class.java
         )
         d(internalLoggerTag, "Initialized ProductionLogging.")
-    }
-
-    private fun initialiseDebug(application: Application) {
-        PinLog.initialiseDebug(application, BuildConfig::class.java)
-        d(internalLoggerTag, "Initialized DebugLogging.")
     }
 
     fun getShareLogsIntent(c: Context, onResultListener: (Intent) -> Unit) = runOnIOThread {

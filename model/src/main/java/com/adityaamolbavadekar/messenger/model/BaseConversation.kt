@@ -95,7 +95,7 @@ abstract class BaseConversation constructor(
         } else false
     }
 
-    fun isEditingingRestrictedForUser(uid: String): Boolean {
+    fun isEditingRestrictedForUser(uid: String): Boolean {
         return if (editingPermissionType == EditingPermissionType.permitManagersOnly()) {
             !isManager(uid)
         } else false
