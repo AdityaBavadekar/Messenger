@@ -66,32 +66,29 @@ object Versions {
     private fun versionCodeGet(): Int {
         val size = 10000
         var returnVersionCode = ""
-
-        VERSION_NAME.forEachIndexed { index,it->
-            if (it.isDigit()) {
+        var index = 0
+        var flagPre = false
+        for (it in VERSION_NAME){
+            if (it.isDigit()) {              
                 if(index == 0 && it == '0'){
-                    returnVersionCode = (1*(size*100)).toString()
-                }
-                if (returnVersionCode == "" || returnVersionCode.startsWith("0")) {
-                    returnVersionCode = it.toString()
-                } else {
-                    returnVersionCode += it.toString()
+                    flagPre = true
+                    returnVersionCode = "1"
+                }else {
+                    if(flagPre && it!='0') returnVersionCode += it.toString()
+                    else if (!flagPre) returnVersionCode += it.toString()
                 }
             }
+            index++
         }
-
         while (returnVersionCode.startsWith("0")) {
             returnVersionCode = returnVersionCode.removePrefix("0")
         }
-
         if (returnVersionCode.trim().isEmpty()) return 1 * size
-
+        if (flagPre) return returnVersionCode.toInt()
         while (returnVersionCode.length != size.toString().length) {
-            returnVersionCode += "0"
+            returnVersionCode += '0'
         }
-
         return returnVersionCode.toInt()
-
     }
 
 }
