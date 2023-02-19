@@ -1,6 +1,5 @@
 /*
- *
- *    Copyright 2022 Aditya Bavadekar
+ *    Copyright 2023 Aditya Bavadekar
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -13,12 +12,10 @@
  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
- *
  */
 
 package com.adityaamolbavadekar.messenger.database.conversations
 
-import android.app.Application
 import androidx.lifecycle.*
 import com.adityaamolbavadekar.messenger.managers.AuthManager
 import com.adityaamolbavadekar.messenger.model.*
@@ -128,8 +125,8 @@ class DatabaseAndroidViewModel(dao: ConversationDao) : ViewModel() {
     fun deleteConversation(conversationId: String) = viewModelScope.launch(
         DEFAULT_DISPATCHER
     ) {
-        deleteConversationRecordRecipientCrossRefForConversation(conversationId)
         internalDeleteConversation(conversationId)
+        deleteConversationRecordRecipientCrossRefForConversation(conversationId)
     }
     /*[END] Conversation*/
 
@@ -157,7 +154,7 @@ class DatabaseAndroidViewModel(dao: ConversationDao) : ViewModel() {
     /*[END] Message*/
 
     /*[START] Recipient*/
-    private fun insertOrUpdateRecipient(recipient: Recipient) = viewModelScope.launch(
+    fun insertOrUpdateRecipient(recipient: Recipient) = viewModelScope.launch(
         DEFAULT_DISPATCHER
     ) {
         repo.insertRecipient(recipient)
@@ -283,12 +280,12 @@ class DatabaseAndroidViewModel(dao: ConversationDao) : ViewModel() {
     }
 
 
-    class Factory(private val database:ApplicationDatabase):ViewModelProvider.Factory{
+    class Factory(private val database: ApplicationDatabase) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            if(modelClass.isAssignableFrom(DatabaseAndroidViewModel::class.java)){
+            if (modelClass.isAssignableFrom(DatabaseAndroidViewModel::class.java)) {
                 @Suppress("UNCHECKED_CAST")
                 return DatabaseAndroidViewModel(database.dao()) as T
-            }else{
+            } else {
                 throw IllegalArgumentException("Unknown ViewModel class")
             }
         }

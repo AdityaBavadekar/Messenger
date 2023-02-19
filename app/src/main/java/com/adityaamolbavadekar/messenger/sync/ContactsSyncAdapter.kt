@@ -1,6 +1,5 @@
 /*
- *
- *    Copyright 2022 Aditya Bavadekar
+ *    Copyright 2023 Aditya Bavadekar
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -13,7 +12,6 @@
  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
- *
  */
 
 package com.adityaamolbavadekar.messenger.sync
@@ -76,7 +74,8 @@ class ContactsSyncAdapter @JvmOverloads constructor(
             TAG,
             "onPerformSync(account=[${account ?: "null"}]\nauthority=[${authority ?: "null"}])"
         )
-        if (!authManager.isLoggedIn) return
+        // Return if user is not logged in or if Contacts Sync is not allowed
+        if (!authManager.isLoggedIn || prefsManager.isContactsSyncAllowed() != Constants.CONTACTS_SYNC_ALLOWED) return
 
         cloudDatabaseManager.Users().getUser(authManager.uid, onGetUserInfoCallback)
 

@@ -1,6 +1,5 @@
 /*
- *
- *    Copyright 2022 Aditya Bavadekar
+ *    Copyright 2023 Aditya Bavadekar
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -13,7 +12,6 @@
  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
- *
  */
 
 package com.adityaamolbavadekar.messenger.utils.extensions
@@ -25,6 +23,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
 import com.adityaamolbavadekar.messenger.App
 import com.adityaamolbavadekar.messenger.R
+import com.adityaamolbavadekar.messenger.model.MessageRecord
 import com.adityaamolbavadekar.messenger.utils.AuthError
 import com.adityaamolbavadekar.messenger.utils.Validator
 import com.google.firebase.FirebaseNetworkException
@@ -94,4 +93,13 @@ fun Context.asApplicationClass(): App {
 
 fun Application.asApplicationClass(): App {
     return this as App
+}
+
+fun List<MessageRecord>.findFirstMessage(): MessageRecord? {
+    var index = 0
+    while (index != lastIndex){
+        if (!get(index).isTimestampHeader()) return get(index)
+        index++
+    }
+    return null
 }

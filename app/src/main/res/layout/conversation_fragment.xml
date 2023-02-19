@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?><!--
-  ~
-  ~    Copyright 2022 Aditya Bavadekar
+  ~    Copyright 2023 Aditya Bavadekar
   ~
   ~    Licensed under the Apache License, Version 2.0 (the "License");
   ~    you may not use this file except in compliance with the License.
@@ -13,7 +12,6 @@
   ~    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   ~    See the License for the specific language governing permissions and
   ~    limitations under the License.
-  ~
   -->
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -26,12 +24,13 @@
         android:id="@android:id/list"
         style="@style/Messenger.Widget.RecyclerView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_centerInParent="true"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        tools:itemCount="2"
         tools:listitem="@layout/message_item_sent_text" />
 
     <TextView
@@ -59,7 +58,7 @@
         android:visibility="gone"
         app:cardBackgroundColor="@color/messenger_widget_conversation_root_background"
         app:cardCornerRadius="32dp"
-        app:cardElevation="@dimen/dimen_2"
+        app:cardElevation="@dimen/appbar_elevation"
         app:cardForegroundColor="@android:color/transparent"
         tools:visibility="visible">
 
@@ -80,8 +79,7 @@
             android:layout_height="@dimen/jump_to_bottom_image_size"
             android:layout_gravity="center"
             android:padding="@dimen/dimen_8"
-            android:src="@drawable/ic_arrow_down"
-            />
+            android:src="@drawable/ic_arrow_down" />
 
     </com.google.android.material.card.MaterialCardView>
 

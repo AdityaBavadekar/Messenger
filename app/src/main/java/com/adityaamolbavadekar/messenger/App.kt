@@ -1,6 +1,5 @@
 /*
- *
- *    Copyright 2022 Aditya Bavadekar
+ *    Copyright 2023 Aditya Bavadekar
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -13,7 +12,6 @@
  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
- *
  */
 
 package com.adityaamolbavadekar.messenger
@@ -21,9 +19,11 @@ package com.adityaamolbavadekar.messenger
 import android.app.Application
 import com.adityaamolbavadekar.messenger.database.conversations.ApplicationDatabase
 import com.adityaamolbavadekar.messenger.managers.PrefsManager
+import com.adityaamolbavadekar.messenger.utils.Constants
 import com.adityaamolbavadekar.messenger.utils.logging.InternalLogger
 import com.adityaamolbavadekar.messenger.utils.startup.AppStartup
 import com.adityaamolbavadekar.pinlog.PinLog
+import com.google.firebase.FirebaseApp
 
 class App : Application(),Thread.UncaughtExceptionHandler {
 
@@ -32,6 +32,7 @@ class App : Application(),Thread.UncaughtExceptionHandler {
     }
 
     override fun onCreate() {
+        FirebaseApp.initializeApp(this) // If called from another thread or process
         AppStartup.onApplicationCreated(this)
         super.onCreate()
         AppStartup.startApplicationInitialisation()
@@ -44,7 +45,7 @@ class App : Application(),Thread.UncaughtExceptionHandler {
             e
         )
         PrefsManager(this.applicationContext).saveCrashInfo()
-        PinLog.CrashReporter().sendCrashReportWithEmail(t, e, arrayOf(), null, null)
+        PinLog.CrashReporter().sendCrashReportWithEmail(t, e, arrayOf(Constants.SUPPORT_EMAIL), null, null)
     }
 
     companion object {

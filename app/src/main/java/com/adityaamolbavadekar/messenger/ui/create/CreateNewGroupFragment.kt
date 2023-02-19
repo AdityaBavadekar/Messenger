@@ -1,6 +1,5 @@
 /*
- *
- *    Copyright 2022 Aditya Bavadekar
+ *    Copyright 2023 Aditya Bavadekar
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -13,7 +12,6 @@
  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
- *
  */
 
 package com.adityaamolbavadekar.messenger.ui.create
@@ -34,17 +32,16 @@ import com.adityaamolbavadekar.messenger.databinding.GroupSelectedConversationIt
 import com.adityaamolbavadekar.messenger.dialogs.Dialogs
 import com.adityaamolbavadekar.messenger.managers.AuthManager
 import com.adityaamolbavadekar.messenger.managers.CloudStorageManager
+import com.adityaamolbavadekar.messenger.model.Id
 import com.adityaamolbavadekar.messenger.model.Recipient
 import com.adityaamolbavadekar.messenger.ui.conversation.ConversationActivity
 import com.adityaamolbavadekar.messenger.utils.OnResponseCallback
-import com.adityaamolbavadekar.messenger.utils.Operation
 import com.adityaamolbavadekar.messenger.utils.base.BindingHelperFragment
 import com.adityaamolbavadekar.messenger.utils.extensions.load
 import com.adityaamolbavadekar.messenger.utils.extensions.toast
 import com.adityaamolbavadekar.messenger.utils.recyclerview.BaseItemHolder
 import com.adityaamolbavadekar.messenger.utils.recyclerview.BaseListAdapter
 import com.google.firebase.storage.StorageMetadata
-import java.util.*
 
 /**
  * Parent Activity is [CreateNewGroupActivity]
@@ -59,7 +56,7 @@ class CreateNewGroupFragment : BindingHelperFragment<CreateNewGroupActivityBindi
     private val viewModel: CreateGroupViewModel by activityViewModels()
     private val cloudStorageManager = CloudStorageManager()
     private val authManager = AuthManager()
-    private val conversationId = UUID.randomUUID().toString()
+    private val conversationId = Id.getSpecial()
     private var conversationPhotoUrl: String? = null
     private val imagePickerLauncher =
         registerForActivityResult(ActivityResultContracts.GetContent()) {
@@ -107,7 +104,7 @@ class CreateNewGroupFragment : BindingHelperFragment<CreateNewGroupActivityBindi
             layoutManager =
                 LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         }
-        viewModel.recipients.observe(this) {
+        viewModel.recipients.observe(viewLifecycleOwner) {
             listAdapter.submitList(it)
         }
         binding.profilePictureHolder.setOnClickListener {
@@ -135,24 +132,18 @@ class CreateNewGroupFragment : BindingHelperFragment<CreateNewGroupActivityBindi
                 title,
                 description,
                 conversationPhotoUrl,
-                object : Operation<String> {
-                    override fun addOnSuccessListener(result: String) {
-                        loader.dismiss()
-                        startActivity(
-                            ConversationActivity.createNewIntent(
-                                requireContext(),
-                                result
-                            )
-                        )
-                        requireActivity().finish()
-                    }
-
-                    override fun addOnFailureListener(error: Exception?) {
-                        loader.dismiss()
-                        requireActivity().toast(R.string.oops_something_went_wrong_try_again_later)
-                    }
-                }
             )
+                .addOnSuccessListener {
+                    loader.dismiss()
+                    startActivity(
+                        ConversationActivity.createNewIntent(requireContext(), it)
+                    )
+                    requireActivity().finish()
+                }
+                .addOnFailureListener {
+                    loader.dismiss()
+                    requireActivity().toast(R.string.oops_something_went_wrong_try_again_later)
+                }
         }
     }
 

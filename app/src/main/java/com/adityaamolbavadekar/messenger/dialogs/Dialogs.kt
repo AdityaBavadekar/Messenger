@@ -1,6 +1,5 @@
 /*
- *
- *    Copyright 2022 Aditya Bavadekar
+ *    Copyright 2023 Aditya Bavadekar
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -13,7 +12,6 @@
  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
- *
  */
 
 package com.adityaamolbavadekar.messenger.dialogs
@@ -44,14 +42,14 @@ object Dialogs {
 
     fun showLoadingDialog(
         context: Context,
-        message: String? = null
+        message: String? = null,show:Boolean=true
     ): AlertDialog {
         val dialog = MaterialAlertDialogBuilder(context)
             .setCancelable(false)
             .setMessage(message)
             .setView(R.layout.dialog_loading)
             .create()
-        dialog.show()
+        if(show) dialog.show()
         return dialog
     }
 
@@ -396,10 +394,6 @@ object Dialogs {
                 dialog.show()
             }
         }
-    }
-
-    fun showEmojiBottomSheet(context: Context) {
-
     }
 
     fun showThemeChooserDialog(context: Context, onChanged: () -> Unit) {

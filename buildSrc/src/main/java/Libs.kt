@@ -1,6 +1,5 @@
 /*
- *
- *    Copyright 2022 Aditya Bavadekar
+ *    Copyright 2023 Aditya Bavadekar
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -13,7 +12,6 @@
  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
- *
  */
 
 @file:Suppress("unused")
@@ -36,6 +34,7 @@ object Libs {
     const val FRAGMENT_KTX = "androidx.fragment:fragment-ktx"
     const val GLIDE = "com.github.bumptech.glide:glide"
     const val GLIDE_COMPILER = "com.github.bumptech.glide:compiler"
+    const val GUAVA = "com.google.guava:guava"
     const val JSOUP = "org.jsoup:jsoup"
     const val KOTLIN = "org.jetbrains.kotlin:kotlin-stdlib"
     const val LIBPHONENUMBER = "com.googlecode.libphonenumber:libphonenumber"
@@ -45,6 +44,7 @@ object Libs {
     const val MATERIAL = "com.google.android.material:material"
     const val NAVIGATION_FRAGMENT = "androidx.navigation:navigation-fragment"
     const val NAVIGATION_UI = "androidx.navigation:navigation-ui"
+    const val OSS_LICENSES = "com.google.android.gms:play-services-oss-licenses"
     const val PAGING = "androidx.paging:paging-runtime"
     const val PHOTOVIEW = "com.github.chrisbanes:PhotoView"
     const val PINLOG = "com.github.AdityaBavadekar.PinLog:pinlog"

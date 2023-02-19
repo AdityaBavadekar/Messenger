@@ -1,6 +1,5 @@
 /*
- *
- *    Copyright 2022 Aditya Bavadekar
+ *    Copyright 2023 Aditya Bavadekar
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -13,7 +12,6 @@
  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
- *
  */
 
 package com.adityaamolbavadekar.messenger.managers
@@ -29,6 +27,7 @@ import com.adityaamolbavadekar.messenger.R
 import com.adityaamolbavadekar.messenger.constants.PreferenceKeys
 import com.adityaamolbavadekar.messenger.model.FontSize
 import com.adityaamolbavadekar.messenger.model.PhoneNumberInfo
+import com.adityaamolbavadekar.messenger.model.UpdateInfo
 import com.adityaamolbavadekar.messenger.model.User
 import com.adityaamolbavadekar.messenger.utils.Constants
 import com.adityaamolbavadekar.messenger.utils.PhoneNumberUtils
@@ -248,7 +247,7 @@ class PrefsManager(private val context: Context) {
     }
 
     private fun logFieldValueSaved(s: String) {
-        InternalLogger.logI(TAG, "Value saved $s")
+        InternalLogger.debugInfo(TAG, "Value saved $s")
     }
 
     fun saveUserPhotoUrl(photoUrl: String?) {
@@ -356,6 +355,51 @@ class PrefsManager(private val context: Context) {
         context.prefs.edit {
             putInt(PreferenceKeys.TEXT_SIZE, int)
         }
+    }
+
+    fun getLastUpdateChecked(): Long? {
+        val l = context.prefs.getLong(PreferenceKeys.APP_UPDATE_CHECKED, -1)
+        val ln: Long = -1
+        if (l == ln) return null
+        else return l
+    }
+
+    fun saveUpdateInfo(updateInfo: UpdateInfo) {
+        context.prefs.edit {
+            putLong(PreferenceKeys.APP_UPDATE_CHECKED, System.currentTimeMillis())
+            putString(PreferenceKeys.APP_UPDATE_VERSION_NAME, updateInfo.versionName)
+            putInt(PreferenceKeys.APP_UPDATE_VERSION_CODE, updateInfo.versionCode)
+            putLong(PreferenceKeys.APP_UPDATE_TIMESTAMP, updateInfo.timestamp)
+            putString(PreferenceKeys.APP_UPDATE_LINK, updateInfo.link)
+        }
+    }
+
+    fun getUpdateInfo(): UpdateInfo? {
+        context.prefs.apply {
+            val versionName = getString(PreferenceKeys.APP_UPDATE_VERSION_NAME, null)
+            val versionCode = getInt(PreferenceKeys.APP_UPDATE_VERSION_CODE, -1)
+            val timestamp = getLong(PreferenceKeys.APP_UPDATE_TIMESTAMP, -1)
+            val link = getString(PreferenceKeys.APP_UPDATE_LINK, null)
+            val l: Long = -1
+            if (versionName != null && versionCode != -1 && timestamp != l && link != null) {
+                return UpdateInfo(versionName, versionCode, timestamp, link)
+            }
+        }
+        return null
+    }
+
+    fun isContactsSyncAllowed(): Int {
+        return context.prefs.getInt(
+            PreferenceKeys.CONTACTS_SYNC,
+            Constants.CONTACTS_SYNC_NOT_PROMPTED
+        )
+    }
+
+    fun saveIsContactsSyncAllowed(value: Int) {
+        context.prefs
+            .edit {
+                putInt(PreferenceKeys.CONTACTS_SYNC, value)
+            }
     }
 
     companion object {

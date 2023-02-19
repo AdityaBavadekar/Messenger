@@ -1,6 +1,5 @@
 /*
- *
- *    Copyright 2022 Aditya Bavadekar
+ *    Copyright 2023 Aditya Bavadekar
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -13,7 +12,6 @@
  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
- *
  */
 
 package com.adityaamolbavadekar.messenger.ui.conversation
@@ -43,7 +41,7 @@ import com.adityaamolbavadekar.messenger.views.MessagesListRecyclerView
  * Requires Extra : [EXTRA_CONVERSATION_ID]
  * */
 class ConversationFragment : BindingHelperFragment<ConversationFragmentBinding>(),
-    OnReactionListener {
+    OnReactionListener, MessageDeletionListener {
 
     override fun onShouldInflateBinding(): ConversationFragmentBinding {
         return ConversationFragmentBinding.inflate(layoutInflater)
@@ -87,6 +85,7 @@ class ConversationFragment : BindingHelperFragment<ConversationFragmentBinding>(
         }
         setupSelectionTracker()
         messagesAdapter.setOnReactionListener(this)
+        messagesAdapter.setDeletionListener(this)
         /* Helps in showing the date header onScrolling.  */
         conversationOnScrollDateHeader =
             ConversationOnScrollDateHeader(binding.dateHeader, requireContext())
@@ -106,7 +105,6 @@ class ConversationFragment : BindingHelperFragment<ConversationFragmentBinding>(
             messagesAdapter.submitList(it)
             onShouldChangeFabVisibility(shouldHide = (it.isEmpty() || it.size <= 4))
         }
-
     }
 
 
@@ -141,18 +139,11 @@ class ConversationFragment : BindingHelperFragment<ConversationFragmentBinding>(
      * Observes the scrolling and updates `fabScrollToBottom` and timestampHeader accordingly.
      * */
     private val onScrollListener = object : RecyclerView.OnScrollListener() {
-        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-            super.onScrollStateChanged(recyclerView, newState)
-            if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                conversationOnScrollDateHeader.hide()
-                onShouldChangeFabVisibility()
-            }
-        }
-
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
             super.onScrolled(recyclerView, dx, dy)
             conversationOnScrollDateHeader.updateTimestamp(getFirstVisibleMessage()?.timestamp)
-            onShouldChangeFabVisibility()
+            val hide = messageRecyclerView.findLastVisibleItemPosition() == 0
+            onShouldChangeFabVisibility(hide, true)
         }
     }
 
@@ -191,10 +182,11 @@ class ConversationFragment : BindingHelperFragment<ConversationFragmentBinding>(
         return null
     }
 
-    fun onNewMessageSent(index: Int) {
+    fun onNewMessageSent() {
         try {
             messageRecyclerView.scrollLinearLayoutToPosition(0)
         } catch (e: Exception) {
+            InternalLogger.e(TAG,"Unable to scroll to position 0.",e)
         }
     }
 
@@ -208,12 +200,12 @@ class ConversationFragment : BindingHelperFragment<ConversationFragmentBinding>(
 
     override fun onShouldShowReactionChooser(messageRecord: MessageRecord) {
         Dialogs.showReactionChooserDialog(requireContext()) { reaction ->
-           val currentList = messagesAdapter.currentList.toMutableList()
-           if (currentList.contains(messageRecord)) {
-                val index = currentList.indexOf(messageRecord)    
+            val currentList = messagesAdapter.currentList.toMutableList()
+            if (currentList.contains(messageRecord)) {
+                val index = currentList.indexOf(messageRecord)
                 val reactionRecord = ReactionRecord.new(messageRecord.id, reaction, me.uid)
                 messageRecord.addReaction(reactionRecord)
-                viewModel.updateMessage(messageRecord)                
+                viewModel.updateMessage(messageRecord)
                 currentList[index] = messageRecord
                 messagesAdapter.submitList(currentList.toList())
             }
@@ -229,7 +221,15 @@ class ConversationFragment : BindingHelperFragment<ConversationFragmentBinding>(
         )
     }
 
-    companion object{
+    override fun onShouldDelete(messageRecord: MessageRecord) {
+        viewModel.delete(messageRecord,/*forEveryone*/false)
+    }
+
+    override fun onShouldDeleteForEveryone(messageRecord: MessageRecord) {
+        viewModel.delete(messageRecord,/*forEveryone*/true)
+    }
+
+    companion object {
         private const val TAG = "ConversationFragment"
     }
 

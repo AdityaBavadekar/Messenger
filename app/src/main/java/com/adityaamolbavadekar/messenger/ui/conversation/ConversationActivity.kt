@@ -1,6 +1,5 @@
 /*
- *
- *    Copyright 2022 Aditya Bavadekar
+ *    Copyright 2023 Aditya Bavadekar
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -13,7 +12,6 @@
  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
- *
  */
 
 package com.adityaamolbavadekar.messenger.ui.conversation
@@ -42,8 +40,9 @@ import com.adityaamolbavadekar.messenger.model.MessageRecord
 import com.adityaamolbavadekar.messenger.model.Recipient
 import com.adityaamolbavadekar.messenger.ui.conversation_info.ConversationInfoActivity
 import com.adityaamolbavadekar.messenger.ui.picture_upload_preview.PictureUploadPreviewActivity
-import com.adityaamolbavadekar.messenger.utils.Constants.EXTRA_CONVERSATION_ID
 import com.adityaamolbavadekar.messenger.utils.Constants
+import com.adityaamolbavadekar.messenger.utils.Constants.EXTRA_CONVERSATION_ID
+import com.adityaamolbavadekar.messenger.utils.Constants.Extras.EXTRA_CONVERSATION_TYPE
 import com.adityaamolbavadekar.messenger.utils.KeyboardUtils
 import com.adityaamolbavadekar.messenger.utils.OnResponseCallback
 import com.adityaamolbavadekar.messenger.utils.base.BaseActivity
@@ -145,7 +144,9 @@ class ConversationActivity : BaseActivity() {
         prefsManager = PrefsManager(this)
         val user = prefsManager.getUserObject()!!
         me = Recipient.Builder(user).build()
-        val conversationType = intent.getStringExtra(Constants.Extras.EXTRA_CONVERSATION_TYPE)
+        val conversationType = intent.getIntExtra(EXTRA_CONVERSATION_TYPE, -1)
+        check(conversationType != -1) { "ConversationType cannot be null" }
+        InternalLogger.logD(TAG, "ConversationType=$conversationType")
         val p2pUid = intent.getStringExtra(Constants.Extras.EXTRA_USER_UID)
         viewModel.configure(me, conversationId, database)
         viewModel.configureExtras(conversationType, p2pUid)
@@ -207,11 +208,10 @@ class ConversationActivity : BaseActivity() {
             } else removeAnyAddedBottomFragments()
         }
 
-        binding.composeBar.setOnEmojiButtonLongClickListener {
+        binding.composeBar.setOnEmojiButtonClickListener {
             EmojiPopupWindow.build({
                 binding.composeBar.appendComposeText(it)
             }, binding.root, this, latestKeyboardHeight)
-            true
         }
 
         /** Toggles visibility of add bottomsheet. */
@@ -352,9 +352,9 @@ class ConversationActivity : BaseActivity() {
      * Sends message with messageSender according to the type of conversation like Group,Self,P2P.
      * */
     private fun sendMessage(message: MessageRecord) {
-        viewModel.sendMessage(message) { index ->
+        viewModel.sendMessage(message) {
             binding.composeBar.doOnMessageSent()
-            conversationFragment?.onNewMessageSent(index)
+            conversationFragment?.onNewMessageSent()
         }
     }
 
@@ -464,17 +464,22 @@ class ConversationActivity : BaseActivity() {
     }
 
     companion object {
-        fun createNewIntent(context: Context, conversationId: String): Intent {
+        fun createNewIntent(
+            context: Context,
+            conversationId: String,
+            conversationType: Int
+        ): Intent {
             return Intent(context, ConversationActivity::class.java)
                 .putExtra(EXTRA_CONVERSATION_ID, conversationId)
+                .putExtra(EXTRA_CONVERSATION_TYPE, conversationType)
         }
 
         fun createNewIntent(context: Context, conversation: ConversationRecord): Intent {
-            val i =  Intent(context, ConversationActivity::class.java)
+            val i = Intent(context, ConversationActivity::class.java)
                 .putExtra(EXTRA_CONVERSATION_ID, conversation.conversationId)
                 .putExtra(Constants.Extras.EXTRA_CONVERSATION_TYPE, conversation.conversationType())
-            if(conversation.isP2P){
-                i.putExtra(Constants.Extras.EXTRA_USER_UID,conversation.p2PRecipientUid())
+            if (conversation.isP2P) {
+                i.putExtra(Constants.Extras.EXTRA_USER_UID, conversation.p2PRecipientUid())
             }
             return i
         }

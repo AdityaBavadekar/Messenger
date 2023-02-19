@@ -1,6 +1,5 @@
 /*
- *
- *    Copyright 2022 Aditya Bavadekar
+ *    Copyright 2023 Aditya Bavadekar
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -13,7 +12,6 @@
  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
- *
  */
 
 package com.adityaamolbavadekar.messenger.model
@@ -23,7 +21,7 @@ package com.adityaamolbavadekar.messenger.model
  * */
 interface ConversationPermissionType {
 
-    companion object{
+    companion object {
         /* Default */
         private const val PERMIT_ALL = 100
 
@@ -34,14 +32,14 @@ interface ConversationPermissionType {
         private const val UNKNOWN = -1
     }
 
-    fun permitAll()= PERMIT_ALL
-    fun permitManagersOnly()= PERMIT_MANAGERS_ONLY
+    fun permitAll() = PERMIT_ALL
+    fun permitManagersOnly() = PERMIT_MANAGERS_ONLY
 
     fun isRestricted(permission: Int): Boolean {
         return permission == PERMIT_MANAGERS_ONLY
     }
 
-    fun getField(conversation:BaseConversation) : Int
+    fun getField(conversation: BaseConversation): Int
 
 
     fun getPermissionString(permission: Int): String {

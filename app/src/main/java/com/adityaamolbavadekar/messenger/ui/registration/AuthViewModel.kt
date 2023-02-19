@@ -1,6 +1,5 @@
 /*
- *
- *    Copyright 2022 Aditya Bavadekar
+ *    Copyright 2023 Aditya Bavadekar
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -13,7 +12,6 @@
  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
- *
  */
 
 package com.adityaamolbavadekar.messenger.ui.registration
@@ -115,7 +113,7 @@ class AuthViewModel : ViewModel() {
     }
 
     private fun onGetDeviceDefaultCountry(countryString: String) {
-        val country = countryString.toUpperCase(Locale.ENGLISH)
+        val country = countryString.uppercase(Locale.ENGLISH)
         if (shortNamesArray.contains(country)) {
             val i = shortNamesArray.indexOf(country)
             updatedSelectedCountryInfo(countryInfoList.value!![i].setSelected(true))
@@ -151,7 +149,7 @@ class AuthViewModel : ViewModel() {
             u.toBuilder()
             cloudDatabaseManager.updateUserProfileInfo(
                 u.loggedInDataHashMap(), u.UID
-            ) {}
+            )
         }
 
         cloudDatabaseManager.getUsersManager()

@@ -1,6 +1,5 @@
 /*
- *
- *    Copyright 2022 Aditya Bavadekar
+ *    Copyright 2023 Aditya Bavadekar
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -13,7 +12,6 @@
  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
- *
  */
 
 package com.adityaamolbavadekar.messenger.ui.settings
@@ -214,6 +212,7 @@ class SettingsActivity : BaseActivity() {
 
     annotation class SettingsKeys {
         companion object {
+            const val HELP_FEEDBACK = "help_feedback"
             const val THEME = "key_theme"
             const val NOTIFICATIONS = "key_notifications"
             const val TEXT_SIZE = "key_text_size"

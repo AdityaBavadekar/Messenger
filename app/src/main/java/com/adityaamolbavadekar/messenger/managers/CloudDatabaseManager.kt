@@ -1,6 +1,5 @@
 /*
- *
- *    Copyright 2022 Aditya Bavadekar
+ *    Copyright 2023 Aditya Bavadekar
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -13,21 +12,18 @@
  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
- *
  */
 
 package com.adityaamolbavadekar.messenger.managers
 
-import com.adityaamolbavadekar.messenger.model.MessageRecord
-import com.adityaamolbavadekar.messenger.model.Recipient
-import com.adityaamolbavadekar.messenger.model.RemoteConversation
-import com.adityaamolbavadekar.messenger.model.User
+import com.adityaamolbavadekar.messenger.model.*
 import com.adityaamolbavadekar.messenger.utils.Constants
 import com.adityaamolbavadekar.messenger.utils.OnResponseCallback
 import com.adityaamolbavadekar.messenger.utils.extensions.runOnIOThread
 import com.adityaamolbavadekar.messenger.utils.extensions.runOnMainThread
 import com.adityaamolbavadekar.messenger.utils.logging.InternalLogger
 import com.google.android.gms.tasks.Task
+import com.google.android.gms.tasks.TaskCompletionSource
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
@@ -38,7 +34,6 @@ import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.util.*
 
 class CloudDatabaseManager {
 
@@ -95,9 +90,7 @@ class CloudDatabaseManager {
     /*Update database display name for user*/
     fun updateUserProfileInfo(
         map: HashMap<String, Any?>,
-        userId: String,
-        onResult: (Boolean) -> Unit = {}
-    ) =
+        userId: String) =
         CoroutineScope(Dispatchers.Default).launch {
 
             map.forEach { pair ->
@@ -243,8 +236,8 @@ class CloudDatabaseManager {
 
     }
 
-    data class ConversationResponse(val id:String,val isGroup:Boolean){
-        constructor(snapshot: DataSnapshot):this(snapshot.key!!,snapshot.value as Boolean)
+    data class ConversationResponse(val id: String, val isGroup: Boolean) {
+        constructor(snapshot: DataSnapshot) : this(snapshot.key!!, snapshot.value as Boolean)
     }
 
     inner class Conversations {
@@ -260,12 +253,12 @@ class CloudDatabaseManager {
                 Firebase.database.getReference(Constants.CloudPaths.getUserConversationsPath(myUid))
             listener = (object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    InternalLogger.logD(TAG, "onDataChange ${snapshot.children}")
+                    InternalLogger.debugInfo(TAG, "onDataChange ${snapshot.children}")
                     if (!snapshot.exists()) return
                     val list = mutableListOf<ConversationResponse>()
                     try {
                         snapshot.children.forEach { m ->
-                            InternalLogger.logI(TAG, "Conversation: $m")
+                            InternalLogger.debugInfo(TAG, "Conversation: $m")
                             list.add(ConversationResponse(m))
                         }
                     } catch (e: Exception) {
@@ -325,7 +318,7 @@ class CloudDatabaseManager {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     snapshot.getValue<HashMap<String, Any>>()?.let {
                         //onDataChanged(it)
-                        InternalLogger.logD(
+                        InternalLogger.debugInfo(
                             TAG,
                             "onDataChanged(observeGroupConversationProperties) : $it"
                         )
@@ -362,6 +355,31 @@ class CloudDatabaseManager {
             listener?.let { ref?.removeEventListener(it) }
         }
 
+        fun getGroupConversation(id: String): Task<ConversationRecord> {
+            val source = TaskCompletionSource<ConversationRecord>()
+            Firebase.database
+                .getReference(Constants.CloudPaths.getGroupPropertiesPath(id))
+                .get()
+                .addOnSuccessListener {
+                    it.getValue<RemoteConversation>()?.let { remoteConversation ->
+                        source.setResult(ConversationRecord(remoteConversation))
+                    }
+                }
+                .addOnFailureListener { source.setException(it) }
+            return source.task
+        }
+
+        fun getP2PConversation(uid: String): Task<Recipient> {
+            val source = TaskCompletionSource<Recipient>()
+            Firebase.database.getReference(Constants.CloudPaths.getUserPublicPath(uid))
+                .get()
+                .addOnSuccessListener {
+                    it.getValue<Recipient>()?.let { user -> source.setResult(user) }
+                }
+                .addOnFailureListener { source.setException(it) }
+            return source.task
+        }
+
     }
 
     inner class Messages {
@@ -390,13 +408,13 @@ class CloudDatabaseManager {
                 listener = (object : ValueEventListener {
 
                     override fun onDataChange(snapshot: DataSnapshot) {
-                        
+
                         val messagesList = mutableListOf<MessageRecord>()
-                        snapshot.children.forEach { m->
-                          m.getValue<MessageRecord>()?.let { message ->
-                              InternalLogger.logI(TAG, "P2P Message : $message")
-                              messagesList.add(message)
-                          }
+                        snapshot.children.forEach { m ->
+                            m.getValue<MessageRecord>()?.let { message ->
+                                InternalLogger.debugInfo(TAG, "P2P Message : $message")
+                                messagesList.add(message)
+                            }
                         }
                         onResponseCallback.onSuccess(messagesList)
                         runOnIOThread {
@@ -469,7 +487,7 @@ class CloudDatabaseManager {
                         val messagesList = mutableListOf<MessageRecord>()
                         snapshot.children.forEach { m ->
                             m.getValue<MessageRecord>()?.let { message ->
-                                InternalLogger.logI(TAG, "Message : $message")
+                                InternalLogger.debugInfo(TAG, "Message : $message")
                                 messagesList.add(message)
                             }
                         }
@@ -552,7 +570,6 @@ class CloudDatabaseManager {
     inner class Contacts {
 
         fun save(list: List<String>) {
-            //TODO : Ask user if its okay for him to do that.
             Firebase.database.getReference(Constants.CloudPaths.getUserContactsPath(AuthManager().uid))
                 .setValue(list)
                 .addOnSuccessListener { InternalLogger.logD(TAG, "Saved user contacts.") }

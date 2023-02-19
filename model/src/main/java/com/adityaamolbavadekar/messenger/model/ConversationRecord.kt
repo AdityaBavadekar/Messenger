@@ -1,6 +1,5 @@
 /*
- *
- *    Copyright 2022 Aditya Bavadekar
+ *    Copyright 2023 Aditya Bavadekar
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -13,7 +12,6 @@
  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
- *
  */
 
 package com.adityaamolbavadekar.messenger.model
@@ -87,7 +85,8 @@ data class ConversationRecord(
     /*Whether a Recipient allowed to edit conversation information*/
     override var editingPermissionType: Int = EditingPermissionType.permitAll(),
 
-    ) :
+    override var temp: Boolean = false
+) :
     BaseConversation(conversationId, title, photoUrl, description, databasePath, created, updated) {
 
     constructor() : this(
@@ -113,7 +112,35 @@ data class ConversationRecord(
         recipientUids = mutableListOf<String>(),
         recipientsInfo = mutableListOf<HashMap<String, Any?>>(),
         messagingPermissionType = MessagingPermissionType.permitAll(),
-        editingPermissionType = EditingPermissionType.permitAll()
+        editingPermissionType = EditingPermissionType.permitAll(),
+        temp = false
+    )
+
+    constructor(r: RemoteConversation) : this(
+        conversationId = r.conversationId,
+        title = r.title,
+        lastMessageId = null,
+        lastMessageText = null,
+        lastMessageTimestamp = null,
+        lastMessageSenderUid = null,
+        photoUrl = r.photoUrl,
+        description = r.description,
+        archived = false,
+        pinned = false,
+        databasePath = null,
+        unreadCount = 0,
+        created = r.created,
+        updated = r.updated,
+        lastScrollPosition = 0,
+        isGroup = true,
+        isSelf = false,
+        isP2P = false,
+        creatorUid = r.creatorUid,
+        recipientUids = r.recipientUids,
+        recipientsInfo = r.recipientsInfo,
+        messagingPermissionType = r.messagingPermissionType,
+        editingPermissionType = r.editingPermissionType,
+        temp = false
     )
 
     fun defaultIcon(): Int {
@@ -129,7 +156,7 @@ data class ConversationRecord(
     }
 
     fun p2PRecipientUid(): String {
-        if(!isP2P){
+        if (!isP2P) {
             throw IllegalArgumentException("P2PUid was requested while the conversation was not a P2P.")
         }
         return recipientUids.last()
@@ -144,6 +171,10 @@ data class ConversationRecord(
 
     companion object {
 
+        const val CONVERSATION_TYPE_SELF: Int = 1
+        const val CONVERSATION_TYPE_P2P: Int = 2
+        const val CONVERSATION_TYPE_GROUP: Int = 3
+
         fun newPerson2Person(
             recipient: Recipient,
             loggedInRecipient: Recipient
@@ -155,7 +186,7 @@ data class ConversationRecord(
             recipientInfoHashMap.add(RemoteRecipient.fromRecipient(recipient))
             recipientInfoHashMap.add(RemoteRecipient.fromRecipient(loggedInRecipient))
             val c = ConversationRecord(
-                conversationId = UUID.randomUUID().toString(),
+                conversationId = Id.getSpecial(),
                 title = recipient.loadName(),
                 photoUrl = recipient.photoUrl,
                 description = recipient.tempAbout,
@@ -167,6 +198,7 @@ data class ConversationRecord(
                 creatorUid = loggedInRecipient.uid,
                 recipientUids = mutableListOf(loggedInRecipient.uid, recipient.uid),
                 recipientsInfo = recipientInfoHashMap.remoteRecipientToHashMapList(),
+                temp = true
             )
             return c
         }
@@ -176,7 +208,7 @@ data class ConversationRecord(
         ): ConversationRecord {
             val recipientInfoHashMap = mutableListOf(RemoteRecipient.newManager(me.uid))
             return ConversationRecord(
-                UUID.randomUUID().toString(),
+                Id.getSpecial(),
                 me.loadName(),
                 photoUrl = me.photoUrl,
                 databasePath = null,
@@ -196,7 +228,7 @@ data class ConversationRecord(
             recipients: MutableList<String>,
             creatorUid: String,
             url: String? = null,
-            conversationId: String = UUID.randomUUID().toString(),
+            conversationId: String = Id.getSpecial(),
             description: String? = null,
         ): ConversationRecord {
             val desc: String? = if (description == null || description.trim().isEmpty()) {
@@ -285,14 +317,14 @@ data class ConversationRecord(
      * Updates itself from provided [MessageRecord].
      * Fields [lastMessageId],[lastMessageText],[lastMessageTimestamp] and [lastMessageSenderUid] are updated.
      * */
-    fun updateLastMessageData(m: MessageRecord): ConversationRecord {
-        lastMessageId = m.id
-        lastMessageText = m.message
-        lastMessageTimestamp = m.timestamp
-        lastMessageSenderUid = m.senderUid
-        if (m.message?.trim()?.isEmpty() == true && m.attachments.isNotEmpty()) {
+    fun updateLastMessageData(m: MessageRecord?): ConversationRecord {
+        lastMessageId = m?.id
+        lastMessageText = m?.message
+        lastMessageTimestamp = m?.timestamp
+        lastMessageSenderUid = m?.senderUid
+        if (m?.message?.trim()?.isEmpty() == true && m.attachments.isNotEmpty()) {
             lastMessageText = m.attachments.last()
-        } else if (m.message?.trim()?.isEmpty() == true && m.reactions.isNotEmpty()) {
+        } else if (m?.message?.trim()?.isEmpty() == true && m.reactions.isNotEmpty()) {
             lastMessageText = m.reactions.last().reaction
         }
         return this
@@ -314,13 +346,11 @@ data class ConversationRecord(
         )
     }
 
-    enum class ConversationType { GROUP, P2P, SELF }
-
-    fun conversationType(): ConversationType {
+    fun conversationType(): Int {
         return when {
-            isGroup -> ConversationType.GROUP
-            isP2P -> ConversationType.P2P
-            else -> ConversationType.SELF
+            isGroup -> CONVERSATION_TYPE_GROUP
+            isP2P -> CONVERSATION_TYPE_P2P
+            else -> CONVERSATION_TYPE_SELF
         }
     }
 

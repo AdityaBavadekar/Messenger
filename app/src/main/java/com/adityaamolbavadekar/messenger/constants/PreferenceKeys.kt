@@ -1,6 +1,5 @@
 /*
- *
- *    Copyright 2022 Aditya Bavadekar
+ *    Copyright 2023 Aditya Bavadekar
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -13,13 +12,13 @@
  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
- *
  */
 
 package com.adityaamolbavadekar.messenger.constants
 
 
 object PreferenceKeys {
+
 
     /*app crash data*/
     const val APP_DID_CRASH = "app.crash.happened"
@@ -62,6 +61,12 @@ object PreferenceKeys {
     const val ABOUT_OPEN_SOURCE_LICENCES = "about.open_source"
     const val ABOUT_TERMS = "about.terms"
     const val ABOUT_POLICY = "about.policy"
+    const val APP_UPDATE_CHECKED = "app.update.lastChecked"
+    const val APP_UPDATE_VERSION_NAME = "app.update.versionName"
+    const val APP_UPDATE_VERSION_CODE = "app.update.versionCode"
+    const val APP_UPDATE_TIMESTAMP = "app.update.timestamp"
+    const val APP_UPDATE_LINK = "app.update.link"
+    const val CONTACTS_SYNC = "app.contacts.sync"
     const val IME_KEYBOARD_HEIGHT = "messenger.value.ime.height"
     const val DEV_MODE_ENABLE_FROM_SETTINGS = "app.dev.enabled"
     /*app data*/

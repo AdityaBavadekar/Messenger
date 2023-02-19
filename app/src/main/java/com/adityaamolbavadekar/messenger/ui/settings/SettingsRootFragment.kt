@@ -1,6 +1,5 @@
 /*
- *
- *    Copyright 2022 Aditya Bavadekar
+ *    Copyright 2023 Aditya Bavadekar
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -13,15 +12,17 @@
  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
- *
  */
 
 package com.adityaamolbavadekar.messenger.ui.settings
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
 import android.view.View
+import androidx.core.content.FileProvider
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.adityaamolbavadekar.messenger.R
@@ -30,9 +31,13 @@ import com.adityaamolbavadekar.messenger.databinding.SettingsRootFragmentBinding
 import com.adityaamolbavadekar.messenger.dialogs.Dialogs
 import com.adityaamolbavadekar.messenger.managers.PrefsManager.Companion.prefs
 import com.adityaamolbavadekar.messenger.model.FontSize
+import com.adityaamolbavadekar.messenger.utils.Constants
+import com.adityaamolbavadekar.messenger.utils.IntentsUtils
 import com.adityaamolbavadekar.messenger.utils.base.BindingHelperFragment
 import com.adityaamolbavadekar.messenger.utils.extensions.runOnIOThread
+import com.adityaamolbavadekar.messenger.utils.logging.InternalLogger
 import com.adityaamolbavadekar.messenger.utils.theming.ThemeInfo.Companion.getPreferredThemeInfo
+import com.adityaamolbavadekar.pinlog.PinLog
 import java.util.*
 
 class SettingsRootFragment : BindingHelperFragment<SettingsRootFragmentBinding>(),
@@ -40,6 +45,7 @@ class SettingsRootFragment : BindingHelperFragment<SettingsRootFragmentBinding>(
 
     private val list = MutableLiveData(listOf<SettingsActivity.SettingsItem>())
     private lateinit var listAdapter: SettingsActivity.SettingsAdapter
+    private val viewModel: SettingsViewModel by activityViewModels()
 
     override fun onShouldInflateBinding(): SettingsRootFragmentBinding {
         return SettingsRootFragmentBinding.inflate(layoutInflater)
@@ -52,8 +58,14 @@ class SettingsRootFragment : BindingHelperFragment<SettingsRootFragmentBinding>(
             adapter = listAdapter
             layoutManager = LinearLayoutManager(requireContext())
         }
+        val loader = Dialogs.showLoadingDialog(requireContext(), getString(R.string.loading), false)
 
-        list.observe(this) {
+        viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
+            if (isLoading) loader.show()
+            else loader.hide()
+        }
+
+        list.observe(viewLifecycleOwner) {
             listAdapter.submitList(it)
         }
 
@@ -127,6 +139,14 @@ class SettingsRootFragment : BindingHelperFragment<SettingsRootFragmentBinding>(
 
         newList.add(
             SettingsActivity.SettingsItem(
+                SettingsActivity.SettingsKeys.HELP_FEEDBACK,
+                SettingsActivity.SettingsItem.Types.SETTINGS_ITEM,
+                "Help and Feedback"
+            )
+        )
+
+        newList.add(
+            SettingsActivity.SettingsItem(
                 SettingsActivity.SettingsKeys.ABOUT,
                 SettingsActivity.SettingsItem.Types.SETTINGS_ITEM,
                 "About Messenger"
@@ -179,6 +199,28 @@ class SettingsRootFragment : BindingHelperFragment<SettingsRootFragmentBinding>(
                             listAdapter.notifyDataSetChanged()
                         }
                     }
+
+                    SettingsActivity.SettingsKeys.HELP_FEEDBACK -> {
+                        viewModel.getLogsInFile {
+                            val uri = try {
+                                FileProvider.getUriForFile(
+                                    requireContext(),
+                                    requireContext().packageName + ".pinlog.provider", it!!
+                                )
+                            } catch (e: Exception) {
+                                Uri.fromFile(it!!)
+                            }
+                            val i = IntentsUtils.shareThroughEmail(
+                                requireContext(),
+                                subject = "Help for Messenger",
+                                textContent = "I am sharing with you logs. Please help me with: \n",
+                                attachments = arrayListOf(uri),
+                                toEmail = Constants.SUPPORT_EMAIL
+                            )
+                            InternalLogger.logD(TAG, "Launching email-share intent.")
+                            startActivity(i)
+                        }
+                    }
                 }
             }
         }
@@ -190,5 +232,10 @@ class SettingsRootFragment : BindingHelperFragment<SettingsRootFragmentBinding>(
         }
         listAdapter.notifyDataSetChanged()
     }
+
+    companion object {
+        private val TAG = SettingsRootFragment::class.java.simpleName
+    }
+
 
 }

@@ -1,6 +1,5 @@
 /*
- *
- *    Copyright 2022 Aditya Bavadekar
+ *    Copyright 2023 Aditya Bavadekar
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -13,7 +12,6 @@
  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
- *
  */
 
 package com.adityaamolbavadekar.messenger.views.compose
@@ -157,6 +155,10 @@ class ComposeMessageBar @JvmOverloads constructor(
 
     fun setOnAttachListener(listener: OnClickListener?) {
         this.addButton.setOnClickListener(listener)
+        this.addButton.setOnLongClickListener {
+            listener?.onClick(it)
+            true
+        }
     }
 
     fun setOnAttachImagesListener(listener: () -> Unit) {
@@ -305,7 +307,7 @@ class ComposeMessageBar @JvmOverloads constructor(
         afterInputTextChangedListener()
     }
 
-    fun checkIfLinksChanged(it:Editable?){
+    fun checkIfLinksChanged(it: Editable?) {
         if (it.toString().containsUrls) {
             //Get urls to first url preview
             currentlyExtractedLinks = it.toString().extractUrls()

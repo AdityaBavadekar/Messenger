@@ -29,6 +29,7 @@ android {
     compileSdk Versions.COMPILE_SDK
     namespace "com.adityaamolbavadekar.messenger"
 
+    def timestamp = System.currentTimeMillis()
     Properties properties = new Properties()
     properties.load(project.rootProject.file("local.properties").newDataInputStream())
 
@@ -44,7 +45,7 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         buildConfigField "String", "DATE", "\"${new Date()}\""
-        buildConfigField "Long", "TIMESTAMP", "Long.parseLong(\"${System.currentTimeMillis()}\")"
+        buildConfigField "Long", "TIMESTAMP", "Long.parseLong(\"${timestamp}\")"
 
         buildConfigField "String", "FCM_MESSAGING_SERVER_KEY", "\"${properties.getProperty("FCM_MESSAGING_SERVER_KEY")}\""
         buildConfigField "String", "MESSENGER_URL", "\"https://github.com/AdityaBavadekar/Messenger\""
@@ -93,7 +94,7 @@ android {
 
         variant.outputs.each { output ->
             output.outputFileName = output.outputFileName.replace(".apk", "-${variant.versionName}.apk")
-            print("${output.outputFileName} [Versions code : ${variant.versionCode},Version name : ${variant.versionName}] " + "\n")
+            print("${output.outputFileName} [Versions code : ${variant.versionCode}, Version name : ${variant.versionName}, BuildTimestamp : ${timestamp}] " + "\n")
         }
     }
 
@@ -131,6 +132,7 @@ dependencies {
     implementation Dependencies.FIREBASE_STORAGE
     implementation Dependencies.FRAGMENT_KTX
     implementation Dependencies.GLIDE
+    testImplementation 'org.junit.jupiter:junit-jupiter'
     kapt Dependencies.GLIDE_COMPILER
     implementation Dependencies.JSOUP
     implementation Dependencies.KOTLIN
@@ -141,6 +143,7 @@ dependencies {
     implementation Dependencies.MATERIAL
     implementation Dependencies.NAVIGATION_FRAGMENT
     implementation Dependencies.NAVIGATION_UI
+    implementation Dependencies.OSS_LICENSES
     implementation Dependencies.PAGING
     implementation Dependencies.PHOTOVIEW
     implementation Dependencies.PINLOG

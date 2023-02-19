@@ -1,6 +1,5 @@
 /*
- *
- *    Copyright 2022 Aditya Bavadekar
+ *    Copyright 2023 Aditya Bavadekar
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -13,7 +12,6 @@
  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
- *
  */
 
 package com.adityaamolbavadekar.messenger.ui
@@ -24,17 +22,22 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.widget.FrameLayout
+import androidx.activity.viewModels
 import com.adityaamolbavadekar.messenger.R
+import com.adityaamolbavadekar.messenger.ui.shake.ShakePresenterViewModel
+import com.adityaamolbavadekar.messenger.utils.Constants
+import com.adityaamolbavadekar.messenger.utils.ScreenCaptureUtil
+import com.adityaamolbavadekar.messenger.utils.ScreenCaptureUtil.Companion.to
 import com.adityaamolbavadekar.messenger.utils.base.LifecycleLoggerActivity
-import com.adityaamolbavadekar.pinlog.PinLog
+import com.adityaamolbavadekar.messenger.utils.logging.InternalLogger
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import java.io.File
 
 class ShakePresenter : LifecycleLoggerActivity() {
 
+    private val viewModel: ShakePresenterViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        //TODO CAPTURE SCREENSHOT
 
         val root = FrameLayout(this).apply {
             this.background = ColorDrawable(Color.TRANSPARENT)
@@ -44,6 +47,12 @@ class ShakePresenter : LifecycleLoggerActivity() {
         }
 
         setContentView(root)
+        val file = File.createTempFile("screen-capture-image", "jpeg")
+        val capture = ScreenCaptureUtil.cap(root).to(file)
+        if (capture) InternalLogger.logD(
+            TAG,
+            "Successfully saved screenCapture to ${file.absolutePath}"
+        )
 
         MaterialAlertDialogBuilder(this)
             .setTitle(getString(R.string.shake_to_send_feedback))
@@ -60,8 +69,14 @@ class ShakePresenter : LifecycleLoggerActivity() {
             .setPositiveButton(getString(R.string.send_feedback)) { d, _ ->
                 d.dismiss()
                 if (!isFinishing) finish()
-                PinLog.CrashReporter()
-                    .sendCrashReportWithEmail(Thread.currentThread(), null, arrayOf(), null, null)
+                val path = viewModel.filePath.value
+                Intent(Intent.ACTION_SEND).apply {
+                    putExtra(Intent.EXTRA_EMAIL, arrayListOf(Constants.SUPPORT_EMAIL))
+                    putExtra(Intent.EXTRA_SUBJECT, getString(R.string.messenger_feedback))
+                    putExtra(Intent.EXTRA_TEXT, "ID=${path ?: "F"}\nFeedback : \n")
+                    type = "message/rfc822"
+                    startActivity(Intent.createChooser(this, getString(R.string.send_feedback)))
+                }
             }
             .create()
             .show()
@@ -69,6 +84,8 @@ class ShakePresenter : LifecycleLoggerActivity() {
 
 
     companion object {
+        private val TAG = ShakePresenter::class.java.simpleName
+
         fun start(context: Context) {
             Intent(context, ShakePresenter::class.java).apply {
                 addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)

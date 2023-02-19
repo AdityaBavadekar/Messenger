@@ -1,6 +1,5 @@
 <!--
-  ~
-  ~    Copyright 2022 Aditya Bavadekar
+  ~    Copyright 2023 Aditya Bavadekar
   ~
   ~    Licensed under the Apache License, Version 2.0 (the "License");
   ~    you may not use this file except in compliance with the License.
@@ -13,7 +12,6 @@
   ~    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   ~    See the License for the specific language governing permissions and
   ~    limitations under the License.
-  ~
   -->
 
 <resources>
@@ -187,6 +185,16 @@
     <string name="copyright_message">© Copyright 2022 Aditya Bavadekar</string>
     <string name="app_version_formatted">Version %s</string>
     <string name="open_source_licenses">Open-source licenses</string>
+    <string name="loading">Loading…</string>
+    <string name="enable_sync_message">Do you want to enable contacts sync? Your contacts will be stored to Messenger\'s secure database. Enabling sync will help you and your friends find each other on Messenger.</string>
+    <string name="sync_contacts">Sync contacts</string>
+    <string name="skip">Skip</string>
+    <string name="enable_sync">Enable sync</string>
+    <string name="deleted_message_placeholder">This message was deleted</string>
+    <string name="update_dialog_message">A newer version of Messenger is  available. It is recommended that you update to latest version to enjoy new features.\nCurrent version - %1s\nNewer version - %2s</string>
+    <string name="update">Update</string>
+    <string name="updating_in_background">Updating in background</string>
+    <string name="messenger_feedback">Messenger Feedback</string>
 
     <string-array name="theme_chooser">
         <item>System Default</item>

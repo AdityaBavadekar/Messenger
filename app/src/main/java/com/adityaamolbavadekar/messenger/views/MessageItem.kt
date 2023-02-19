@@ -1,6 +1,5 @@
 /*
- *
- *    Copyright 2022 Aditya Bavadekar
+ *    Copyright 2023 Aditya Bavadekar
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -13,13 +12,10 @@
  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
- *
  */
 
 package com.adityaamolbavadekar.messenger.views
 
-import android.content.ClipData
-import android.content.ClipboardManager
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
@@ -27,20 +23,23 @@ import android.view.ViewGroup
 import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.appcompat.widget.PopupMenu
+import androidx.core.text.bold
+import androidx.core.text.buildSpannedString
+import androidx.core.text.italic
 import androidx.core.view.updateLayoutParams
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.selection.SelectionTracker
 import androidx.transition.TransitionManager
 import com.adityaamolbavadekar.messenger.R
-import com.adityaamolbavadekar.messenger.model.ConversationRecord
-import com.adityaamolbavadekar.messenger.model.MessageRecord
-import com.adityaamolbavadekar.messenger.model.Recipient
-import com.adityaamolbavadekar.messenger.model.valueOf
+import com.adityaamolbavadekar.messenger.model.*
+import com.adityaamolbavadekar.messenger.ui.conversation.MessageDeletionListener
 import com.adityaamolbavadekar.messenger.ui.conversation.MessagesAdapter.Companion.applyMessageBodyFontSize
 import com.adityaamolbavadekar.messenger.ui.conversation.MessagesAdapter.Companion.applyMessageTitleFontSize
 import com.adityaamolbavadekar.messenger.ui.conversation.OnReactionListener
 import com.adityaamolbavadekar.messenger.ui.zoom.ZoomableImageViewerActivity
+import com.adityaamolbavadekar.messenger.utils.ClipboardUtil
 import com.adityaamolbavadekar.messenger.utils.Constants.TimestampFormats.MESSAGE_TIMESTAMP_FORMAT
+import com.adityaamolbavadekar.messenger.utils.Constants.TimestampFormats.TIMESTAMP_FORMAT_FULL
 import com.adityaamolbavadekar.messenger.utils.CustomLinkHandlerSpan
 import com.adityaamolbavadekar.messenger.utils.ImageLoader
 import com.adityaamolbavadekar.messenger.utils.extensions.isNotNull
@@ -53,6 +52,7 @@ import com.adityaamolbavadekar.messenger.views.message.PhotoAttachmentsView
 import com.adityaamolbavadekar.messenger.views.message.ReactionsView
 import com.adityaamolbavadekar.messenger.views.message.ReplyView
 import com.google.android.material.card.MaterialCardView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.transition.MaterialElevationScale
 
 class MessageItem @JvmOverloads constructor(
@@ -81,10 +81,13 @@ class MessageItem @JvmOverloads constructor(
     private var titleClickListener: TitleClickListener? = null
     private var replyClickListener: ReplyClickListener? = null
     private var reactionListener: OnReactionListener = getEmptyOnReactionListener()
+    private var deletionListener: MessageDeletionListener = getEmptyDeletionListener()
     private val imageLoader = ImageLoader.with(this)
+    private var itemIndex: Int = 0
     private var selectionKey: Long = 0
     private var selectionTrackerProvider: (() -> SelectionTracker<Long>)? = null
 
+    private var isDebug: Boolean = false
     private var isGroupConversation: Boolean = false
     private var isP2PConversation: Boolean = false
     private var isSelfConversation: Boolean = false
@@ -106,7 +109,8 @@ class MessageItem @JvmOverloads constructor(
         conversationRecord: ConversationRecord?,
         sender: Recipient?,
         isIncomingMessage: Boolean,
-        itemSelectionKey: Long
+        itemSelectionKey: Long,
+        index: Int
     ) {
 
         this.sender = sender
@@ -121,10 +125,11 @@ class MessageItem @JvmOverloads constructor(
         this.hasAttachments = requireMessageRecord().hasAttachments()
         this.hasReactions = requireMessageRecord().hasReactions()
         this.selectionKey = itemSelectionKey
+        this.itemIndex = index
 
         if (!this.wasBindedPreviously) {
             this.wasBindedPreviously = true
-            InternalLogger.logD(
+            if (isDebug) InternalLogger.logD(
                 "MessageItem", "onBind()\n" +
                         "isIncoming=$isIncoming" + "\n" +
                         "hasReply=$hasReply" + "\n" +
@@ -196,6 +201,13 @@ class MessageItem @JvmOverloads constructor(
         }
     }
 
+    private fun getEmptyDeletionListener(): MessageDeletionListener {
+        return object : MessageDeletionListener {
+            override fun onShouldDelete(messageRecord: MessageRecord) {}
+            override fun onShouldDeleteForEveryone(messageRecord: MessageRecord) {}
+        }
+    }
+
     private fun setTitleText() {
         if (getIsSentByMe() || sender.isNull()) {
             titleTextView?.text = null
@@ -213,13 +225,22 @@ class MessageItem @JvmOverloads constructor(
     }
 
     private fun setMessageText() {
-        if (!requireMessageRecord().hasMessage()) {
+        if (!requireMessageRecord().hasMessage() && !requireMessageRecord().isDeleted) {
             messageTextView?.text = null
             setGone(messageTextView)
             return
         }
 
         checkNotNull(messageTextView) { "messageTextView cannot be null" }
+
+        if (requireMessageRecord().isDeleted) {
+            messageTextView!!.text = buildSpannedString {
+                val t = context.getString(R.string.deleted_message_placeholder)
+                italic { append(t) }
+            }
+            return
+        }
+
         messageTextView!!.text = requireMessageRecord().message!!
         TextStyler.parse(context, requireMessageRecord().message!!) { message ->
             messageTextView!!.text = message
@@ -240,7 +261,7 @@ class MessageItem @JvmOverloads constructor(
     }
 
     private fun setLinkPreview() {
-        if (!requireMessageRecord().hasLinkPreview()) {
+        if (!requireMessageRecord().hasLinkPreview() || requireMessageRecord().isDeleted) {
             linkPreviewView?.setOnClickListener(null)
             linkPreviewView?.setLinkPreviewInfo(null)
             setGone(linkPreviewView)
@@ -273,7 +294,7 @@ class MessageItem @JvmOverloads constructor(
     }
 
     private fun setImageAttachments() {
-        if (!requireMessageRecord().hasAttachments()) {
+        if (!requireMessageRecord().hasAttachments() || requireMessageRecord().isDeleted) {
             photoAttachmentsView?.setOnClickListener(null)
             photoAttachmentsView?.removeAllAttachments()
             setGone(photoAttachmentsView)
@@ -289,7 +310,7 @@ class MessageItem @JvmOverloads constructor(
     }
 
     private fun setDeliveryStatus() {
-        if (!getIsSentByMe()) {
+        if (!getIsSentByMe() || requireMessageRecord().isDeleted) {
             deliveryStatusView?.setImageDrawable(null)
             setGone(deliveryStatusView)
             return
@@ -306,7 +327,7 @@ class MessageItem @JvmOverloads constructor(
     }
 
     private fun setReply() {
-        if (!requireMessageRecord().hasReply()) {
+        if (!requireMessageRecord().hasReply() || requireMessageRecord().isDeleted) {
             replyView?.setMessageRecord(null)
             replyView?.setMessageSender(null)
             replyView?.setOnClickListener(null)
@@ -348,12 +369,69 @@ class MessageItem @JvmOverloads constructor(
         val popup = PopupMenu(context, view)
         val inflater = popup.menuInflater
         inflater.inflate(R.menu.popup_message_item, popup.menu)
+        popup.menu.findItem(R.id.message_info).isVisible = isDebug
+        val deleteForEveryone = popup.menu.findItem(R.id.action_delete_for_everyone)
+        val delete = popup.menu.findItem(R.id.action_delete)
+        if (isIncoming || requireMessageRecord().isDeleted) {
+            deleteForEveryone.isVisible = false
+            delete.isVisible = false
+        } else if (requireMessageRecord().deliveryStatus == DeliveryStatus.READ) {
+            deleteForEveryone.isVisible = false
+            delete.isVisible = true
+        } else {
+            deleteForEveryone.isVisible = true
+            delete.isVisible = false
+        }
+
         popup.setOnMenuItemClickListener {
-            if (it.itemId == R.id.action_react) {
-                reactionListener.onShouldShowReactionChooser(requireMessageRecord())
-            }else if(it.itemId == R.id.action_copy){
-                val cm = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                cm.setPrimaryClip(ClipData.newPlainText("message",requireMessageRecord().message?:""))
+            when (it.itemId) {
+                R.id.action_react -> {
+                    reactionListener.onShouldShowReactionChooser(requireMessageRecord())
+                }
+                R.id.action_copy -> {
+                    ClipboardUtil.with(context).clip(requireMessageRecord().message ?: "")
+                }
+                R.id.action_delete_for_everyone -> {
+                    if (!requireMessageRecord().isDeleted)
+                        deletionListener.onShouldDeleteForEveryone(requireMessageRecord())
+                }
+                R.id.action_delete -> {
+                    if (!requireMessageRecord().isDeleted)
+                        deletionListener.onShouldDelete(requireMessageRecord())
+                }
+                R.id.message_info -> {
+                    val m = requireMessageRecord()
+                    val status = context.getString(DeliveryStatus.getStatusString(m.deliveryStatus))
+                    val messageText = "" +
+                            "deliveryStatus=$status" + "\n" +
+                            "timestamp=${
+                                simpleDateFormat(
+                                    m.timestamp,
+                                    TIMESTAMP_FORMAT_FULL
+                                )
+                            }" + "\n" +
+                            "sentBy=${sender?.loadName() ?: "null"}" + "\n" +
+                            "index=${itemIndex}" + "\n" +
+                            "isIncoming=$isIncoming" + "\n" +
+                            "isDeleted=${requireMessageRecord().isDeleted}" + "\n" +
+                            "hasReply=$hasReply" + "\n" +
+                            "hasLinkPreview=$hasLinkPreview" + "\n" +
+                            "hasMessage=$hasMessage" + "\n" +
+                            "hasAttachments=$hasAttachments" + "\n" +
+                            "hasReactions=$hasReactions" + "\n" +
+                            "isTextOnly=${messageRecord!!.isTextOnly()}" + "\n"
+
+                    MaterialAlertDialogBuilder(context)
+                        .setTitle("Message Info")
+                        .setMessage(messageText)
+                        .setCancelable(true)
+                        .create()
+                        .show()
+                }
+                R.id.action_reply -> {
+
+                }
+                else -> return@setOnMenuItemClickListener false
             }
             true
         }
@@ -452,6 +530,10 @@ class MessageItem @JvmOverloads constructor(
         this.reactionListener = listener
     }
 
+    fun setOnDeletionListener(listener: MessageDeletionListener) {
+        this.deletionListener = listener
+    }
+
     fun setPreviousMessageRecord(message: MessageRecord?) {
         this.previousMessageRecord = message
     }
@@ -466,6 +548,10 @@ class MessageItem @JvmOverloads constructor(
 
     fun setSelectionTracker(selectionTrackerBlock: () -> SelectionTracker<Long>) {
         this.selectionTrackerProvider = selectionTrackerBlock
+    }
+
+    fun setDebug(debug: Boolean) {
+        isDebug = debug
     }
 
     companion object {

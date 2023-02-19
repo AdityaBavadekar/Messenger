@@ -1,6 +1,5 @@
 /*
- *
- *    Copyright 2022 Aditya Bavadekar
+ *    Copyright 2023 Aditya Bavadekar
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -13,7 +12,6 @@
  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
- *
  */
 
 package com.adityaamolbavadekar.messenger.utils.extensions
@@ -32,6 +30,7 @@ import androidx.core.view.updatePadding
 import com.adityaamolbavadekar.messenger.R
 import com.adityaamolbavadekar.messenger.utils.Constants.TimestampFormats.MESSAGE_TIMESTAMP_FORMAT
 import com.adityaamolbavadekar.messenger.utils.Constants.TimestampFormats.SLASHED_TIMESTAMP_FORMAT_FULL
+import com.adityaamolbavadekar.messenger.utils.Constants.TimestampFormats.TIMESTAMP_FORMAT_DAY
 import com.adityaamolbavadekar.messenger.utils.Constants.TimestampFormats.TIMESTAMP_FORMAT_DAY_MONTH
 import com.adityaamolbavadekar.messenger.utils.Constants.TimestampFormats.TIMESTAMP_FORMAT_DAY_MONTH_YEAR
 import com.bumptech.glide.Glide
@@ -139,14 +138,14 @@ fun getDateForConversationListLastUpdated(milis: Long, context: Context? = null)
 }
 
 fun getDateStub(milis: Long): String {
-    val m = Calendar.getInstance()
-    m.timeInMillis = milis
+    val now = Calendar.getInstance()
+    now.timeInMillis = milis
     val cal = Calendar.getInstance()
-    return if (cal[Calendar.YEAR] == m[Calendar.YEAR]) {
+    return if (cal[Calendar.YEAR] == now[Calendar.YEAR]) {
         when {
-            cal[Calendar.DAY_OF_MONTH] == m[Calendar.DAY_OF_MONTH] -> "T"
-            cal[Calendar.DAY_OF_MONTH] - 1 == m[Calendar.DAY_OF_MONTH] -> "Y"
-            else -> simpleDateFormat(milis, TIMESTAMP_FORMAT_DAY_MONTH)
+            cal[Calendar.DAY_OF_MONTH] == now[Calendar.DAY_OF_MONTH] -> "T" //Today
+            cal[Calendar.DAY_OF_MONTH] - 1 == now[Calendar.DAY_OF_MONTH] -> "Y" //Yesterday
+            else -> simpleDateFormat(milis, TIMESTAMP_FORMAT_DAY)
         }
     } else simpleDateFormat(milis, TIMESTAMP_FORMAT_DAY_MONTH_YEAR)
 }

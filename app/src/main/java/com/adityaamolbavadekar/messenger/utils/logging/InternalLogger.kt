@@ -1,6 +1,5 @@
 /*
- *
- *    Copyright 2022 Aditya Bavadekar
+ *    Copyright 2023 Aditya Bavadekar
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -13,7 +12,6 @@
  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
- *
  */
 
 package com.adityaamolbavadekar.messenger.utils.logging
@@ -43,16 +41,12 @@ object InternalLogger {
         internalLog(TAG, m, PinLog.LogLevel.WARN)
     }
 
-    fun logW(TAG: String, m: String, e: Throwable) {
-        internalLog(TAG, m, PinLog.LogLevel.WARN, e)
-    }
-
     fun logD(TAG: String, m: String) {
         internalLog(TAG, m, PinLog.LogLevel.DEBUG)
     }
 
-    fun logD(TAG: String, m: String, e: Throwable) {
-        internalLog(TAG, m, PinLog.LogLevel.DEBUG, e)
+    fun logW(TAG: String, m: String, e: Throwable) {
+        internalLog(TAG, m, PinLog.LogLevel.WARN, e)
     }
 
     fun logI(TAG: String, m: String) {
@@ -97,23 +91,22 @@ object InternalLogger {
         TAG: String,
         m: String,
         logType: PinLog.LogLevel,
-        e: Throwable? = null
+        e: Throwable? = null,
+        persist: Boolean = true
     ) {
         val text = "$TAG : $m"
         val logger = getAppLevelLogger()
 
-        if (logType == PinLog.LogLevel.ERROR) logger.d(text, e)
-
-        persistLog(TAG, m, logType, e)
-
-        if (isStrictErrorOnlyLogging()) return
+        if (logType == PinLog.LogLevel.ERROR) logger.e(text, e)
+        if (persist) persistLog(TAG, m, logType, e)
+        if (!isDebugBuild) return
 
         return when (logType) {
             PinLog.LogLevel.INFO -> logger.i(text, e)
             PinLog.LogLevel.WARN -> logger.w(text, e)
-            else -> logger.d(text, e)
+            PinLog.LogLevel.DEBUG -> logger.d(text, e)
+            else -> logger.v(text,e)
         }
-
     }
 
     private fun persistLog(
@@ -160,6 +153,20 @@ object InternalLogger {
 
     fun e(TAG: String, e: Throwable) {
         internalAndroidLog(TAG, "", PinLog.LogLevel.ERROR, e)
+    }
+
+    /**
+     * - Only log if [isDebugBuild] = `true`
+     * - Log Level : Info
+     * */
+    fun debugInfo(TAG: String, m: String, e: Throwable? = null) {
+        if (isDebugBuild) {
+            return internalAndroidLog(TAG, m, PinLog.LogLevel.INFO, e, true)
+        }
+    }
+
+    fun logPrivateInfo(TAG: String, m: String,e: Throwable?=null){
+        debugInfo(TAG,m,e)
     }
     /*LOGGING METHODS END*/
 
@@ -236,15 +243,12 @@ object InternalLogger {
 
     fun getAppLevelLogger() = MessengerLogger.getLogger()
 
-    private fun isStrictErrorOnlyLogging(): Boolean {
-        return !isDebugBuild
-    }
 
     fun canLog(level: Int): Boolean {
-        return if (isStrictErrorOnlyLogging()) level == Log.ERROR else true
+        return if (isStrictErrorOnlyLogging) level == Log.ERROR else true
     }
 
     val isDebugBuild: Boolean = BuildConfig.DEBUG
-
+    private val isStrictErrorOnlyLogging: Boolean = !isDebugBuild
 
 }

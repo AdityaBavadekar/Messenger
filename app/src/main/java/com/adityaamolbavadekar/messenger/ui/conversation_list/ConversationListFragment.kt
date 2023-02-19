@@ -1,6 +1,5 @@
 /*
- *
- *    Copyright 2022 Aditya Bavadekar
+ *    Copyright 2023 Aditya Bavadekar
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -13,7 +12,6 @@
  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
- *
  */
 
 package com.adityaamolbavadekar.messenger.ui.conversation_list
@@ -24,7 +22,6 @@ import android.view.View
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.coroutineScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.adityaamolbavadekar.messenger.MainActivity
 import com.adityaamolbavadekar.messenger.contact.picker.ContactPicker
@@ -34,8 +31,6 @@ import com.adityaamolbavadekar.messenger.model.ConversationRecord
 import com.adityaamolbavadekar.messenger.ui.conversation.ConversationActivity
 import com.adityaamolbavadekar.messenger.utils.base.BindingHelperFragment
 import com.adityaamolbavadekar.messenger.utils.recyclerview.BaseItemHolder
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
 
 /**
  * Displays list of conversations.
@@ -49,10 +44,11 @@ class ConversationListFragment : BindingHelperFragment<ConversationListFragmentB
 
     private lateinit var conversationListAdapter: ConversationListAdapter
     private lateinit var linearLayoutManager: LinearLayoutManager
-    private val viewModel : ConversationListViewModel by activityViewModels()
+    private val viewModel: ConversationListViewModel by activityViewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel.setDatabase(database)
         setupViews()
         viewModel.load(me)
     }
@@ -65,23 +61,19 @@ class ConversationListFragment : BindingHelperFragment<ConversationListFragmentB
             adapter = conversationListAdapter
             layoutManager = linearLayoutManager
         }
-        lifecycle.coroutineScope.launch {
-
-            database.getConversations().collect {
-                conversationListAdapter.submitList(it)
-                if (it.isEmpty()) {
-                    binding.conversationRecyclerView.isGone = true
-                    binding.noConversationsLayout.isVisible = true
-                } else {
-                    binding.conversationRecyclerView.isVisible = true
-                    binding.noConversationsLayout.isGone = true
-                }
+        viewModel.conversations.observe(viewLifecycleOwner) {
+            conversationListAdapter.submitList(it)
+            if (it.isEmpty()) {
+                binding.conversationRecyclerView.isGone = true
+                binding.noConversationsLayout.isVisible = true
+            } else {
+                binding.conversationRecyclerView.isVisible = true
+                binding.noConversationsLayout.isGone = true
             }
+        }
 
-            database.getRecipients().collect {
-                conversationListAdapter.setRecipients(it)
-            }
-
+        viewModel.recipients.observe(viewLifecycleOwner) {
+            conversationListAdapter.setRecipients(it)
         }
 
         (requireActivity() as MainActivity).setOnFabClickListener {
@@ -105,6 +97,11 @@ class ConversationListFragment : BindingHelperFragment<ConversationListFragmentB
                 database.deleteConversationAndMessages(item)
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.refreshList()
     }
 
 }

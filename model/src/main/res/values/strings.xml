@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  ~
-  ~    Copyright 2022 Aditya Bavadekar
+  ~    Copyright 2023 Aditya Bavadekar
   ~
   ~    Licensed under the Apache License, Version 2.0 (the "License");
   ~    you may not use this file except in compliance with the License.
@@ -14,9 +13,13 @@
   ~    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   ~    See the License for the specific language governing permissions and
   ~    limitations under the License.
-  ~
   -->
 
 <resources>
     <string name="default_description">Hey! I am on Messenger.</string>
+    <string name="unknown">Unknown</string>
+    <string name="failed">Failed</string>
+    <string name="read">Read</string>
+    <string name="sent">Sent</string>
+    <string name="not_sent">Not sent</string>
 </resources>

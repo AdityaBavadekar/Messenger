@@ -1,6 +1,5 @@
 /*
- *
- *    Copyright 2022 Aditya Bavadekar
+ *    Copyright 2023 Aditya Bavadekar
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -13,9 +12,15 @@
  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
- *
  */
 
 package com.adityaamolbavadekar.messenger.ui.conversation_info
 
-data class ConversationInfoItem(val id: Int, val title: String, val action: () -> Unit)
+data class ConversationInfoItem(
+    val id: Int,
+    val title: String,
+    /**
+     *  `true` if Long click , `false` otherwise.
+     *  */
+    val action: (Boolean) -> Unit
+)

@@ -1,6 +1,5 @@
 /*
- *
- *    Copyright 2022 Aditya Bavadekar
+ *    Copyright 2023 Aditya Bavadekar
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -13,7 +12,6 @@
  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
- *
  */
 
 package com.adityaamolbavadekar.messenger.utils
@@ -22,6 +20,10 @@ import com.adityaamolbavadekar.messenger.utils.extensions.simpleDateFormat
 import java.util.*
 
 object Constants {
+
+    const val CONTACTS_SYNC_NOT_PROMPTED: Int = 1
+    const val CONTACTS_SYNC_ALLOWED: Int = 2
+    const val CONTACTS_SYNC_DENIED: Int = 3
 
     const val EXTRA_CONVERSATION_ID = "extra_conversation_id"
     const val UNKNOWN_VALUE_LONG: Long = -1
@@ -46,8 +48,10 @@ object Constants {
 
     internal object TimestampFormats {
         const val MESSAGE_TIMESTAMP_FORMAT = "h:mm a"
+        const val TIMESTAMP_FORMAT_DAY = "d"
         const val TIMESTAMP_FORMAT_DAY_MONTH = "d MMMM "
         const val TIMESTAMP_FORMAT_DAY_MONTH_YEAR = "E d MMMM, YYYY"
+        const val TIMESTAMP_FORMAT_FULL = "E, d MMMM YYYY, h:mm:ss"
         const val UNDERSCORED_TIMESTAMP_FORMAT_FULL = "E_d_MMMM_YYYY_h_mm_ss"
         const val SLASHED_TIMESTAMP_FORMAT_FULL = "d/MM/YYYY"
     }
@@ -55,6 +59,7 @@ object Constants {
     internal object CloudPaths {
         private const val CLOUD_PATH_USERS_SHARABLE_DATA = "usersPublicData"
         const val CLOUD_PATH_USERS = "users"
+        const val CLOUD_PATH_UPDATES = "updates/messenger/latest/"
         private const val CLOUD_PATH_CONTACTS = "contactsOf"
         private const val CLOUD_PATH_USER_ACTIVITY = "usersActivity"
         private const val CLOUD_PATH_PROFILE_PICS = "profilePictures"
@@ -113,9 +118,9 @@ object Constants {
         fun getConversationPicturesDocument(): String {
             return ("$CLOUD_PATH_PICTURES/PIC_" +
                     simpleDateFormat(
-                        System.currentTimeMillis(),
-                        TimestampFormats.UNDERSCORED_TIMESTAMP_FORMAT_FULL
-                    ).toUpperCase(Locale.ROOT))
+                                        System.currentTimeMillis(),
+                                        TimestampFormats.UNDERSCORED_TIMESTAMP_FORMAT_FULL
+                                    ).uppercase(Locale.getDefault()))
         }
 
         fun getPresenceStatusRootPath(): String {
@@ -135,8 +140,8 @@ object Constants {
     }
 
     internal object Application {
-        const val TERMS_LINK = "https://www.messenger.org/terms"
-        const val POLICY_LINK = "https://www.messenger.org/privacy-policy"
+        const val TERMS_LINK = "https://github.com/AdityaBavadekar/Messenger/blob/main/PrivacyPolicy.md"
+        const val POLICY_LINK = "https://github.com/AdityaBavadekar/Messenger/blob/main/PrivacyPolicy.md"
     }
 
     internal object FilesNames {
@@ -152,5 +157,7 @@ object Constants {
         const val ID_OTHER_NOTIFICATIONS = "channel_other_notifications"
         const val ID_TESTING_NOTIFICATIONS = "testing"
     }
+
+    const val SUPPORT_EMAIL = "adityarbavadekar@gmail.com"
 
 }

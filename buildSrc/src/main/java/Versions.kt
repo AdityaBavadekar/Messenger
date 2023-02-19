@@ -1,6 +1,5 @@
 /*
- *
- *    Copyright 2022 Aditya Bavadekar
+ *    Copyright 2023 Aditya Bavadekar
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -13,14 +12,13 @@
  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
- *
  */
 
 @file:Suppress("unused")
 
 object Versions {
 
-    const val VERSION_NAME = "0.0.5" //XX.YY.ZZ [X:Major][Y:Minor][Z:Patch]
+    const val VERSION_NAME = "0.0.6" //XX.YY.ZZ [X:Major][Y:Minor][Z:Patch]
     val VERSION_CODE = versionCodeGet()
 
     const val COMPILE_SDK = 33
@@ -51,6 +49,7 @@ object Versions {
     const val LOTTIE = "3.6.0"
     const val MATERIAL = "1.7.0"
     const val NAVIGATION = "2.5.3"
+    const val OSS_LICENSES = "17.0.0"
     const val PAGING = "2.0.0"
     const val PHOTOVIEW = "2.0.0"
     const val PINLOG = "1.0.1"
@@ -65,32 +64,29 @@ object Versions {
     private fun versionCodeGet(): Int {
         val size = 10000
         var returnVersionCode = ""
-
-        //Indicates a pre-release
-        if (VERSION_NAME.startsWith("0")) {
-            return 1 * size
-        }
-
-        VERSION_NAME.forEach {
-            if (it.isDigit()) {
-                if (returnVersionCode == "" || returnVersionCode.startsWith("0")) {
-                    returnVersionCode = it.toString()
-                } else returnVersionCode += it.toString()
+        var index = 0
+        var flagPre = false
+        for (it in VERSION_NAME){
+            if (it.isDigit()) {              
+                if(index == 0 && it == '0'){
+                    flagPre = true
+                    returnVersionCode = "1"
+                }else {
+                    if(flagPre && it!='0') returnVersionCode += it.toString()
+                    else if (!flagPre) returnVersionCode += it.toString()
+                }
             }
+            index++
         }
-
         while (returnVersionCode.startsWith("0")) {
             returnVersionCode = returnVersionCode.removePrefix("0")
         }
-
         if (returnVersionCode.trim().isEmpty()) return 1 * size
-
+        if (flagPre) return returnVersionCode.toInt()
         while (returnVersionCode.length != size.toString().length) {
-            returnVersionCode += "0"
+            returnVersionCode += '0'
         }
-
         return returnVersionCode.toInt()
-
     }
 
 }

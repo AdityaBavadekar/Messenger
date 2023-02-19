@@ -1,6 +1,5 @@
 /*
- *
- *    Copyright 2022 Aditya Bavadekar
+ *    Copyright 2023 Aditya Bavadekar
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -13,7 +12,6 @@
  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
- *
  */
 
 package com.adityaamolbavadekar.messenger.ui.conversation
@@ -26,7 +24,9 @@ import com.adityaamolbavadekar.messenger.managers.CloudDatabaseManager
 import com.adityaamolbavadekar.messenger.model.*
 import com.adityaamolbavadekar.messenger.notifications.NotificationData
 import com.adityaamolbavadekar.messenger.notifications.NotificationSender
+import com.adityaamolbavadekar.messenger.utils.Constants
 import com.adityaamolbavadekar.messenger.utils.OnResponseCallback
+import com.adityaamolbavadekar.messenger.utils.extensions.findFirstMessage
 import com.adityaamolbavadekar.messenger.utils.extensions.getDateStub
 import com.adityaamolbavadekar.messenger.utils.extensions.runOnIOThread
 import com.adityaamolbavadekar.messenger.utils.logging.InternalLogger
@@ -37,6 +37,7 @@ class ConversationViewModel : ViewModel() {
     private var lastMessage: MessageRecord? = null
     private var isObservingRemoteDatabase = false
     private lateinit var conversationId: String
+    private var conversationType = 0
     private val _messages: MutableLiveData<List<MessageRecord>> = MutableLiveData(listOf())
     val messages: LiveData<List<MessageRecord>> = _messages
     private val _status: MutableLiveData<Long> = MutableLiveData(PresenceStatus.UNKNOWN)
@@ -61,6 +62,7 @@ class ConversationViewModel : ViewModel() {
     private val conversationsManager = cloudDatabaseManager.getConversationsManager()
     private val messagesManager = cloudDatabaseManager.getMessagesManager()
     private val statusManager = cloudDatabaseManager.getStatusManager()
+    private val messageDeleter = MessagesDeleter()
     private lateinit var me: Recipient
     private var configured = false
     private val onGetObservedMessagesResponseCallback =
@@ -107,7 +109,7 @@ class ConversationViewModel : ViewModel() {
                 InternalLogger.logD(TAG, "Saving last conversation message data.")
                 database.updateConversation(
                     it.conversationRecord
-                        .updateLastMessageData(_messages.value!!.first())
+                        .updateLastMessageData(_messages.value!!.findFirstMessage())
                 )
             }
         }
@@ -119,9 +121,13 @@ class ConversationViewModel : ViewModel() {
          * If a P2P conversation has zero messages, delete conversation from database.
          * */
         conversationWithRecipients.value?.let {
-            if (!it.conversationRecord.isGroup && _messages.value!!.isEmpty()) {
+            if (!it.conversationRecord.isGroup && _messages.value!!.isEmpty() && it.conversationRecord.temp) {
                 InternalLogger.logD(TAG, "Deleting empty non-group conversation.")
                 database.deleteConversation(conversationId)
+            } else {
+                val record = it.conversationRecord
+                record.temp = false
+                database.updateConversation(record)
             }
         }
     }
@@ -174,13 +180,11 @@ class ConversationViewModel : ViewModel() {
 
 
     fun configureExtras(
-        conversationType: String?,
+        type: Int,
         p2pUid: String?,
     ) {
-        conversationType?.let {
-            val type = ConversationRecord.ConversationType.valueOf(it)
-            startObservingRemoteData(type,p2pUid)
-        }
+        conversationType = type
+        startObservingRemoteData(p2pUid)
     }
 
     fun onLocalConversationDataChanged(data: ConversationWithRecipients) {
@@ -191,7 +195,8 @@ class ConversationViewModel : ViewModel() {
         )
         _conversationPhoto.postValue(data.conversationRecord.photoUrl)
         _conversationTitle.postValue(data.conversationRecord.title)
-        startObservingRemoteData(data.conversationRecord.conversationType(),data.conversationRecord.p2PRecipientUid())
+        conversationType = data.conversationRecord.conversationType()
+        startObservingRemoteData(if (conversationType == ConversationRecord.CONVERSATION_TYPE_P2P) data.conversationRecord.p2PRecipientUid() else null)
         this._conversationWithRecipients.postValue(data)
     }
 
@@ -200,71 +205,62 @@ class ConversationViewModel : ViewModel() {
     }
 
     private fun createDateHeaders(list: List<MessageRecord>): Job {
-        return database.insertOrUpdateMessages(list)
+        return generateDateHeaders(list)
     }
 
-    private fun createDateHeadersOld(list: List<MessageRecord>) =
-        runOnIOThread {
-            var currentMessageTimestamp = ""
+    private fun generateDateHeaders(list: List<MessageRecord>): Job {
+        return runOnIOThread {
             val newList = mutableListOf<MessageRecord>()
-            list.sortedBy { it.timestamp }.forEach { messageRecord ->
-                val date = getDateStub(messageRecord.timestamp)
-                if (currentMessageTimestamp == date) {
-                    // We found a message that has same timestamp as the earlier one
-                    // Add message under the similar timestamp if message is not a timestamp
-                    newList.add(messageRecord)
-                } else {
-                    // Add message as well as new header for the timestamp
-                    currentMessageTimestamp = date
-                    if (messageRecord.isTimestampHeader()) {
-                        //If we find a timestamp, add it to list.
-                        newList.add(messageRecord)
-                    } else {
-                        //If we find a message item, add the message as well as a new timestamp to list.
-                        newList.add(
-                            MessageRecord.timestampHeader(
-                                messageRecord.timestamp,
-                                conversationId
-                            )
-                        )
-                        newList.add(messageRecord)
-                    }
-                }
+            val mList = list.sortedBy { it.timestamp }
+            if (mList.lastIndex == 0) {
+                //Contains only one message
             }
-            database.insertOrUpdateMessages(newList)
-        }
+            mList
+                .forEachIndexed { index, messageRecord ->
+                    if (messageRecord.isTimestampHeader()) return@forEachIndexed
 
-    private fun createDateHeadersNew(list: List<MessageRecord>) =
-        runOnIOThread {
-            var currentMessageTimestamp = ""
-            val newList = list.toMutableList()
-            for ((i, messageRecord) in list.sortedBy { it.timestamp }.withIndex()) {
-                val date = getDateStub(messageRecord.timestamp)
-                if (currentMessageTimestamp != date) {
-                    currentMessageTimestamp = date
-                    newList.add(
-                        i, MessageRecord.timestampHeader(
+                    val currentTimestampString = getDateStub(messageRecord.timestamp)
+                    // Previous index is +1 as we set reverseLayout=true
+                    val prev = list.getOrNull(index + 1)
+
+                    if (index == list.lastIndex) {
+                        //index is list's lastIndex means that there is no previous message, so we first add
+                        //the message and then a timestamp for current message.
+                        newList.add(messageRecord)
+                        val stamp = MessageRecord.timestampHeader(
                             messageRecord.timestamp,
                             conversationId
                         )
-                    )
+                        newList.add(stamp)
+                    } else {
+                        if (prev != null && !prev.isTimestampHeader()) {
+                            val prevTimestampString = getDateStub(prev.timestamp)
+                            if (prevTimestampString != currentTimestampString) {
+                                //A timestamp is needed
+                                val stamp = MessageRecord.timestampHeader(
+                                    prev.timestamp,
+                                    conversationId
+                                )
+                                newList.add(stamp)
+                            }
+                        }
+                        newList.add(messageRecord)
+                    }
                 }
-            }
             database.insertOrUpdateMessages(newList)
         }
+    }
 
-    private fun startObservingRemoteData(
-        conversationType: ConversationRecord.ConversationType,
-        p2pUid: String?
-    ) {
+    private fun startObservingRemoteData(p2pUid: String?) {
         if (isObservingRemoteDatabase) return
         when (conversationType) {
-            ConversationRecord.ConversationType.GROUP -> startObservingRemoteGroupData()
-            ConversationRecord.ConversationType.P2P -> startObservingRemoteP2PData(
+            ConversationRecord.CONVERSATION_TYPE_GROUP -> startObservingRemoteGroupData()
+            ConversationRecord.CONVERSATION_TYPE_P2P -> startObservingRemoteP2PData(
                 requireNotNull(
                     p2pUid
                 ) { "P2PUid cannot be null" })
-            ConversationRecord.ConversationType.SELF -> startObservingRemoteP2PData(me.uid, false)
+            ConversationRecord.CONVERSATION_TYPE_SELF -> startObservingRemoteP2PData(me.uid, false)
+            else -> throw IllegalStateException("ConversationType $conversationType is unknown.")
         }
         isObservingRemoteDatabase = true
     }
@@ -277,6 +273,11 @@ class ConversationViewModel : ViewModel() {
         if (observeStatus) {
             statusManager.observeStatus(p2pUid) {
                 _status.postValue(it)
+                // Update lastSeen
+                val r =
+                    conversationWithRecipients.value!!.recipients.find { recipient -> recipient.uid == p2pUid }!!
+                r.lastSeen = it
+                database.insertOrUpdateRecipient(r)
             }
         }
     }
@@ -298,9 +299,8 @@ class ConversationViewModel : ViewModel() {
     fun sendMessage(
         message: MessageRecord,
         sendNotifications: Boolean = true,
-        invokeBlock: (Int) -> Unit
+        invokeBlock: () -> Unit
     ) {
-        val messageIndex = messages.value!!.size
         lastMessage = message
         val conversation = conversationWithRecipients.value!!.conversationRecord
         database.insertOrUpdateMessage(message)
@@ -318,7 +318,7 @@ class ConversationViewModel : ViewModel() {
                 messageSender.sendSelfMessage(message) { onMessageSaved(it, sendNotifications) }
             }
         }
-        invokeBlock(messageIndex)
+        invokeBlock()
     }
 
     private fun onMessageSaved(isMessageSaved: Boolean, sendNotifications: Boolean) {
@@ -368,6 +368,21 @@ class ConversationViewModel : ViewModel() {
     fun updateMessage(messageRecord: MessageRecord) {
         val conversation = conversationWithRecipients.value!!.conversationRecord
         messageSender.updateMessage(messageRecord, conversation)
+    }
+
+    fun delete(messageRecord: MessageRecord, forEveryone: Boolean) {
+        if (forEveryone) {
+            if(conversationType == ConversationRecord.CONVERSATION_TYPE_P2P){
+                val p2pUid = conversationWithRecipients.value!!.conversationRecord.p2PRecipientUid()
+                messageDeleter.deleteForEveryoneP2P(p2pUid,messageRecord)
+            }
+            if(conversationType == ConversationRecord.CONVERSATION_TYPE_GROUP)messageDeleter.deleteForEveryoneGroup(messageRecord)
+        } else {
+            if (conversationType == ConversationRecord.CONVERSATION_TYPE_P2P) {
+                val p2pUid = conversationWithRecipients.value!!.conversationRecord.p2PRecipientUid()
+                messageDeleter.deleteForMe(p2pUid, messageRecord)
+            }
+        }
     }
 
     companion object {

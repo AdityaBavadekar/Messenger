@@ -1,6 +1,5 @@
 /*
- *
- *    Copyright 2022 Aditya Bavadekar
+ *    Copyright 2023 Aditya Bavadekar
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -13,7 +12,6 @@
  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
- *
  */
 
 package com.adityaamolbavadekar.messenger.installation
@@ -23,6 +21,7 @@ import android.content.ContentProvider
 import android.content.ContentValues
 import android.database.Cursor
 import android.net.Uri
+import com.adityaamolbavadekar.messenger.utils.AppCheckUtil
 import com.adityaamolbavadekar.messenger.utils.logging.InternalLogger
 import com.adityaamolbavadekar.messenger.utils.logging.InternalLogger.initializeInternalLogger
 
@@ -36,6 +35,7 @@ class InstallationProvider : ContentProvider() {
         val c = checkNotNull(context) { "[$TAG] Context cannot be null." }
         context!!.initializeInternalLogger()
         InstallationInfo.getOrCreateId(c)
+        AppCheckUtil.activate(c)
         return false
     }
 

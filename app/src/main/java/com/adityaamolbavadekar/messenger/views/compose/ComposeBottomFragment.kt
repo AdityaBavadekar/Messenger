@@ -1,6 +1,5 @@
 /*
- *
- *    Copyright 2022 Aditya Bavadekar
+ *    Copyright 2023 Aditya Bavadekar
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -13,7 +12,6 @@
  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
- *
  */
 
 package com.adityaamolbavadekar.messenger.views.compose
@@ -23,13 +21,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.updateLayoutParams
 import com.adityaamolbavadekar.messenger.utils.base.BaseFragment
+import com.adityaamolbavadekar.messenger.utils.logging.InternalLogger
 
 abstract class ComposeBottomFragment(height: Int = 0) : BaseFragment() {
 
-    private var fragmentHeight : Int = height
-
+    private var fragmentHeight: Int = height
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        InternalLogger.logD(javaClass.simpleName, "onViewCreated")
         updateHeight(view)
     }
 

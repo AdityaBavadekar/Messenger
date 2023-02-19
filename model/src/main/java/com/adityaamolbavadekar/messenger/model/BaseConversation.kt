@@ -1,6 +1,5 @@
 /*
- *
- *    Copyright 2022 Aditya Bavadekar
+ *    Copyright 2023 Aditya Bavadekar
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -13,7 +12,6 @@
  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
- *
  */
 
 package com.adityaamolbavadekar.messenger.model
@@ -57,7 +55,7 @@ abstract class BaseConversation constructor(
 
     /*Whether a Recipient allowed to edit conversation information*/
     open var editingPermissionType: Int = EditingPermissionType.permitAll(),
-
+    open var temp: Boolean = false,
     ) {
 
     fun remoteRecipients(): MutableList<RemoteRecipient> {
@@ -95,7 +93,7 @@ abstract class BaseConversation constructor(
         } else false
     }
 
-    fun isEditingingRestrictedForUser(uid: String): Boolean {
+    fun isEditingRestrictedForUser(uid: String): Boolean {
         return if (editingPermissionType == EditingPermissionType.permitManagersOnly()) {
             !isManager(uid)
         } else false
