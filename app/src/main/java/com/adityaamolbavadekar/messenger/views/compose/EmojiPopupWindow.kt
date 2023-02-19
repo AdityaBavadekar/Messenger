@@ -77,7 +77,7 @@ private constructor(
         }
 
         binding.emojiCategoriesTabLayout.addOnTabSelectedListener(this)
-        binding.emojiCategoriesTabLayout.tabMode = MODE_SCROLLABLE
+        binding.emojiCategoriesTabLayout.tabMode = TabLayout.MODE_SCROLLABLE
         changeTab(0)
     }
 
