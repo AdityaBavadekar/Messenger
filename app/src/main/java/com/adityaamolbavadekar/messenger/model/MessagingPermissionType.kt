@@ -19,7 +19,7 @@ package com.adityaamolbavadekar.messenger.model
 /**
  * For identifying whether a recipient is allowed to message.
  * */
-object MessagingPermissionType :ConversationPermissionType{
+object MessagingPermissionType : ConversationPermissionType {
 
     override fun getField(conversation: BaseConversation): Int {
         return conversation.messagingPermissionType

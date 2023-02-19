@@ -19,7 +19,7 @@ package com.adityaamolbavadekar.messenger.model
 /**
  * For identifying whether a recipient is allowed to edit conversation information.
  * */
-object EditingPermissionType:ConversationPermissionType {
+object EditingPermissionType: ConversationPermissionType {
 
     override fun getField(conversation: BaseConversation): Int {
         return conversation.editingPermissionType

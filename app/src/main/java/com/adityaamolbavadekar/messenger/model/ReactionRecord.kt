@@ -27,7 +27,7 @@ data class ReactionRecord constructor(
     val messageId: String = "",
     val reaction: String = "",
     val reactorUid: String = ""
-) :RemoteDatabasePersitable{
+) : RemoteDatabasePersitable {
 
     override fun hashMap(): HashMap<String, Any?> {
         return hashMapOf(

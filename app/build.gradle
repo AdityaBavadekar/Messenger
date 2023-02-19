@@ -116,7 +116,6 @@ android {
 dependencies {
 
     implementation fileTree(dir: "libs", include: ["*.jar"])
-    implementation project(":model")
 
     implementation Dependencies.ANDROIDX_CORE
     implementation Dependencies.ANDROIDX_APPCOMPAT

@@ -27,7 +27,7 @@ data class Attachment(
     val width: String,
     val height:String,
 
-){
+    ){
 
 
 }
