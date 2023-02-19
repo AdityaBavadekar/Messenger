@@ -195,6 +195,12 @@
     <string name="update">Update</string>
     <string name="updating_in_background">Updating in background</string>
     <string name="messenger_feedback">Messenger Feedback</string>
+    <string name="default_description">Hey! I am on Messenger.</string>
+    <string name="unknown">Unknown</string>
+    <string name="failed">Failed</string>
+    <string name="read">Read</string>
+    <string name="sent">Sent</string>
+    <string name="not_sent">Not sent</string>
 
     <string-array name="theme_chooser">
         <item>System Default</item>

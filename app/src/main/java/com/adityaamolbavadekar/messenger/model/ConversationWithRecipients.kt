@@ -22,7 +22,6 @@ import androidx.room.Relation
 import com.adityaamolbavadekar.messenger.model.ConversationRecord
 import com.adityaamolbavadekar.messenger.model.ConversationRecordRecipientCrossRef
 import com.adityaamolbavadekar.messenger.model.Recipient
-
 data class ConversationWithRecipients(
     @Embedded val conversationRecord: ConversationRecord,
     @Relation(

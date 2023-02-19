@@ -19,6 +19,7 @@ package com.adityaamolbavadekar.messenger.model
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.util.*
+import com.adityaamolbavadekar.messenger.R
 
 /**
  * Represents Local Database (Room) Level Conversation.
