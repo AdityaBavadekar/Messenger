@@ -1,4 +1,4 @@
-![](https://img.shields.io/github/v/release/AdityaBavadekar/waveapp?include_prereleases&label=Wave-Messenger)
+![](https://img.shields.io/github/v/release/AdityaBavadekar/Messenger?include_prereleases&label=Messenger)
 [![Android CI](https://github.com/AdityaBavadekar/Messenger/actions/workflows/android.yml/badge.svg)](https://github.com/AdityaBavadekar/Wave-Messenger-Android/actions/workflows/android.yml)
 
 # Messenger
