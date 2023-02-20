@@ -18,6 +18,7 @@ package com.adityaamolbavadekar.messenger.utils
 
 import com.adityaamolbavadekar.messenger.model.EmojiItem
 
+// Parse emoji like this `println(String(Character.toChars(0x23F0)))`
 val emojiData = listOf(
     EmojiItem(
         hexCode = "231A..231B",
