@@ -17,7 +17,7 @@
 @file:Suppress("unused")
 /*
 *
-*    Copyright 2022 Aditya Bavadekar
+*    Copyright 2023 Aditya Bavadekar
 *
 *    Licensed under the Apache License, Version 2.0 (the "License");
 *    you may not use this file except in compliance with the License.
@@ -35,6 +35,11 @@
 
 object Dependencies {
 
+    const val PLUGIN_CRASHLYTICS_GRADLE = "com.google.firebase:firebase-crashlytics-gradle:" + Versions.PLUGIN_CRASHLYTICS_GRADLE
+    const val PLUGIN_GOOGLE_OSS_LICENSES = "com.google.android.gms:oss-licenses-plugin:" + Versions.PLUGIN_GOOGLE_OSS_LICENSES
+    const val PLUGIN_GOOGLE_PLAY_SERVICES = "com.google.gms:google-services:" + Versions.PLUGIN_GOOGLE_PLAY_SERVICES
+    const val PLUGIN_NAVIGATION = "androidx.navigation:navigation-safe-args-gradle-plugin:" + Versions.NAVIGATION
+
     const val ANDROIDX_CORE = Libs.ANDROIDX_CORE + ":" + Versions.ANDROIDX_CORE
     const val ANDROIDX_APPCOMPAT = Libs.ANDROIDX_APPCOMPAT + ":" + Versions.ANDROIDX_APPCOMPAT
     const val ACTIVITY_KTX = Libs.ACTIVITY_KTX + ":" + Versions.ACTIVITY_KTX
@@ -44,7 +49,9 @@ object Dependencies {
     const val FIREBASE_BOM = Libs.FIREBASE_BOM + ":" + Versions.FIREBASE_BOM
     const val FIREBASE_APPCHECK = Libs.FIREBASE_APPCHECK + ":" + Versions.FIREBASE_APPCHECK
     const val FIREBASE_APPCHECK_PLAY = Libs.FIREBASE_APPCHECK_PLAY
+    const val FIREBASE_ANALYTICS = Libs.FIREBASE_ANALYTICS
     const val FIREBASE_AUTH = Libs.FIREBASE_AUTH
+    const val FIREBASE_CRASHLYTICS = Libs.FIREBASE_CRASHLYTICS
     const val FIREBASE_DATABASE = Libs.FIREBASE_DATABASE
     const val FIREBASE_MESSAGING = Libs.FIREBASE_MESSAGING
     const val FIREBASE_STORAGE = Libs.FIREBASE_STORAGE
