@@ -24,15 +24,18 @@ data class EmojiItemModel(
     val searchInfo: List<String>
 ) {
 
-    constructor(emoji: String, key: Int) : this(key, emoji, 0,0, listOf())
+    constructor(emoji: String, key: Int) : this(key, emoji, 0, 0, listOf())
 
     fun isSameAs(x: EmojiItemModel): Boolean {
         return x.key == key && x.emoji == emoji
     }
 
+    private fun emoji(data: Int): String {
+        return String(Character.toChars(data))
+    }
+
     fun getParsedEmoji(): String {
-        //TODO
-        return emoji
+        return emoji(Integer.decode("0x$emoji"))
     }
 
 }

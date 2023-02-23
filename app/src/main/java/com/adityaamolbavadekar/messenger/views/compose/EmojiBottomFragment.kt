@@ -150,8 +150,8 @@ class EmojiBottomFragment(fragmentHeight: Int, private val onEmojiClicked: (Stri
         fun loadEmojiModelsList(context: Context): MutableList<EmojiItemModel> {
             val emojis = load(context)
             val emojiItemModelList = mutableListOf<EmojiItemModel>()
-            for ((i, string) in emojis.withIndex()) {
-                emojiItemModelList.add(EmojiItemModel(string, i))
+            for ((i, hexCode) in emojis.withIndex()) {
+                emojiItemModelList.add(EmojiItemModel(hexCode, i))
             }
             return emojiItemModelList
         }
@@ -195,6 +195,5 @@ class EmojiBottomFragment(fragmentHeight: Int, private val onEmojiClicked: (Stri
     private fun refresh() {
         listAdapter.submitList(activeTabCategory.loadEmojiModelsList(requireContext()))
     }
-
 
 }
