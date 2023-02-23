@@ -10,7 +10,7 @@ This is open-source repository of Wave Messenger.
 - The application does not provide a way to delete the user data as of 22 Oct.
 
 ## Development status
-- Application development is in progress for v0.0.5
+- Application development is in progress for v0.0.6
 - Any version increments would be reflected in github's releases section.
 
 
