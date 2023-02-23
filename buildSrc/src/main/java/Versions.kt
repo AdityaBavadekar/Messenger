@@ -18,7 +18,7 @@
 
 object Versions {
 
-    const val VERSION_NAME = "0.0.6" //XX.YY.ZZ [X:Major][Y:Minor][Z:Patch]
+    const val VERSION_NAME = "0.0.7" //XX.YY.ZZ [X:Major][Y:Minor][Z:Patch]
     val VERSION_CODE = versionCodeGet()
 
     const val COMPILE_SDK = 33
