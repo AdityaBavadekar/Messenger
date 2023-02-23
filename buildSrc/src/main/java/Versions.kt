@@ -28,6 +28,7 @@ object Versions {
 
     const val PLUGIN_ANDROID_GRADLE = "4.0.0-alpha09"
     const val PLUGIN_KOTLIN_GRADLE = "1.4.21"
+    const val PLUGIN_CRASHLYTICS_GRADLE = "2.8.1"
     const val PLUGIN_GOOGLE_PLAY_SERVICES = "4.3.10"
     const val PLUGIN_GOOGLE_OSS_LICENSES = "0.10.4"
 

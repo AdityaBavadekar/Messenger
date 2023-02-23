@@ -1,8 +1,9 @@
 buildscript {
     dependencies {
-        classpath "com.google.gms:google-services:${Versions.PLUGIN_GOOGLE_PLAY_SERVICES}"
-        classpath "com.google.android.gms:oss-licenses-plugin:${Versions.PLUGIN_GOOGLE_OSS_LICENSES}"
-        classpath "androidx.navigation:navigation-safe-args-gradle-plugin:${Versions.NAVIGATION}"
+        classpath Dependencies.PLUGIN_GOOGLE_PLAY_SERVICES
+        classpath Dependencies.PLUGIN_GOOGLE_OSS_LICENSES
+        classpath Dependencies.PLUGIN_CRASHLYTICS_GRADLE
+        classpath Dependencies.PLUGIN_NAVIGATION
     }
 }
 
