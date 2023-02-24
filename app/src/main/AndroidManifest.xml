@@ -223,7 +223,7 @@
             android:windowSoftInputMode="stateHidden" />
 
         <activity
-            android:name=".ui.ShakePresenter"
+            android:name=".ui.shake.ShakePresenter"
             android:exported="false"
             android:label="@string/app_name"
             android:launchMode="singleInstance"

@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~    Copyright 2023 Aditya Bavadekar
   ~
   ~    Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,32 +16,20 @@
 
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="40dp"
-    android:layout_height="40dp"
+    android:layout_width="48dp"
+    android:layout_height="48dp"
     android:layout_margin="2dp"
     android:background="?selectableItemBackgroundBorderless">
 
     <androidx.appcompat.widget.AppCompatTextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center"
         android:id="@+id/emojiTextView"
-        android:gravity="center"
-        android:maxLength="1"
-        tools:visibility="gone"
-        android:padding="@dimen/dimen_6"
-        />
-
-    <androidx.appcompat.widget.AppCompatImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
         android:gravity="center"
-        android:maxLength="1"
-        android:src="@drawable/ic_account_circle"
-        android:visibility="gone"
-        tools:visibility="visible"
-        android:padding="@dimen/dimen_6"
-        />
+        android:maxLength="3"
+        android:padding="@dimen/dimen_4"
+        android:textSize="22sp"
+        tools:text="😁" />
 
 </FrameLayout>

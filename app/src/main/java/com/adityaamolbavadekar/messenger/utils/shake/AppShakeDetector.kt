@@ -17,7 +17,7 @@
 package com.adityaamolbavadekar.messenger.utils.shake
 
 import android.content.Context
-import com.adityaamolbavadekar.messenger.ui.ShakePresenter
+import com.adityaamolbavadekar.messenger.ui.shake.ShakePresenter
 import com.adityaamolbavadekar.messenger.utils.logging.InternalLogger
 
 /**

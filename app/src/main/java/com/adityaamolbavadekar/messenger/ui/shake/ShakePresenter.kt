@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package com.adityaamolbavadekar.messenger.ui
+package com.adityaamolbavadekar.messenger.ui.shake
 
 import android.content.Context
 import android.content.Intent
@@ -24,7 +24,6 @@ import android.os.Bundle
 import android.widget.FrameLayout
 import androidx.activity.viewModels
 import com.adityaamolbavadekar.messenger.R
-import com.adityaamolbavadekar.messenger.ui.shake.ShakePresenterViewModel
 import com.adityaamolbavadekar.messenger.utils.Constants
 import com.adityaamolbavadekar.messenger.utils.ScreenCaptureUtil
 import com.adityaamolbavadekar.messenger.utils.ScreenCaptureUtil.Companion.to
@@ -36,23 +35,26 @@ import java.io.File
 class ShakePresenter : LifecycleLoggerActivity() {
 
     private val viewModel: ShakePresenterViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         val root = FrameLayout(this).apply {
             this.background = ColorDrawable(Color.TRANSPARENT)
-            this.setOnClickListener {
-                if (!isFinishing) finish()
-            }
+            this.setOnClickListener { finishIfNotAlready() }
         }
 
         setContentView(root)
-        val file = File.createTempFile("screen-capture-image", "jpeg")
-        val capture = ScreenCaptureUtil.cap(root).to(file)
-        if (capture) InternalLogger.logD(
-            TAG,
-            "Successfully saved screenCapture to ${file.absolutePath}"
-        )
+
+        try {
+            val file = File.createTempFile("screen-capture-image", ".jpeg")
+            val capture = ScreenCaptureUtil.cap(window.decorView.rootView).to(file)
+            if (capture) InternalLogger.logD(
+                TAG,
+                "Successfully saved screenCapture to ${file.absolutePath}"
+            )
+        } catch (e: Exception) {
+        }
 
         MaterialAlertDialogBuilder(this)
             .setTitle(getString(R.string.shake_to_send_feedback))
@@ -60,20 +62,20 @@ class ShakePresenter : LifecycleLoggerActivity() {
             .setIcon(R.drawable.ic_feedback)
             .setNeutralButton(R.string.dismiss) { d, _ ->
                 d.cancel()
-                if (!isFinishing) finish()
+                finishIfNotAlready()
             }
             .setOnDismissListener {
                 it.dismiss()
-                if (!isFinishing) finish()
+                finishIfNotAlready()
             }
             .setPositiveButton(getString(R.string.send_feedback)) { d, _ ->
                 d.dismiss()
-                if (!isFinishing) finish()
+                finishIfNotAlready()
                 val path = viewModel.filePath.value
                 Intent(Intent.ACTION_SEND).apply {
                     putExtra(Intent.EXTRA_EMAIL, arrayListOf(Constants.SUPPORT_EMAIL))
                     putExtra(Intent.EXTRA_SUBJECT, getString(R.string.messenger_feedback))
-                    putExtra(Intent.EXTRA_TEXT, "ID=${path ?: "F"}\nFeedback : \n")
+                    putExtra(Intent.EXTRA_TEXT, "ID=${path ?: "None"}\nFeedback : \n")
                     type = "message/rfc822"
                     startActivity(Intent.createChooser(this, getString(R.string.send_feedback)))
                 }
@@ -82,6 +84,9 @@ class ShakePresenter : LifecycleLoggerActivity() {
             .show()
     }
 
+    private fun finishIfNotAlready() {
+        if (!isFinishing) finish()
+    }
 
     companion object {
         private val TAG = ShakePresenter::class.java.simpleName

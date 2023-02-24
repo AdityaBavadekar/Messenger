@@ -26,7 +26,9 @@ import com.adityaamolbavadekar.messenger.utils.Constants
 import com.adityaamolbavadekar.messenger.utils.extensions.simpleDateFormat
 import com.adityaamolbavadekar.pinlog.PinLog
 import com.google.firebase.ktx.Firebase
+import com.adityaamolbavadekar.messenger.utils.logging.InternalLogger
 import com.google.firebase.storage.ktx.storage
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.File
 
@@ -37,23 +39,37 @@ class ShakePresenterViewModel : ViewModel() {
     private val uid = AuthManager().uid
 
     init {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
+            InternalLogger.logI(TAG, "Creating ShakeLogs...")
             val timestamp = simpleDateFormat(
                 System.currentTimeMillis(),
                 Constants.TimestampFormats.UNDERSCORED_TIMESTAMP_FORMAT_FULL
             )
             val jsonObject = PinLog.CrashReporter().createReport(Thread.currentThread(), null)
+            InternalLogger.logD(TAG, "Adding custom items to ShakeLogs...")
             jsonObject.put("REPORT_TYPE", "SHAKE_INTERFACE_FEEDBACK")
             jsonObject.put("UID", uid)
-            val tempFile = File.createTempFile("SHAKE_INTERFACE_FILE_${timestamp}", "txt")
+            val tempFile = File.createTempFile("SHAKE_INTERFACE_FILE_${timestamp}", ".txt")
+            InternalLogger.logD(TAG, "Created tempFile ${tempFile.name}")
             tempFile.writeText(jsonObject.toString(5))
+            InternalLogger.logD(TAG, "Uploading...")
             Firebase.storage.reference
                 .child("feedbackFiles/$uid/")
                 .child(tempFile.name)
                 .putFile(tempFile.toUri())
-                .addOnSuccessListener { _filePath.postValue("$uid/${tempFile.name}") }
+                .addOnSuccessListener {
+                    InternalLogger.logI(TAG, "Successfully uploaded ShakeLogs")
+                    _filePath.postValue("$uid/${tempFile.name}")
+                }
+                .addOnFailureListener {
+                    InternalLogger.logE(TAG, "Unable uploaded ShakeLogs", it)
+                }
             tempFile.delete()
         }
+    }
+
+    companion object {
+        private val TAG = ShakePresenterViewModel::class.java.simpleName
     }
 
 }

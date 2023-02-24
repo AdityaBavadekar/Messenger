@@ -23,8 +23,7 @@ import java.io.File
 @Suppress("DEPRECATION")
 class ScreenCaptureUtil {
     companion object {
-        fun cap(view: View): Bitmap {
-            val v = view.rootView
+        fun cap(v: View): Bitmap {
             v.isDrawingCacheEnabled = true
             v.buildDrawingCache(true)
             val b = Bitmap.createBitmap(v.drawingCache)

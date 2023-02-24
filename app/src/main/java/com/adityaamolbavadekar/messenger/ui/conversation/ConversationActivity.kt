@@ -199,6 +199,7 @@ class ConversationActivity : BaseActivity() {
         /** Toggles visibility of emoji keyboard. */
         binding.composeBar.setOnEmojiButtonClickListener {
             if (bottomFragmentType != BottomFragmentType.EMOJI) {
+                InternalLogger.logD(TAG,"setOnEmojiButtonClickListener 0")
                 KeyboardUtils.hideKeyboard(this)
                 composeBottomFragment = EmojiBottomFragment(latestKeyboardHeight) {
                     binding.composeBar.appendComposeText(it)
@@ -209,6 +210,7 @@ class ConversationActivity : BaseActivity() {
         }
 
         binding.composeBar.setOnEmojiButtonClickListener {
+            InternalLogger.logD(TAG,"setOnEmojiButtonClickListener 1")
             EmojiPopupWindow.build({
                 binding.composeBar.appendComposeText(it)
             }, binding.root, this, latestKeyboardHeight)
@@ -216,12 +218,7 @@ class ConversationActivity : BaseActivity() {
 
         /** Toggles visibility of add bottomsheet. */
         binding.composeBar.setOnAttachListener {
-            if (bottomFragmentType != BottomFragmentType.ADD) {
-                KeyboardUtils.hideKeyboard(this)
-                composeBottomFragment = ComposeAddFragment(latestKeyboardHeight)
-                bottomFragmentType = BottomFragmentType.ADD
-                addFragmentToBottom()
-            } else removeAnyAddedBottomFragments()
+            ComposeAddPopupWindow.build({}, binding.root, this, latestKeyboardHeight)
         }
 
         /* Send button
@@ -310,9 +307,11 @@ class ConversationActivity : BaseActivity() {
     private fun addFragmentToBottom() {
         supportFragmentManager.beginTransaction()
             .replace(binding.fragmentContainer.id, composeBottomFragment!!)
+            .runOnCommit {
+                KeyboardUtils.hideKeyboard(this)
+                binding.composeBar.disableSoftInputKeyboardInput()
+            }
             .commit()
-        KeyboardUtils.hideKeyboard(this)
-        binding.composeBar.disableSoftInputKeyboardInput()
     }
 
     private fun removeAnyAddedBottomFragments(showKeyboard: Boolean = true): Boolean {
