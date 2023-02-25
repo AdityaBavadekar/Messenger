@@ -23,15 +23,22 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupWindow
 import androidx.core.view.isGone
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.GridLayoutManager
 import com.adityaamolbavadekar.messenger.R
 import com.adityaamolbavadekar.messenger.databinding.EmojiFragmentBinding
+import com.adityaamolbavadekar.messenger.model.Emoji
+import com.adityaamolbavadekar.messenger.utils.extensions.runOnIOThread
+import com.adityaamolbavadekar.messenger.utils.logging.InternalLogger
 import com.google.android.material.tabs.TabLayout
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 
 class EmojiPopupWindow
 private constructor(
     private val onEmojiClicked: (String) -> Unit,
-    parent: View,
+    private val parent: View,
     private val binding: EmojiFragmentBinding,
     setWidth: Int,
     setHeight: Int,
@@ -44,10 +51,17 @@ private constructor(
     private var activeTabCategory = EmojiBottomFragment.EmojiCategeory.Activities
     private lateinit var listAdapter: EmojiBottomFragment.EmojiPagerAdapter
     private var tabs = mutableListOf<TabLayout.Tab>()
+    private val _emojisList: MutableLiveData<List<Emoji>> = MutableLiveData(listOf())
+    private val emojisList: LiveData<List<Emoji>> = _emojisList
 
     init {
         isOutsideTouchable = true
         elevation = setElevation
+        runOnIOThread {
+            loadEmojiData()?.let {
+                _emojisList.postValue(it)
+            }
+        }
         doOnCreateView()
         showAtLocation(/*parent*/parent,/*gravity*/Gravity.BOTTOM,/*x*/0,/*y*/0)
     }
@@ -65,17 +79,15 @@ private constructor(
             adapter = listAdapter
         }
 
-
-        EmojiBottomFragment.EmojiCategeory.allTitles().forEachIndexed { index, s ->
+        EmojiBottomFragment.EmojiCategeory.allDrawables().forEachIndexed { index, drawableRes ->
             val item = binding.emojiCategoriesTabLayout.newTab()
-                .setText(s)
+                .setIcon(drawableRes)
                 .setId(index)
             tabs.add(index, item)
             binding.emojiCategoriesTabLayout.addTab(item, index, (index == 0))
         }
 
         binding.emojiCategoriesTabLayout.addOnTabSelectedListener(this)
-        binding.emojiCategoriesTabLayout.tabMode = TabLayout.MODE_SCROLLABLE
         changeTab(0)
     }
 
@@ -96,15 +108,53 @@ private constructor(
 
     private fun changeTab(id: Int) {
         activeTabCategory = EmojiBottomFragment.EmojiCategeory.getAt(id)
-        activeTabId = activeTabCategory.id
+        activeTabId = activeTabCategory.ordinal
         refresh()
     }
 
+    private fun loadEmojiData(): List<Emoji>? {
+        getEmojis()?.let {
+            val emojiDataClassType = object : TypeToken<List<Emoji>>() {}.type
+            return try {
+                val emojiList = Gson().fromJson<List<Emoji>>(it, emojiDataClassType)
+                InternalLogger.logD(
+                    TAG,
+                    "Loaded EmojiList :" + emojiList.size.toString()
+                )
+                emojiList
+            } catch (e: Exception) {
+                InternalLogger.logE(TAG, "Unable to read emoji list", e)
+                null
+            }
+        }
+        return null
+    }
+
+    private fun getEmojis(): String? {
+        val jsonString: String
+        return try {
+            val reader = parent.context.resources
+                .openRawResource(R.raw.emoji_dataset)
+                .bufferedReader()
+            jsonString = reader.use { it.readText() }
+            reader.close()
+            jsonString
+        } catch (e: Exception) {
+            InternalLogger.logE(TAG, "Unable to read emojis", e)
+            null
+        }
+    }
+
     private fun refresh() {
-        listAdapter.submitList(activeTabCategory.loadEmojiModelsList(binding.root.context))
+        emojisList.value?.let { list ->
+            listAdapter.submitList(list.filter { it.category == activeTabId })
+        }
     }
 
     companion object {
+
+        private val TAG = EmojiPopupWindow::class.java.simpleName
+
         fun build(
             onEmojiClicked: (String) -> Unit,
             parent: View,

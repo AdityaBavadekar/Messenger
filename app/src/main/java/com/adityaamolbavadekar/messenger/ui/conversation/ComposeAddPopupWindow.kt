@@ -16,11 +16,13 @@
 
 package com.adityaamolbavadekar.messenger.ui.conversation
 
-import android.os.Bundle
+import android.content.Context
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.PopupWindow
 import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.GridLayoutManager
@@ -29,37 +31,28 @@ import androidx.recyclerview.widget.RecyclerView
 import com.adityaamolbavadekar.messenger.R
 import com.adityaamolbavadekar.messenger.databinding.ComposeAddFragmentBinding
 import com.adityaamolbavadekar.messenger.databinding.ComposeAddItemBinding
-import com.adityaamolbavadekar.messenger.views.compose.ComposeBottomFragment
 
-class ComposeAddFragment(fragmentHeight: Int) : ComposeBottomFragment(fragmentHeight) {
+class ComposeAddPopupWindow private constructor(
+    private val clicked: (Int) -> Unit,
+    private val parent: View,
+    private val binding: ComposeAddFragmentBinding,
+    setWidth: Int,
+    setHeight: Int,
+    setElevation: Float
+) :
+    PopupWindow(binding.root, setWidth, setHeight, /*focusable*/true) {
 
-    private var _binding: ComposeAddFragmentBinding? = null
-    private val binding: ComposeAddFragmentBinding
-        get() = _binding!!
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        _binding = ComposeAddFragmentBinding.inflate(layoutInflater)
+    init {
+        isOutsideTouchable = true
+        elevation = setElevation
         doOnCreateView()
-        return binding.root
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+        showAtLocation(/*parent*/parent,/*gravity*/Gravity.BOTTOM,/*x*/0,/*y*/0)
     }
 
     private fun doOnCreateView() {
-
-        val listAdapter = ComposeAddFragmentAdapter {
-
-        }
-
+        val listAdapter = ComposeAddFragmentAdapter {clicked(it)}
         binding.recycler.apply {
-            layoutManager = GridLayoutManager(requireContext(), 5)
+            layoutManager = GridLayoutManager(this@ComposeAddPopupWindow.parent.context,5)
             adapter = listAdapter
         }
 
@@ -131,6 +124,24 @@ class ComposeAddFragment(fragmentHeight: Int) : ComposeBottomFragment(fragmentHe
             holder.bind(getItem(position))
         }
 
+    }
+
+    companion object {
+
+        fun build(
+            clicked: (Int) -> Unit,
+            parent: View,
+            context: Context,
+            windowHeight: Int
+        ): ComposeAddPopupWindow {
+            val binding =
+                ComposeAddFragmentBinding.inflate(LayoutInflater.from(context), null, false)
+            val width = ViewGroup.LayoutParams.MATCH_PARENT
+            val elevation = context.resources.getDimension(R.dimen.emoji_popup_elevation)
+            var height = context.resources.getDimension(R.dimen.emoji_popup_min_height).toInt()
+            if (height < windowHeight) height = windowHeight
+            return ComposeAddPopupWindow(clicked, parent, binding, width, height, elevation)
+        }
     }
 
 }

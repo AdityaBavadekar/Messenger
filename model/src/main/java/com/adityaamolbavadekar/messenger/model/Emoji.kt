@@ -15,19 +15,27 @@
  */
 
 package com.adityaamolbavadekar.messenger.model
-
-data class EmojiItemModel(
-    val key: Int,
+/*
+ {
+    "emoji": "1\ufe0f\u20e3",
+    "description": "keycap: 1",
+    "category": 6,
+    "aliases": [
+      "one"
+    ],
+    "tags": []
+  }
+* */
+data class Emoji(
     val emoji: String,
-    val emojiInt: Int = 0,
-    val emojiCategory: Int = 0,
-    val searchInfo: List<String>
+    val description: String,
+    val category: Int,
+    val aliases: List<String>,
+    val tags: List<String>,
 ) {
 
-    constructor(emoji: String, key: Int) : this(key, emoji, 0, 0, listOf())
-
-    fun isSameAs(x: EmojiItemModel): Boolean {
-        return x.key == key && x.emoji == emoji
+    fun isSameAs(x: Emoji): Boolean {
+        return x.emoji == emoji
     }
 
     private fun emoji(data: Int): String {
@@ -35,11 +43,7 @@ data class EmojiItemModel(
     }
 
     fun getParsedEmoji(): String {
-        return try {
-            emoji(Integer.decode("0x${emoji.split(" ").first()}"))
-        } catch (e: Exception) {
-            emoji
-        }
+        return emoji
     }
 
 }

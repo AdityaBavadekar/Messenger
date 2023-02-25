@@ -16,14 +16,13 @@
 
 package com.adityaamolbavadekar.messenger.views.compose
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.ArrayRes
-import androidx.annotation.DrawableRes
 import androidx.core.view.isGone
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ListAdapter
@@ -31,8 +30,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.adityaamolbavadekar.messenger.R
 import com.adityaamolbavadekar.messenger.databinding.EmojiFragmentBinding
 import com.adityaamolbavadekar.messenger.databinding.EmojiSelectorItemBinding
-import com.adityaamolbavadekar.messenger.model.EmojiItemModel
+import com.adityaamolbavadekar.messenger.model.Emoji
+import com.adityaamolbavadekar.messenger.utils.extensions.runOnIOThread
+import com.adityaamolbavadekar.messenger.utils.logging.InternalLogger
 import com.google.android.material.tabs.TabLayout
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 
 class EmojiBottomFragment(fragmentHeight: Int, private val onEmojiClicked: (String) -> Unit) :
     ComposeBottomFragment(fragmentHeight), TabLayout.OnTabSelectedListener {
@@ -44,6 +47,8 @@ class EmojiBottomFragment(fragmentHeight: Int, private val onEmojiClicked: (Stri
     private var activeTabCategory = EmojiCategeory.Activities
     private lateinit var listAdapter: EmojiPagerAdapter
     private var tabs = mutableListOf<TabLayout.Tab>()
+    private val _emojisList: MutableLiveData<List<Emoji>> = MutableLiveData(listOf())
+    private val emojisList: LiveData<List<Emoji>> = _emojisList
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -51,8 +56,46 @@ class EmojiBottomFragment(fragmentHeight: Int, private val onEmojiClicked: (Stri
         savedInstanceState: Bundle?
     ): View? {
         _binding = EmojiFragmentBinding.inflate(layoutInflater)
+        runOnIOThread {
+            loadEmojiData()?.let {
+                _emojisList.postValue(it)
+            }
+        }
         doOnCreateView()
         return binding.root
+    }
+
+    private fun loadEmojiData(): List<Emoji>? {
+        getEmojis()?.let {
+            val emojiDataClassType = object : TypeToken<List<Emoji>>() {}.type
+            return try {
+                val emojiList = Gson().fromJson<List<Emoji>>(it, emojiDataClassType)
+                InternalLogger.logD(
+                    TAG,
+                    "Loaded EmojiList :" + emojiList.size.toString()
+                )
+                emojiList
+            } catch (e: Exception) {
+                InternalLogger.logE(TAG, "Unable to read emoji list", e)
+                null
+            }
+        }
+        return null
+    }
+
+    private fun getEmojis(): String? {
+        val jsonString: String
+        return try {
+            val reader = requireContext().resources
+                .openRawResource(R.raw.emoji_dataset)
+                .bufferedReader()
+            jsonString = reader.use { it.readText() }
+            reader.close()
+            jsonString
+        } catch (e: Exception) {
+            InternalLogger.logE(TAG, "Unable to read emojis", e)
+            null
+        }
     }
 
     override fun onDestroyView() {
@@ -73,25 +116,27 @@ class EmojiBottomFragment(fragmentHeight: Int, private val onEmojiClicked: (Stri
             adapter = listAdapter
         }
 
-        EmojiCategeory.allTitles().forEachIndexed { index, s ->
+        EmojiCategeory.allDrawables().forEachIndexed { index, drawableRes ->
             val item = binding.emojiCategoriesTabLayout.newTab()
-                .setText(s)
+                .setIcon(drawableRes)
                 .setId(index)
             tabs.add(index, item)
             binding.emojiCategoriesTabLayout.addTab(item, index, (index == 0))
         }
 
+        binding.backspaceButton.setOnClickListener {}
+
         binding.emojiCategoriesTabLayout.addOnTabSelectedListener(this)
         changeTab(0)
     }
 
-    class EmojiPagerAdapter(private val onClick: (EmojiItemModel) -> Unit) :
-        ListAdapter<EmojiItemModel, EmojiPagerAdapter.EmojiItemHolder>(Callback()) {
+    class EmojiPagerAdapter(private val onClick: (Emoji) -> Unit) :
+        ListAdapter<Emoji, EmojiPagerAdapter.EmojiItemHolder>(Callback()) {
 
         inner class EmojiItemHolder private constructor(private val b: EmojiSelectorItemBinding) :
             RecyclerView.ViewHolder(b.root) {
 
-            fun bind(item: EmojiItemModel) {
+            fun bind(item: Emoji) {
                 b.emojiTextView.text = item.getParsedEmoji()
                 b.root.setOnClickListener { onClick(item) }
             }
@@ -114,17 +159,18 @@ class EmojiBottomFragment(fragmentHeight: Int, private val onEmojiClicked: (Stri
             holder.bind(getItem(position))
         }
 
-        class Callback : DiffUtil.ItemCallback<EmojiItemModel>() {
+        class Callback : DiffUtil.ItemCallback<Emoji>() {
+
             override fun areItemsTheSame(
-                oldItem: EmojiItemModel,
-                newItem: EmojiItemModel
+                oldItem: Emoji,
+                newItem: Emoji
             ): Boolean {
                 return oldItem.isSameAs(newItem)
             }
 
             override fun areContentsTheSame(
-                oldItem: EmojiItemModel,
-                newItem: EmojiItemModel
+                oldItem: Emoji,
+                newItem: Emoji
             ): Boolean {
                 return oldItem.isSameAs(newItem)
             }
@@ -132,40 +178,26 @@ class EmojiBottomFragment(fragmentHeight: Int, private val onEmojiClicked: (Stri
 
     }
 
-    enum class EmojiCategeory(@ArrayRes private val resId: Int, val id: Int,@DrawableRes private val drawableRes:Int=0) {
-        Activities(R.array.emoji_activities, 0),
-        Emotions(R.array.emoji_emotions, 1),
-        Flags(R.array.emoji_flags, 2),
-        Food(R.array.emoji_food, 3),
-        Nature(R.array.emoji_nature, 4),
-        Objects(R.array.emoji_objects, 5),
-        People(R.array.emoji_people, 6),
-        Places(R.array.emoji_places, 7),
-        Symbols(R.array.emoji_symbols, 8);
-
-        fun load(context: Context): Array<out String> {
-            return context.resources.getStringArray(resId)
-        }
-
-        fun loadEmojiModelsList(context: Context): MutableList<EmojiItemModel> {
-            val emojis = load(context)
-            val emojiItemModelList = mutableListOf<EmojiItemModel>()
-            for ((i, hexCode) in emojis.withIndex()) {
-                emojiItemModelList.add(EmojiItemModel(hexCode, i))
-            }
-            return emojiItemModelList
-        }
+    enum class EmojiCategeory(private val drawableRes: Int) {
+        Smileys_and_Emotion(R.drawable.smileysandpeople),
+        Animals_and_Nature(R.drawable.animalsandnature),
+        Food_and_Drink(R.drawable.foodanddrink),
+        Travel_and_Places(R.drawable.travelandplaces),
+        Activities(R.drawable.activities),
+        Objects(R.drawable.objects),
+        Symbols(R.drawable.symbols),
+        Flags(R.drawable.flags);
 
         companion object {
-            fun allTitles(): List<String> {
-                return values().map { it.name }
+            fun allDrawables(): List<Int> {
+                return values().map { (it.drawableRes) }
             }
 
             fun getAt(position: Int): EmojiCategeory {
                 values().forEach {
-                    if (it.id == position) return it
+                    if (it.ordinal == position) return it
                 }
-                return Activities
+                return Smileys_and_Emotion
             }
         }
 
@@ -188,12 +220,20 @@ class EmojiBottomFragment(fragmentHeight: Int, private val onEmojiClicked: (Stri
 
     private fun changeTab(id: Int) {
         activeTabCategory = EmojiCategeory.getAt(id)
-        activeTabId = activeTabCategory.id
+        activeTabId = activeTabCategory.ordinal
         refresh()
     }
 
     private fun refresh() {
-        listAdapter.submitList(activeTabCategory.loadEmojiModelsList(requireContext()))
+        loadCurrentEmojis()
+    }
+
+    private fun loadCurrentEmojis() {
+
+    }
+
+    companion object {
+        private val TAG = EmojiBottomFragment::class.java.simpleName
     }
 
 }

@@ -47,7 +47,7 @@
     <string name="code">Country code</string>
     <string name="phone_number">Phone number</string>
     <string name="sms_disclaimer_phone_auth">Messenger will send you one-time SMS message, operator charges may apply.</string>
-    <string name="you_agree_disclaimer_phone_auth">By continuing, you agree to the %1s &amp; acknowledge the %2s.</string>
+    <string name="you_agree_disclaimer_phone_auth">By continuing, you agree to the %1$s &amp; acknowledge the %2$s.</string>
     <string name="edit_number">Edit number</string>
     <string name="enter_sms_code_we_sent_to">Enter SMS code we sent to %1s</string>
     <string name="sending_sms_to_formatted">Sending SMS to %1s</string>
@@ -134,7 +134,7 @@
     <string name="delete_group">Delete group</string>
     <string name="leave_group">Leave group</string>
     <string name="report_group">Report group</string>
-    <string name="group_create_by_on">Group created by %1s on %2s</string>
+    <string name="group_create_by_on">Group created by %1$s on %2$s</string>
     <string name="group_count_of_participants">%d Participants</string>
     <plurals name="group_count_of_participants">
         <item quantity="one">%d Participant</item>
@@ -152,7 +152,7 @@
     <string name="only_managers_can_send_messages">Only managers can send messages</string>
     <string name="your_reaction">Your reaction</string>
     <string name="post_reaction">Post reaction</string>
-    <string name="reactor_reacted_formatted">%1s reacted : %2s</string>
+    <string name="reactor_reacted_formatted">%1$s reacted : %2$s</string>
     <string name="camera">Camera</string>
     <string name="photos">Photos</string>
     <string name="location">Location</string>
@@ -191,7 +191,7 @@
     <string name="skip">Skip</string>
     <string name="enable_sync">Enable sync</string>
     <string name="deleted_message_placeholder">This message was deleted</string>
-    <string name="update_dialog_message">A newer version of Messenger is  available. It is recommended that you update to latest version to enjoy new features.\nCurrent version - %1s\nNewer version - %2s</string>
+    <string name="update_dialog_message">A newer version of Messenger is  available. It is recommended that you update to latest version to enjoy new features.\nCurrent version - %1$s\nNewer version - %2$s</string>
     <string name="update">Update</string>
     <string name="updating_in_background">Updating in background</string>
     <string name="messenger_feedback">Messenger Feedback</string>

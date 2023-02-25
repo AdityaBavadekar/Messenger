@@ -158,6 +158,6 @@ object Constants {
         const val ID_TESTING_NOTIFICATIONS = "testing"
     }
 
-    const val SUPPORT_EMAIL = "adityarbavadekar@gmail.com"
+    const val SUPPORT_EMAIL = "projectsandstudiesaditya@gmail.com"
 
 }
