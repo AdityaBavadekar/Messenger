@@ -1,5 +1,0 @@
-code-change:
-- any: ['*/app/src/main/**/*','*/model/src/main/**/*']
-
-resources-change:
-- any: ['*/app/src/main/res/**/*','*/model/src/main/res/**/*']
