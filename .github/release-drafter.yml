@@ -7,4 +7,4 @@ template: |
 
   $CHANGES
 
-change-template: '- $TITLE (#$NUMBER) $BODY'
+change-template: '- $TITLE @$AUTHOR (#$NUMBER) $BODY'
