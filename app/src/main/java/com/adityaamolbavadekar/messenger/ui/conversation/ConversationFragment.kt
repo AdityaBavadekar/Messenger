@@ -168,7 +168,7 @@ class ConversationFragment : BindingHelperFragment<ConversationFragmentBinding>(
      * Returns first message (from top) on the screen.
      * */
     private fun getFirstVisibleMessage(): MessageRecord? {
-        val pos = messageRecyclerView.findFirstVisibleItemPosition()
+        val pos = messageRecyclerView.findLastVisibleItemPosition()
         val l = messagesAdapter.currentList
 
         if (l.isNotEmpty()) {
