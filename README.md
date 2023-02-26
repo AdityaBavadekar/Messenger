@@ -7,10 +7,9 @@ This is open-source repository of Messenger.
 
 ## Important Notes
 - Messenger does not have encryption facility for now but we are working to provide support for secure end-2-end encryption.
-- The application does not provide a way to delete the user data as of 22 Oct.
 
 ## Development status
-- Application development is in progress for v0.0.6
+- Application development is in progress.
 - Any version increments would be reflected in github's releases section.
 
 
