@@ -6,5 +6,8 @@ template: |
   ## What’s Changed
 
   $CHANGES
-
+  
+  **Full Changelog**: 
+  https://github.com/AdityaBavadekar/Messenger/compare/$PREVIOUS_TAG...$RESOLVED_VERSION
+  
 change-template: '- $TITLE @$AUTHOR (#$NUMBER) $BODY'
