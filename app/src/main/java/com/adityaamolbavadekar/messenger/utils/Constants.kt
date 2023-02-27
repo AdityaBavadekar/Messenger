@@ -21,6 +21,9 @@ import java.util.*
 
 object Constants {
 
+    const val VOICE_CALL_SUPPORTED = false
+
+
     const val CONTACTS_SYNC_NOT_PROMPTED: Int = 1
     const val CONTACTS_SYNC_ALLOWED: Int = 2
     const val CONTACTS_SYNC_DENIED: Int = 3
@@ -116,11 +119,11 @@ object Constants {
         }
 
         fun getConversationPicturesDocument(): String {
-            return ("$CLOUD_PATH_PICTURES/PIC_" +
+            return ("$CLOUD_PATH_PICTURES/PIC_" + UUID.randomUUID().toString()[3] + "_" +
                     simpleDateFormat(
-                                        System.currentTimeMillis(),
-                                        TimestampFormats.UNDERSCORED_TIMESTAMP_FORMAT_FULL
-                                    ).uppercase(Locale.getDefault()))
+                        System.currentTimeMillis(),
+                        TimestampFormats.UNDERSCORED_TIMESTAMP_FORMAT_FULL
+                    ).uppercase(Locale.getDefault()))
         }
 
         fun getPresenceStatusRootPath(): String {
@@ -135,13 +138,16 @@ object Constants {
 
     internal object FcmMessaging {
         const val FCM_MESSAGING_BASE_URL = "https://fcm.googleapis.com/fcm/send"
-        const val FCM_MESSAGING_SERVER_KEY =com.adityaamolbavadekar.messenger.BuildConfig.FCM_MESSAGING_SERVER_KEY
-        const val FCM_MESSAGING_CONTENT_TYPE ="application/json"
+        const val FCM_MESSAGING_SERVER_KEY =
+            com.adityaamolbavadekar.messenger.BuildConfig.FCM_MESSAGING_SERVER_KEY
+        const val FCM_MESSAGING_CONTENT_TYPE = "application/json"
     }
 
     internal object Application {
-        const val TERMS_LINK = "https://github.com/AdityaBavadekar/Messenger/blob/main/PrivacyPolicy.md"
-        const val POLICY_LINK = "https://github.com/AdityaBavadekar/Messenger/blob/main/PrivacyPolicy.md"
+        const val TERMS_LINK =
+            "https://github.com/AdityaBavadekar/Messenger/blob/main/PrivacyPolicy.md"
+        const val POLICY_LINK =
+            "https://github.com/AdityaBavadekar/Messenger/blob/main/PrivacyPolicy.md"
     }
 
     internal object FilesNames {

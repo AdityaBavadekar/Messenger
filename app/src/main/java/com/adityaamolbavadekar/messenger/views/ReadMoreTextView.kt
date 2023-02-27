@@ -71,8 +71,6 @@ class ReadMoreTextView constructor(private val textView: TextView) :
         fun wrap(textView: TextView) = ReadMoreTextView(textView)
     }
 
-    override fun onClick(v: View?) {
-
-    }
+    override fun onClick(v: View?) {}
 
 }

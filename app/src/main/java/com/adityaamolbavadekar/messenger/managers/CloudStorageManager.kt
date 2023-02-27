@@ -79,6 +79,47 @@ class CloudStorageManager {
                 }
         }
 
+    private fun internalSavePicture(
+        photoUri: Uri,
+        metadata: StorageMetadata,
+        onSuccess: (Uri) -> Unit,
+        onFailure: (Exception) -> Unit
+    ) {
+        val ref = db.getReference(
+            Constants.CloudPaths.getConversationPicturesDocument()
+        )
+        ref.putFile(photoUri, metadata)
+            .addOnSuccessListener {
+                InternalLogger.logI(TAG, "Successfully uploaded PICTURE for user.")
+                ref.downloadUrl
+                    .addOnSuccessListener {
+                        InternalLogger.logI(TAG, "Successfully retrieved PICTURE URL for user.")
+                        onSuccess(it)
+                    }
+            }
+            .addOnFailureListener {
+                InternalLogger.logE(TAG, "Unable to upload PICTURE for user.", it)
+                onFailure(it)
+            }
+    }
+
+    fun savePictures(
+        urisList: List<Uri>,
+        getMetadata: (Uri) -> StorageMetadata,
+        onResponseCallback: OnResponseCallback<List<String>, Exception>,
+    ) =
+        runOnIOThread {
+            val urlsList = mutableListOf<String>()
+            urisList.forEachIndexed { index, photoUri ->
+                internalSavePicture(photoUri,getMetadata(photoUri),onSuccess = {
+                    urlsList.add(it.toString())
+                },{ runOnMainThread { onResponseCallback.onFailure(it) }})
+            }
+            runOnMainThread {
+                onResponseCallback.onSuccess(urlsList)
+            }
+        }
+
 
     fun saveProfilePicture(
         userId: String,
@@ -95,7 +136,10 @@ class CloudStorageManager {
                     InternalLogger.logI(TAG, "Successfully uploaded Profile PICTURE for user.")
                     ref.downloadUrl
                         .addOnSuccessListener {
-                            InternalLogger.logI(TAG, "Successfully retrieved Profile PICTURE URL for user.")
+                            InternalLogger.logI(
+                                TAG,
+                                "Successfully retrieved Profile PICTURE URL for user."
+                            )
                             runOnMainThread { onResponseCallback.onSuccess(it) }
                         }
                 }

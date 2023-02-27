@@ -141,7 +141,8 @@
                 android:background="@color/colorWallpaperDefault"
                 android:visibility="gone"
                 app:inputEditTextHint="@string/type_a_message"
-                tools:visibility="visible" />
+                tools:visibility="visible"
+                />
 
             <include
                 android:id="@+id/permission_managers_only"
@@ -149,7 +150,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
-                tools:visibility="gone" />
+                />
 
             <FrameLayout
                 android:id="@+id/fragment_container"

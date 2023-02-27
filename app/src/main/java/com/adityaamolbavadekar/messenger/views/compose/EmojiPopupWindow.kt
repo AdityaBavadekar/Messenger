@@ -42,7 +42,8 @@ private constructor(
     private val binding: EmojiFragmentBinding,
     setWidth: Int,
     setHeight: Int,
-    setElevation: Float
+    setElevation: Float,
+    private val onCloseListener: () -> Unit
 ) :
     PopupWindow(binding.root, setWidth, setHeight, /*focusable*/true),
     TabLayout.OnTabSelectedListener {
@@ -64,6 +65,7 @@ private constructor(
         }
         doOnCreateView()
         showAtLocation(/*parent*/parent,/*gravity*/Gravity.BOTTOM,/*x*/0,/*y*/0)
+        setOnDismissListener { onCloseListener() }
     }
 
     private fun doOnCreateView() {
@@ -159,7 +161,8 @@ private constructor(
             onEmojiClicked: (String) -> Unit,
             parent: View,
             context: Context,
-            windowHeight: Int
+            windowHeight: Int,
+            onCloseListener: () -> Unit
         ): EmojiPopupWindow {
             val binding =
                 EmojiFragmentBinding.inflate(LayoutInflater.from(context), null, false)
@@ -167,7 +170,15 @@ private constructor(
             val elevation = context.resources.getDimension(R.dimen.emoji_popup_elevation)
             var height = context.resources.getDimension(R.dimen.emoji_popup_min_height).toInt()
             if (height < windowHeight) height = windowHeight
-            return EmojiPopupWindow(onEmojiClicked, parent, binding, width, height, elevation)
+            return EmojiPopupWindow(
+                onEmojiClicked,
+                parent,
+                binding,
+                width,
+                height,
+                elevation,
+                onCloseListener
+            )
         }
     }
 }

@@ -195,6 +195,11 @@
     <string name="update">Update</string>
     <string name="updating_in_background">Updating in background</string>
     <string name="messenger_feedback">Messenger Feedback</string>
+    <string name="videos">Videos</string>
+    <string name="stickers">Stickers</string>
+    <string name="files">Files</string>
+    <string name="gifs">GIFs</string>
+    <string name="remove_image_dialog">Remove this image?</string>
 
     <string-array name="theme_chooser">
         <item>System Default</item>

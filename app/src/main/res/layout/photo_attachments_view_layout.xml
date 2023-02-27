@@ -129,6 +129,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:alpha="0.87"
+                        tools:visibility="visible"
                         android:background="@color/messenger_grey200"
                         android:gravity="center"
                         android:maxHeight="@dimen/message_image_height"

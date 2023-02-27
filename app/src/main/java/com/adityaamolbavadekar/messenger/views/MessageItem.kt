@@ -16,6 +16,7 @@
 
 package com.adityaamolbavadekar.messenger.views
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
@@ -238,6 +239,8 @@ class MessageItem @JvmOverloads constructor(
                 val t = context.getString(R.string.deleted_message_placeholder)
                 italic { append(t) }
             }
+            messageTextView!!.applyMessageBodyFontSize()
+            setVisible(messageTextView!!)
             return
         }
 
@@ -246,7 +249,6 @@ class MessageItem @JvmOverloads constructor(
             messageTextView!!.text = message
         }
         messageTextView!!.applyMessageBodyFontSize()
-        ReadMoreTextView.wrap(messageTextView!!)
         setVisible(messageTextView!!)
     }
 

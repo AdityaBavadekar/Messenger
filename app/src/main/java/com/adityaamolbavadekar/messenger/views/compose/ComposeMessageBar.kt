@@ -59,6 +59,7 @@ class ComposeMessageBar @JvmOverloads constructor(
     private val fragmentContainer: FrameLayout
     private var afterInputTextChangedListener: () -> Unit = {}
     private var onSendListener: (String) -> Unit = {}
+    private var onScheduleListener: () -> Unit = {}
     private var onAttachImagesListener: () -> Unit = {}
     private var currentlyExtractedLinks: List<String> = listOf()
     private var linkInfo: LinkPreviewInfo? = null
@@ -125,6 +126,9 @@ class ComposeMessageBar @JvmOverloads constructor(
             sendButton.setOnClickListener {
                 onSendListener(input.text.toString())
             }
+            sendButton.setOnLongClickListener {
+                onScheduleListener()
+            }
         } else {
             input.addAfterTextChangeListener(getDefaultTextChangedListener())
             sendButton.setOnClickListener {
@@ -143,6 +147,10 @@ class ComposeMessageBar @JvmOverloads constructor(
 
     fun setOnSendListener(listener: (String) -> Unit) {
         this.onSendListener = listener
+    }
+
+    fun setOnScheduleListener(listener: () -> Unit) {
+        this.onScheduleListener = listener
     }
 
     fun setOnEmojiButtonClickListener(listener: OnClickListener) {

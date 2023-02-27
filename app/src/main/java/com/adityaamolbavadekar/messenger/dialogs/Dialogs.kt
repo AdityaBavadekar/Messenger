@@ -251,6 +251,28 @@ object Dialogs {
     }
 
 
+    fun showRemoveImageDialog(
+        context: Context,
+        message: String = context.getString(
+            R.string.remove_image_dialog),
+        shouldRemoveImage: (Boolean) -> Unit
+    ) {
+        MaterialAlertDialogBuilder(context)
+            .setCancelable(true)
+            .setMessage(message)
+            .setNeutralButton(context.getString(R.string.cancel)) { d, _ ->
+                d.dismiss()
+                shouldRemoveImage(false)
+            }
+            .setPositiveButton(context.getString(R.string.yes)) { d, _ ->
+                d.dismiss()
+                shouldRemoveImage(true)
+            }
+            .create()
+            .show()
+    }
+
+
     fun showConfirmLinkDialog(
         context: Context,
         link: String,

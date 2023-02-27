@@ -24,6 +24,8 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.PopupWindow
 import android.widget.TextView
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ListAdapter
@@ -38,7 +40,8 @@ class ComposeAddPopupWindow private constructor(
     private val binding: ComposeAddFragmentBinding,
     setWidth: Int,
     setHeight: Int,
-    setElevation: Float
+    setElevation: Float,
+    private val onCloseListener: () -> Unit
 ) :
     PopupWindow(binding.root, setWidth, setHeight, /*focusable*/true) {
 
@@ -47,29 +50,40 @@ class ComposeAddPopupWindow private constructor(
         elevation = setElevation
         doOnCreateView()
         showAtLocation(/*parent*/parent,/*gravity*/Gravity.BOTTOM,/*x*/0,/*y*/0)
+        setOnDismissListener { onCloseListener() }
+    }
+
+    enum class ComposeAddItem(public val stringRes: Int, public val drawableRes: Int) {
+        PHOTOS(R.string.photos, R.drawable.ic_image),
+        CONTACT(R.string.contact, R.drawable.ic_contact),
+        LOCATION(R.string.location, R.drawable.ic_my_location_),
+        CAMERA(R.string.camera, R.drawable.ic_camera),
+        GIFS(R.string.gifs, R.drawable.ic_gif),
+        FILES(R.string.files, R.drawable.ic_file),
+        STICKERS(R.string.stickers, R.drawable.ic_gif),
+        DOCUMENTS(R.string.document, R.drawable.ic_file);
+
+        companion object {
+            fun getList(context: Context): List<ComposeAddFragmentItem> {
+                return values().map {
+                    ComposeAddFragmentItem(
+                        it.ordinal,
+                        context.getString(it.stringRes),
+                        it.drawableRes
+                    )
+                }
+            }
+        }
     }
 
     private fun doOnCreateView() {
-        val listAdapter = ComposeAddFragmentAdapter {clicked(it)}
+        val listAdapter = ComposeAddFragmentAdapter { clicked(it) }
         binding.recycler.apply {
-            layoutManager = GridLayoutManager(this@ComposeAddPopupWindow.parent.context,5)
+            layoutManager = GridLayoutManager(this@ComposeAddPopupWindow.parent.context, 5)
             adapter = listAdapter
         }
 
-        listAdapter.submitList(
-            listOf(
-                ComposeAddFragmentItem(0, "Photos", R.drawable.ic_image),
-                ComposeAddFragmentItem(1, "Contacts", R.drawable.ic_contact),
-                ComposeAddFragmentItem(2, "Location", R.drawable.ic_my_location_),
-                ComposeAddFragmentItem(3, "Camera", R.drawable.ic_camera),
-                ComposeAddFragmentItem(4, "GIFs", R.drawable.ic_gif),
-                ComposeAddFragmentItem(5, "Files", R.drawable.ic_file),
-                ComposeAddFragmentItem(6, "Stickers", R.drawable.ic_gif),
-                ComposeAddFragmentItem(7, "Schedule message", R.drawable.message_status_not_sent),
-                ComposeAddFragmentItem(8, "Documents", R.drawable.ic_file),
-            )
-        )
-
+        listAdapter.submitList(ComposeAddItem.getList(parent.context))
     }
 
     data class ComposeAddFragmentItem(val key: Int, val title: String, val src: Int) {
@@ -132,7 +146,8 @@ class ComposeAddPopupWindow private constructor(
             clicked: (Int) -> Unit,
             parent: View,
             context: Context,
-            windowHeight: Int
+            windowHeight: Int,
+            onCloseListener: () -> Unit
         ): ComposeAddPopupWindow {
             val binding =
                 ComposeAddFragmentBinding.inflate(LayoutInflater.from(context), null, false)
@@ -140,7 +155,15 @@ class ComposeAddPopupWindow private constructor(
             val elevation = context.resources.getDimension(R.dimen.emoji_popup_elevation)
             var height = context.resources.getDimension(R.dimen.emoji_popup_min_height).toInt()
             if (height < windowHeight) height = windowHeight
-            return ComposeAddPopupWindow(clicked, parent, binding, width, height, elevation)
+            return ComposeAddPopupWindow(
+                clicked,
+                parent,
+                binding,
+                width,
+                height,
+                elevation,
+                onCloseListener
+            )
         }
     }
 

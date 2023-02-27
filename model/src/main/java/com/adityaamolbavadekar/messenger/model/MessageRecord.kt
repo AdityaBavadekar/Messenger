@@ -25,7 +25,7 @@ data class MessageRecord(
     override val id: String = Id.get(),
     override var conversationId: String="",
     override var message: String? = null,
-    override val attachments: List<String> = listOf(),
+    override var attachments: List<String> = listOf(),
     override var reactions: MutableList<ReactionRecord> = mutableListOf(),
     override val timestamp: Long = System.currentTimeMillis(),
     override var isDeleted: Boolean = false,

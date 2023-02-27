@@ -20,7 +20,7 @@ abstract class BaseMessage public constructor(
     open val id: String = Id.get(),
     open val conversationId: String,
     open var message: String? = null,
-    open val attachments: List<String> = listOf(),
+    open var attachments: List<String> = listOf(),
     open var reactions: MutableList<ReactionRecord> = mutableListOf(),
     open val timestamp: Long = System.currentTimeMillis(),
     open var isDeleted: Boolean = false,
@@ -97,7 +97,13 @@ abstract class BaseMessage public constructor(
 
     fun delete(): BaseMessage {
         isDeleted = true
+        deletionTimestamp = System.currentTimeMillis()
+        viewedBy = listOf()
         mentions = listOf()
+        attachments = listOf()
+        reactions = mutableListOf()
+        linkPreviewInfo = null
+        messageReplyRecord = null
         message = null
         return this
     }
@@ -142,6 +148,7 @@ abstract class BaseMessage public constructor(
     }
 
     fun isTextOnly(): Boolean {
+        if (isDeleted) return true
         return (!hasAttachments() && !hasLinkPreview() && !hasReply() && hasMessage())
     }
 
