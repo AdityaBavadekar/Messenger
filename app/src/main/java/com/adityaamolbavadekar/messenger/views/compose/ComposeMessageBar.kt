@@ -128,6 +128,7 @@ class ComposeMessageBar @JvmOverloads constructor(
             }
             sendButton.setOnLongClickListener {
                 onScheduleListener()
+		true
             }
         } else {
             input.addAfterTextChangeListener(getDefaultTextChangedListener())
