@@ -20,16 +20,14 @@ import androidx.core.net.toUri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.adityaamolbavadekar.messenger.managers.AuthManager
 import com.adityaamolbavadekar.messenger.utils.Constants
+import com.adityaamolbavadekar.messenger.utils.extensions.runOnIOThread
 import com.adityaamolbavadekar.messenger.utils.extensions.simpleDateFormat
+import com.adityaamolbavadekar.messenger.utils.logging.InternalLogger
 import com.adityaamolbavadekar.pinlog.PinLog
 import com.google.firebase.ktx.Firebase
-import com.adityaamolbavadekar.messenger.utils.logging.InternalLogger
 import com.google.firebase.storage.ktx.storage
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import java.io.File
 
 class ShakePresenterViewModel : ViewModel() {
@@ -39,7 +37,7 @@ class ShakePresenterViewModel : ViewModel() {
     private val uid = AuthManager().uid
 
     init {
-        viewModelScope.launch(Dispatchers.IO) {
+        runOnIOThread {
             InternalLogger.logI(TAG, "Creating ShakeLogs...")
             val timestamp = simpleDateFormat(
                 System.currentTimeMillis(),

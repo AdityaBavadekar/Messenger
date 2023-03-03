@@ -66,7 +66,7 @@ class ApplicationStateUtils(private val context: Context) {
     private val defaultState = ApplicationState.STATE_FRESH_INSTALL
 
     companion object {
-        private val TAG =ApplicationStateUtils::class.java.simpleName
+        private val TAG = ApplicationStateUtils::class.java.simpleName
     }
 
 }

@@ -26,8 +26,8 @@ class NotifyLoggedOutActivity : BaseActivity() {
 
     override fun onCreateActivity(savedInstanceState: Bundle?) {
         super.onCreateActivity(savedInstanceState)
-        Dialogs.showLoggedOutDialog(this){
-            startActivity(Intent(this,AuthActivity::class.java))
+        Dialogs.showLoggedOutDialog(this) {
+            startActivity(Intent(this, AuthActivity::class.java))
             finishAffinity()
         }
     }

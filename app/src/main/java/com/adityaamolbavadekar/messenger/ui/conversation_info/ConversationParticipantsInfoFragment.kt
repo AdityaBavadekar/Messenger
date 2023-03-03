@@ -22,18 +22,15 @@ import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.isVisible
-import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.adityaamolbavadekar.messenger.R
 import com.adityaamolbavadekar.messenger.contact.picker.ContactPicker.ContactPickerFragment.ContactsPickerAdapter
-import com.adityaamolbavadekar.messenger.database.conversations.DatabaseAndroidViewModel
 import com.adityaamolbavadekar.messenger.databinding.ConversationInfoParticipantsListBinding
 import com.adityaamolbavadekar.messenger.databinding.P2pSelectionItemBinding
 import com.adityaamolbavadekar.messenger.dialogs.Dialogs
 import com.adityaamolbavadekar.messenger.model.ConversationRecord
 import com.adityaamolbavadekar.messenger.model.Recipient
 import com.adityaamolbavadekar.messenger.utils.Constants
-import com.adityaamolbavadekar.messenger.utils.base.BaseFragment
 import com.adityaamolbavadekar.messenger.utils.base.BindingHelperFragment
 import com.adityaamolbavadekar.messenger.utils.extensions.load
 import com.adityaamolbavadekar.messenger.utils.extensions.toast
@@ -44,7 +41,8 @@ import com.adityaamolbavadekar.messenger.utils.recyclerview.BaseListAdapter
 /**
  * Shows Group Conversation Information data like number of participants, their details, title, description etc.
  * */
-class ConversationParticipantsInfoFragment : BindingHelperFragment<ConversationInfoParticipantsListBinding>(),
+class ConversationParticipantsInfoFragment :
+    BindingHelperFragment<ConversationInfoParticipantsListBinding>(),
     BaseItemHolder.OnItemClickCallback<Recipient>,
     SearchView.OnQueryTextListener {
 
@@ -215,8 +213,8 @@ class ConversationParticipantsInfoFragment : BindingHelperFragment<ConversationI
 
     }
 
-    companion object{
+    companion object {
         private val TAG = ConversationParticipantsInfoFragment::class.java.simpleName
     }
-    
+
 }

@@ -18,7 +18,7 @@ package com.adityaamolbavadekar.messenger.utils
 
 interface Operation<T> {
 
-    fun addOnSuccessListener(result:(T))
-    fun addOnFailureListener(error:(Exception?))
+    fun addOnSuccessListener(result: (T))
+    fun addOnFailureListener(error: (Exception?))
 
 }

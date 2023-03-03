@@ -42,14 +42,14 @@ object Dialogs {
 
     fun showLoadingDialog(
         context: Context,
-        message: String? = null,show:Boolean=true
+        message: String? = null, show: Boolean = true
     ): AlertDialog {
         val dialog = MaterialAlertDialogBuilder(context)
             .setCancelable(false)
             .setMessage(message)
             .setView(R.layout.dialog_loading)
             .create()
-        if(show) dialog.show()
+        if (show) dialog.show()
         return dialog
     }
 
@@ -254,7 +254,8 @@ object Dialogs {
     fun showRemoveImageDialog(
         context: Context,
         message: String = context.getString(
-            R.string.remove_image_dialog),
+            R.string.remove_image_dialog
+        ),
         shouldRemoveImage: (Boolean) -> Unit
     ) {
         MaterialAlertDialogBuilder(context)
@@ -438,7 +439,7 @@ object Dialogs {
         context: Context,
         title: Int,
         arrayInt: Int,
-        checkedItemId:Int,
+        checkedItemId: Int,
         onChanged: (Int) -> Unit
     ) {
         MaterialAlertDialogBuilder(context)

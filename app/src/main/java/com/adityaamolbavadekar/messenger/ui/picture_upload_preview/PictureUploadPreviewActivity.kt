@@ -27,7 +27,6 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.adityaamolbavadekar.messenger.databinding.ActivityPictureUploadPreviewBinding
 import com.adityaamolbavadekar.messenger.dialogs.Dialogs
-import com.adityaamolbavadekar.messenger.ui.registration.IsoCountrySelectionFragment
 import com.adityaamolbavadekar.messenger.utils.base.BaseActivity
 
 class PictureUploadPreviewActivity : BaseActivity() {
@@ -52,6 +51,8 @@ class PictureUploadPreviewActivity : BaseActivity() {
             if (shouldRemove) {
                 imageUrisList.remove(imageUri)
                 setupViewPagers()
+                binding.imagesSliderLarge.currentItem = 0
+                binding.imagesSliderSmall.scrollToPosition(0)
             }
         }
     }
@@ -69,7 +70,7 @@ class PictureUploadPreviewActivity : BaseActivity() {
             if (binding.input.composeText?.toString()?.trim()?.isNotEmpty() == true) {
                 extras.putExtra(EXTRA_TEXT, binding.input.composeText!!.toString())
             }
-            extras.putExtra(EXTRA_STREAM, imageUrisList.toTypedArray())
+            extras.putExtra(EXTRA_STREAM, getUrisStringArray())
             setResult(Activity.RESULT_OK, extras)
             finish()
         }
@@ -97,6 +98,9 @@ class PictureUploadPreviewActivity : BaseActivity() {
         }
     }
 
+    private fun getUrisStringArray():Array<String>{
+        return imageUrisList.map{it.toString()}.toTypedArray()
+    }
     companion object {
         private val TAG = PictureUploadPreviewActivity::class.java.simpleName
         fun getUriList(photoUrls: Array<String>): List<Uri> {

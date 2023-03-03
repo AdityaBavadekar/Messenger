@@ -18,17 +18,19 @@ package com.adityaamolbavadekar.messenger.ui.conversation
 
 import com.adityaamolbavadekar.messenger.model.MessageRecord
 import com.adityaamolbavadekar.messenger.utils.extensions.getDateStub
-import com.adityaamolbavadekar.messenger.utils.extensions.runOnIOThread
-import kotlinx.coroutines.Job
 
 class TimestampsGenerator private constructor() {
 
     companion object {
 
-        fun generate(list: List<MessageRecord>): MutableList<MessageRecord> {
+        fun generate(
+            list: List<MessageRecord>,
+            timestamps: List<MessageRecord>
+        ): MutableList<MessageRecord> {
             val newList = mutableListOf<MessageRecord>()
-
-            list.sortedBy { it.timestamp }.forEachIndexed { index, messageRecord ->
+            val messagesList = list.toMutableList()
+            messagesList.addAll(timestamps)
+            messagesList.sortedBy { it.timestamp }.forEachIndexed { index, messageRecord ->
                 if (messageRecord.isTimestampHeader()) {
                     newList.add(messageRecord)
                     return@forEachIndexed

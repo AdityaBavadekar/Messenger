@@ -21,7 +21,7 @@ import android.content.ContentProviderOperation
 import android.provider.ContactsContract
 import com.adityaamolbavadekar.messenger.utils.logging.InternalLogger
 
-class ContactsManager{
+class ContactsManager {
 
     companion object {
 
@@ -62,8 +62,8 @@ class ContactsManager{
 
             try {
 
-            }catch (e:Exception){
-                InternalLogger.logE(TAG,"Error occurred",e)
+            } catch (e: Exception) {
+                InternalLogger.logE(TAG, "Error occurred", e)
             }
         }
 

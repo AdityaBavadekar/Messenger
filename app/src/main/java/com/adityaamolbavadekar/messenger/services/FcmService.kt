@@ -16,7 +16,6 @@
 
 package com.adityaamolbavadekar.messenger.services
 
-import androidx.core.app.NotificationCompat
 import com.adityaamolbavadekar.messenger.managers.PrefsManager
 import com.adityaamolbavadekar.messenger.notifications.NotificationData
 import com.adityaamolbavadekar.messenger.utils.logging.InternalLogger
@@ -47,7 +46,7 @@ class FcmService : FirebaseMessagingService() {
         InternalLogger.logD(TAG, "onMessageSent")
     }
 
-    companion object{
+    companion object {
         private val TAG = FcmService::class.java.simpleName
     }
 

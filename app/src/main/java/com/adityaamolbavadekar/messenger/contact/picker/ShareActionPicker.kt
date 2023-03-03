@@ -22,11 +22,9 @@ import android.os.Bundle
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
-import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.adityaamolbavadekar.messenger.R
-import com.adityaamolbavadekar.messenger.database.conversations.DatabaseAndroidViewModel
 import com.adityaamolbavadekar.messenger.databinding.ContactPickerFragmentBinding
 import com.adityaamolbavadekar.messenger.databinding.P2pSelectionItemBinding
 import com.adityaamolbavadekar.messenger.managers.CloudDatabaseManager
@@ -36,10 +34,8 @@ import com.adityaamolbavadekar.messenger.model.User
 import com.adityaamolbavadekar.messenger.model.toRecipientsList
 import com.adityaamolbavadekar.messenger.ui.conversation.ConversationActivity
 import com.adityaamolbavadekar.messenger.ui.create.CreateNewGroupActivity
-import com.adityaamolbavadekar.messenger.ui.registration.AuthActivity
 import com.adityaamolbavadekar.messenger.utils.OnResponseCallback
 import com.adityaamolbavadekar.messenger.utils.base.BaseActivity
-import com.adityaamolbavadekar.messenger.utils.base.BaseFragment
 import com.adityaamolbavadekar.messenger.utils.base.BindingHelperFragment
 import com.adityaamolbavadekar.messenger.utils.extensions.load
 import com.adityaamolbavadekar.messenger.utils.logging.InternalLogger
@@ -197,7 +193,7 @@ class ShareActionPicker : BaseActivity() {
 
         }
 
-        companion object{
+        companion object {
             private val TAG = PickerFragment::class.java.simpleName
         }
 

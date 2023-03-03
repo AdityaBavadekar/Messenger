@@ -212,4 +212,10 @@ abstract class BaseMessage public constructor(
         return result
     }
 
+    fun containsSearchQuery(query: String): Boolean {
+        return message?.lowercase()?.contains(query) == true || senderUsername.contains(query) || linkPreviewInfo?.containsSearchQuery(
+            query
+        ) == true
+    }
+
 }

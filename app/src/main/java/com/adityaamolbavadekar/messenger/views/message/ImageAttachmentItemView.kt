@@ -16,5 +16,4 @@
 
 package com.adityaamolbavadekar.messenger.views.message
 
-class ImageAttachmentItemView {
-}
+class ImageAttachmentItemView

@@ -21,6 +21,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.activityViewModels
@@ -32,6 +34,7 @@ import com.adityaamolbavadekar.messenger.databinding.GroupSelectedConversationIt
 import com.adityaamolbavadekar.messenger.dialogs.Dialogs
 import com.adityaamolbavadekar.messenger.managers.AuthManager
 import com.adityaamolbavadekar.messenger.managers.CloudStorageManager
+import com.adityaamolbavadekar.messenger.model.MessagingPermissionType
 import com.adityaamolbavadekar.messenger.model.Id
 import com.adityaamolbavadekar.messenger.model.Recipient
 import com.adityaamolbavadekar.messenger.ui.conversation.ConversationActivity
@@ -46,7 +49,8 @@ import com.google.firebase.storage.StorageMetadata
 /**
  * Parent Activity is [CreateNewGroupActivity]
  * */
-class CreateNewGroupFragment : BindingHelperFragment<CreateNewGroupActivityBinding>() {
+class CreateNewGroupFragment : BindingHelperFragment<CreateNewGroupActivityBinding>(),
+    AdapterView.OnItemSelectedListener {
 
     override fun onShouldInflateBinding(): CreateNewGroupActivityBinding {
         return CreateNewGroupActivityBinding.inflate(layoutInflater)
@@ -55,6 +59,7 @@ class CreateNewGroupFragment : BindingHelperFragment<CreateNewGroupActivityBindi
     private lateinit var listAdapter: Adapter
     private val viewModel: CreateGroupViewModel by activityViewModels()
     private val cloudStorageManager = CloudStorageManager()
+    private lateinit var messagingTypesArray : Array<String>
     private val authManager = AuthManager()
     private val conversationId = Id.getSpecial()
     private var conversationPhotoUrl: String? = null
@@ -89,6 +94,7 @@ class CreateNewGroupFragment : BindingHelperFragment<CreateNewGroupActivityBindi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel.setMeRecipient(Recipient.Builder(prefsManager.getUserObject()!!).build())
+        messagingTypesArray = requireContext().resources.getStringArray(R.array.messaging_types)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -115,6 +121,14 @@ class CreateNewGroupFragment : BindingHelperFragment<CreateNewGroupActivityBindi
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        binding.messagingType.apply{
+            setAdapter(ArrayAdapter(requireContext(),R.layout.spinner_item,R.id.textView,messagingTypesArray))
+            onItemSelectedListener = this@CreateNewGroupFragment
+        }
+    }
+
     private fun validate() {
         val title = binding.title.text.toString()
         val description = binding.description.text.toString()
@@ -127,7 +141,8 @@ class CreateNewGroupFragment : BindingHelperFragment<CreateNewGroupActivityBindi
             ) {}
         } else {
             val loader = Dialogs.showLoadingDialog(requireContext())
-            viewModel.createNewGroup(conversationId,
+            viewModel.createNewGroup(
+                conversationId,
                 database,
                 title,
                 description,
@@ -181,5 +196,10 @@ class CreateNewGroupFragment : BindingHelperFragment<CreateNewGroupActivityBindi
         }
     }
 
+    override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+        if (p0 == null) return
+        viewModel.messagingPermissionType = if (p2 == 0) MessagingPermissionType.permitAll() else MessagingPermissionType.permitManagersOnly()
+    }
 
+    override fun onNothingSelected(p0: AdapterView<*>?) = Unit
 }

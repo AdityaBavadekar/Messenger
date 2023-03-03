@@ -16,9 +16,12 @@
 
 package com.adityaamolbavadekar.messenger.ui.registration
 
+import android.content.Context
+import android.net.wifi.WifiManager
 import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableStringBuilder
+import android.text.format.Formatter
 import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -79,6 +82,13 @@ class RegistrationFragment : BindingHelperFragment<FragmentSignupPhoneBinding>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel.getCountryInfoList(requireContext())
+        viewModel.ipToken = try {
+            val wifiManager =
+                requireContext().applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
+            Formatter.formatIpAddress(wifiManager.connectionInfo.ipAddress)
+        } catch (e: Exception) {
+            null
+        }
         prefsManager.getCountryInfo()?.let { info ->
             if (info.isNotEmpty()) {
                 viewModel.updatedSelectedCountryInfo(info)

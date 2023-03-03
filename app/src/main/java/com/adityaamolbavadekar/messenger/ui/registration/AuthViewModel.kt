@@ -58,6 +58,7 @@ class AuthViewModel : ViewModel() {
     private val cloudDatabaseManager = CloudDatabaseManager()
     private val cloudStorageManager = CloudStorageManager()
     private var lastProfilePictureUrl: String? = null
+    var ipToken: String? = null
     var isNewUser = false
     var justLoggedIn = false
     private var deviceFcmToken: String? = null
@@ -143,7 +144,7 @@ class AuthViewModel : ViewModel() {
     fun save() {
         val u = _user.value!!
         authManager.updateProfile(u.toFullName(), u.photoUrl)
-        if (isNewUser) {
+        if (isNewUser || u.UID == "" || u.phoneNumber == null) {
             cloudDatabaseManager.saveUserDetails(u)
         } else {
             u.toBuilder()
@@ -153,7 +154,7 @@ class AuthViewModel : ViewModel() {
         }
 
         cloudDatabaseManager.getUsersManager()
-            .saveNewActivityInfo(u.activityCount, getNewActivity(u.lastLogin), u.UID) {}
+            .saveNewActivityInfo(u.activityCount, getNewActivity(u.lastLogin, ipToken), u.UID) {}
         cloudDatabaseManager.saveUserPublicDetails(Recipient.Builder(u).setLastSeenToNow().build())
 
     }

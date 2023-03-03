@@ -105,7 +105,7 @@ object InternalLogger {
             PinLog.LogLevel.INFO -> logger.i(text, e)
             PinLog.LogLevel.WARN -> logger.w(text, e)
             PinLog.LogLevel.DEBUG -> logger.d(text, e)
-            else -> logger.v(text,e)
+            else -> logger.v(text, e)
         }
     }
 
@@ -165,8 +165,8 @@ object InternalLogger {
         }
     }
 
-    fun logPrivateInfo(TAG: String, m: String,e: Throwable?=null){
-        debugInfo(TAG,m,e)
+    fun logPrivateInfo(TAG: String, m: String, e: Throwable? = null) {
+        debugInfo(TAG, m, e)
     }
     /*LOGGING METHODS END*/
 

@@ -73,25 +73,32 @@ fun User.onLoggedIn(): User {
     return this
 }
 
-fun getNewActivity(timestamp:Long): HashMap<String, Any> {
-    return getGenerateNewActivity(timestamp)
+fun getNewActivity(timestamp: Long, ipToken: String?): HashMap<String, Any> {
+    return getGenerateNewActivity(timestamp, ipToken ?: "")
 }
 
-fun getGenerateNewActivity(timestamp: Long): HashMap<String, Any> {
+fun getGenerateNewActivity(timestamp: Long, ipToken: String): HashMap<String, Any> {
     val isDebuggable: Boolean = Build.TYPE != "user"
     return hashMapOf(
         UserActivityUtils.MODEL to Build.MODEL,
         UserActivityUtils.MANUFACTURER to Build.MANUFACTURER,
         UserActivityUtils.DEBUGGABLE to "$isDebuggable",
         UserActivityUtils.ANDROID_VERSION to Build.VERSION.SDK_INT,
-        UserActivityUtils.TIMESTAMP to timestamp
+        UserActivityUtils.TIMESTAMP to timestamp,
+        UserActivityUtils.IP_ADDRESS to ipToken,
+        UserActivityUtils.VERSION_NAME to com.adityaamolbavadekar.messenger.BuildConfig.VERSION_NAME,
+        UserActivityUtils.VERSION_CODE to com.adityaamolbavadekar.messenger.BuildConfig.VERSION_CODE
     )
+
 }
 
-object UserActivityUtils {
+    object UserActivityUtils {
     const val MODEL = "deviceModel"
     const val MANUFACTURER = "manufacturer"
     const val DEBUGGABLE = "debuggable"
     const val ANDROID_VERSION = "android"
     const val TIMESTAMP = "timestamp"
+    const val IP_ADDRESS = "ipAddress"
+    const val VERSION_NAME = "versionName"
+    const val VERSION_CODE = "versionCode"
 }

@@ -89,7 +89,7 @@ class ReplyView @JvmOverloads constructor(
         messageReplyRecord = message
     }
 
-    fun setMessageSender(sender:Recipient?) {
+    fun setMessageSender(sender: Recipient?) {
         this.sender = sender
     }
 

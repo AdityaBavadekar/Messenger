@@ -88,12 +88,12 @@ class ImageLoader private constructor(private val context: Context) {
         circleCrop: Boolean,
         placeholderInt: Int?,
         placeholderDrawable: Drawable?,
-        overrideSize:Int? = null
+        overrideSize: Int? = null
     ): ViewTarget<ImageView, Drawable> {
         val builder = Glide.with(context).load(uri)
         builder.apply {
             diskCacheStrategy(DiskCacheStrategy.ALL)
-            overrideSize?.let{override(it)}
+            overrideSize?.let { override(it) }
         }
         if (circleCrop) builder.circleCrop()
         if (placeholderDrawable.isNotNull()) builder.placeholder(placeholderDrawable!!)

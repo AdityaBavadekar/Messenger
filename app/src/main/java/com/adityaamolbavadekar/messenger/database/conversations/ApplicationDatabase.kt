@@ -62,10 +62,10 @@ abstract class ApplicationDatabase : RoomDatabase() {
             }
         }
 
-        private val callback = object: RoomDatabase.Callback() {
+        private val callback = object : Callback() {
             override fun onCreate(db: SupportSQLiteDatabase) {
                 super.onCreate(db)
-                InternalLogger.logD("RoomDatabase.Callback","Database created")
+                InternalLogger.logD("RoomDatabase.Callback", "Database created")
             }
         }
 

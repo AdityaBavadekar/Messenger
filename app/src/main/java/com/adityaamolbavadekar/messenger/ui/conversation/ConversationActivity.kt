@@ -27,6 +27,7 @@ import android.view.MenuItem
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.appcompat.widget.SearchView
 import androidx.core.view.*
 import com.adityaamolbavadekar.messenger.R
 import com.adityaamolbavadekar.messenger.database.conversations.DatabaseAndroidViewModel
@@ -52,7 +53,7 @@ import com.adityaamolbavadekar.messenger.utils.logging.InternalLogger
 import com.adityaamolbavadekar.messenger.views.compose.EmojiPopupWindow
 import com.google.firebase.storage.StorageMetadata
 
-class ConversationActivity : BaseActivity() {
+class ConversationActivity : BaseActivity(), SearchView.OnQueryTextListener {
 
     private val windowInsetsAnimationCallback = object : WindowInsetsAnimationCompat.Callback(
         DISPATCH_MODE_STOP
@@ -467,7 +468,7 @@ class ConversationActivity : BaseActivity() {
             it.findItem(R.id.action_add_reply)?.let { item ->
                 item.isVisible = (InternalLogger.isDebugBuild && conversation?.isGroup == true)
             }
-            it.findItem(R.id.action_start_voice_call)?.let{item->
+            it.findItem(R.id.action_start_voice_call)?.let { item ->
                 item.isVisible = Constants.VOICE_CALL_SUPPORTED
             }
         }
@@ -475,19 +476,31 @@ class ConversationActivity : BaseActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.id.action_add_reply) {
-            val list = viewModel.messages.value!!
-            if (list.isEmpty() || conversation?.isGroup == false) return true
-            val last = list.first()
-            val sender = groupRecipients.random()
-            val messageRecord = MessageRecord.createCopyOf(
-                last,
-                sender.uid,
-                sender.username,
-                System.currentTimeMillis()
-            )
-            viewModel.sendMessage(messageRecord, false)
+        when (item.itemId) {
+            R.id.action_add_reply -> {
+                val list = viewModel.messages.value!!
+                if (list.isEmpty() || conversation?.isGroup == false) return true
+                val last = list.first()
+                val sender = groupRecipients.random()
+                val messageRecord = MessageRecord.createCopyOf(
+                    last,
+                    sender.uid,
+                    sender.username,
+                    System.currentTimeMillis()
+                )
+                viewModel.sendMessage(messageRecord, false)
+            }
+            R.id.action_search -> {
+                (item.actionView as SearchView).apply {
+                    setOnQueryTextListener(this@ConversationActivity)
+                    setOnCloseListener {
+                        viewModel.stopSearch()
+                        true
+                    }
+                }
+            }
         }
+
         return super.onOptionsItemSelected(item)
     }
 
@@ -521,5 +534,12 @@ class ConversationActivity : BaseActivity() {
     }
 
     enum class InputType { ATTACHMENT, EMOJI, NONE }
+
+    override fun onQueryTextSubmit(query: String?): Boolean {
+        viewModel.search(query)
+        return true
+    }
+
+    override fun onQueryTextChange(newText: String?): Boolean = false
 
 }

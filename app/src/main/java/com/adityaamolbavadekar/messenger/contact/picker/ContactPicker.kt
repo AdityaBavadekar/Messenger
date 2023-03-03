@@ -23,8 +23,6 @@ import android.text.format.DateUtils
 import android.view.*
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContentProviderCompat.requireContext
-import androidx.core.content.ContextCompat.startActivity
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
@@ -49,10 +47,7 @@ import com.adityaamolbavadekar.messenger.utils.extensions.load
 import com.adityaamolbavadekar.messenger.utils.logging.InternalLogger
 import com.adityaamolbavadekar.messenger.utils.recyclerview.BaseItemHolder
 import com.adityaamolbavadekar.messenger.utils.recyclerview.BaseListAdapter
-import com.google.android.gms.tasks.Task
-import com.google.android.gms.tasks.TaskCompletionSource
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import java.util.*
 
 class ContactPicker : BaseActivity() {
 

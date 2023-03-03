@@ -34,7 +34,7 @@ data class RemoteRecipient(
      * For identifying Role of a Group Conversation Recipient.
      * */
     enum class RecipientRole {
-        NONE, MANAGER, PARTICIPANT,
+        NONE, MANAGER, PARTICIPANT
     }
 
     private annotation class Keys {

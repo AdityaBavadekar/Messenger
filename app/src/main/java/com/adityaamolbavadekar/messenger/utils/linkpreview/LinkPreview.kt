@@ -16,14 +16,11 @@
 
 package com.adityaamolbavadekar.messenger.utils.linkpreview
 
-import android.net.Uri
-import android.util.Patterns
 import com.adityaamolbavadekar.messenger.model.LinkPreviewInfo
 import com.adityaamolbavadekar.messenger.utils.Operation
 import com.adityaamolbavadekar.messenger.utils.extensions.runOnIOThread
 import com.adityaamolbavadekar.messenger.utils.extensions.runOnMainThread
 import org.jsoup.Jsoup
-import java.util.*
 
 object LinkPreview {
 

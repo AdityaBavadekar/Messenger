@@ -200,11 +200,18 @@
     <string name="files">Files</string>
     <string name="gifs">GIFs</string>
     <string name="remove_image_dialog">Remove this image?</string>
+    <string name="download_title_messenger_update">Downloading Messenger update</string>
 
     <string-array name="theme_chooser">
         <item>System Default</item>
         <item>Light</item>
         <item>Dark</item>
+    </string-array>
+
+    <string-array name="messaging_types">
+        <item>Allow all</item>
+        <item>Only me</item>
+        <item>Only managers</item>
     </string-array>
 
     <string-array name="text_size">

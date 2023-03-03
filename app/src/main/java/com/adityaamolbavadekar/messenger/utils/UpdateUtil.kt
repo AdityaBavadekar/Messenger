@@ -16,10 +16,13 @@
 
 package com.adityaamolbavadekar.messenger.utils
 
+import android.app.DownloadManager
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Environment.DIRECTORY_DOWNLOADS
 import com.adityaamolbavadekar.messenger.BuildConfig
+import com.adityaamolbavadekar.messenger.R
 import com.adityaamolbavadekar.messenger.managers.PrefsManager
 import com.adityaamolbavadekar.messenger.model.UpdateInfo
 import com.adityaamolbavadekar.messenger.utils.extensions.simpleDateFormat
@@ -86,6 +89,32 @@ class UpdateUtil {
                         it
                     )
                 }
+        }
+
+        fun startUpdateV2(context: Context, updateInfo: UpdateInfo) {
+            val localTempFile = File.createTempFile("MessengerUpdateFile", "apk")
+            Firebase.storage
+                .getReferenceFromUrl(updateInfo.link!!)
+                .downloadUrl
+                .addOnSuccessListener {
+                    downloadApkFile(context, it.toString())
+                }
+                .addOnFailureListener {}
+        }
+
+        private fun downloadApkFile(context: Context, url: String) {
+            val downloadManager =
+                context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+            val uri = Uri.parse(url)
+            val request = DownloadManager.Request(uri)
+            request.setTitle(context.getString(R.string.download_title_messenger_update))
+            request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+            request.setDestinationInExternalFilesDir(
+                context,
+                DIRECTORY_DOWNLOADS,
+                "MessengerUpdateFile.apk"
+            )
+            downloadManager.enqueue(request)
         }
 
         private fun installApk(context: Context, localTempFile: File) {

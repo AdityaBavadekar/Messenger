@@ -28,7 +28,6 @@ import androidx.appcompat.widget.TooltipCompat
 import androidx.core.content.withStyledAttributes
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
-import androidx.core.view.updateLayoutParams
 import com.adityaamolbavadekar.messenger.R
 
 class CircularMenuItemButton @JvmOverloads constructor(

@@ -19,7 +19,6 @@ package com.adityaamolbavadekar.messenger.utils
 import android.graphics.RectF
 import android.text.Spannable
 import android.text.method.LinkMovementMethod
-import android.text.method.MovementMethod
 import android.view.MotionEvent
 import android.widget.TextView
 

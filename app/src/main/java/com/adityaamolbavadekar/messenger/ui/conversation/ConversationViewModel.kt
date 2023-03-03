@@ -16,17 +16,14 @@
 
 package com.adityaamolbavadekar.messenger.ui.conversation
 
-import android.accounts.NetworkErrorException
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.adityaamolbavadekar.messenger.database.conversations.DatabaseAndroidViewModel
 import com.adityaamolbavadekar.messenger.managers.CloudDatabaseManager
-import com.adityaamolbavadekar.messenger.managers.InternetManager
 import com.adityaamolbavadekar.messenger.model.*
 import com.adityaamolbavadekar.messenger.notifications.NotificationData
 import com.adityaamolbavadekar.messenger.notifications.NotificationSender
-import com.adityaamolbavadekar.messenger.utils.Constants
 import com.adityaamolbavadekar.messenger.utils.OnResponseCallback
 import com.adityaamolbavadekar.messenger.utils.extensions.findFirstMessage
 import com.adityaamolbavadekar.messenger.utils.extensions.getDateStub
@@ -34,6 +31,9 @@ import com.adityaamolbavadekar.messenger.utils.extensions.runOnIOThread
 import com.adityaamolbavadekar.messenger.utils.logging.InternalLogger
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.TaskCompletionSource
+import com.google.firebase.database.ChildEventListener
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import kotlinx.coroutines.Job
 
 class ConversationViewModel : ViewModel() {
@@ -60,6 +60,8 @@ class ConversationViewModel : ViewModel() {
     private val _conversationTitle: MutableLiveData<String> =
         MutableLiveData("")
     val conversationTitle: LiveData<String> = _conversationTitle
+    private val _searchData: MutableLiveData<SearchData?> = MutableLiveData(null)
+    val searchData: LiveData<SearchData?> = _searchData
     private lateinit var database: DatabaseAndroidViewModel
     private val messageSender = MessageSender()
     private val cloudDatabaseManager = CloudDatabaseManager()
@@ -145,24 +147,14 @@ class ConversationViewModel : ViewModel() {
     }
 
     private fun markAsNotSent(m: MessageRecord) = runOnIOThread {
-        val l = _messages.value!!.toMutableList()
-        val i = l.indexOf(m)
-        if (i != -1) {
-            m.markAsNotSent()
-            l[i] = m
-        }
-        _messages.postValue(l.toList())
+        m.markAsNotSent()
+        database.insertOrUpdateMessage(m)
         InternalLogger.logD("MessageStatus", "MarkedAs : [NOT_SENT]")
     }
 
     private fun marksAsSent(m: MessageRecord) = runOnIOThread {
-        val l = _messages.value!!.toMutableList()
-        val i = l.indexOf(m)
-        if (i != -1) {
-            m.markAsSent()
-            l[i] = m
-        }
-        _messages.postValue(l.toList())
+        m.markAsSent()
+        database.insertOrUpdateMessage(m)
         InternalLogger.logD("MessageStatus", "MarkedAs : [SENT]")
     }
 
@@ -210,7 +202,8 @@ class ConversationViewModel : ViewModel() {
 
     private fun createDateHeaders(list: List<MessageRecord>): Job {
         return runOnIOThread {
-            val newList = TimestampsGenerator.generate(list)
+            val timestamps = messages.value!!.filter { it.isTimestampHeader() }
+            val newList = TimestampsGenerator.generate(list, timestamps)
             database.insertOrUpdateMessages(newList)
         }
 //        return generateDateHeaders(list)
@@ -277,6 +270,11 @@ class ConversationViewModel : ViewModel() {
             .observeMessagesFromDatabase(
                 me.uid, p2pUid, onGetObservedMessagesResponseCallback
             )
+        if (InternalLogger.isDebugBuild) {
+            messagesManager.observeMessagesFromDatabaseV2(
+                me.uid, p2pUid, childEventListener
+            )
+        }
         if (observeStatus) {
             statusManager.observeStatus(p2pUid) {
                 _status.postValue(it)
@@ -308,11 +306,11 @@ class ConversationViewModel : ViewModel() {
         sendNotifications: Boolean = true
     ): Task<Void> {
         val source = TaskCompletionSource<Void>()
-        if (!InternetManager.isAvailable) {
+        /*if (!InternetManager.isAvailable) {
             markAsNotSent(message)
             source.setException(NetworkErrorException())
             return source.task
-        }
+        }*/
         lastMessage = message
         val conversation = conversationWithRecipients.value!!.conversationRecord
         database.insertOrUpdateMessage(message)
@@ -340,12 +338,9 @@ class ConversationViewModel : ViewModel() {
         lastMessage?.let { messageRecord ->
             if (isMessageSaved) {
                 marksAsSent(messageRecord)
-                if (sendNotifications) {
-                    return onShouldSendNotification(messageRecord)
-                } else return
-            } else {
-                markAsNotSent(messageRecord)
-            }
+                if (sendNotifications) onShouldSendNotification(messageRecord)
+                else return
+            } else markAsNotSent(messageRecord)
         }
     }
 
@@ -401,6 +396,45 @@ class ConversationViewModel : ViewModel() {
             }
         }
     }
+
+    fun stopSearch() {
+        _searchData.postValue(null)
+    }
+
+    fun search(query: String?) {
+        if (query != null && query.trim().isNotEmpty()) {
+            val searchMessages = mutableListOf<Int>()
+            messages.value!!.forEachIndexed { index, m ->
+                if (m.containsSearchQuery(query))
+                    searchMessages.add(index)
+            }
+            _searchData.postValue(SearchData(query, searchMessages))
+        }
+    }
+
+    private val childEventListener = object : ChildEventListener {
+        override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
+            //val m = snapshot.getValue<MessageRecord>()
+            InternalLogger.debugInfo(TAG, "childEventListener.onChildAdded : ${snapshot.ref}")
+        }
+
+        override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
+            InternalLogger.debugInfo(TAG, "childEventListener.onChildChanged : ${snapshot.ref}")
+        }
+
+        override fun onChildRemoved(snapshot: DataSnapshot) {
+            InternalLogger.debugInfo(TAG, "childEventListener.onChildRemoved : ${snapshot.ref}")
+        }
+
+        override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
+            InternalLogger.debugInfo(TAG, "childEventListener.onChildMoved : ${snapshot.ref}")
+        }
+
+        override fun onCancelled(error: DatabaseError) {
+            InternalLogger.logE(TAG, "childEventListener.onCancelled", error.toException())
+        }
+    }
+
 
     companion object {
         private val TAG = ConversationViewModel::class.java.simpleName

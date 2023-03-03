@@ -111,9 +111,9 @@ class CloudStorageManager {
         runOnIOThread {
             val urlsList = mutableListOf<String>()
             urisList.forEachIndexed { index, photoUri ->
-                internalSavePicture(photoUri,getMetadata(photoUri),onSuccess = {
+                internalSavePicture(photoUri, getMetadata(photoUri), onSuccess = {
                     urlsList.add(it.toString())
-                },{ runOnMainThread { onResponseCallback.onFailure(it) }})
+                }, { runOnMainThread { onResponseCallback.onFailure(it) } })
             }
             runOnMainThread {
                 onResponseCallback.onSuccess(urlsList)

@@ -24,8 +24,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.PopupWindow
 import android.widget.TextView
-import androidx.annotation.DrawableRes
-import androidx.annotation.StringRes
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ListAdapter
@@ -53,7 +51,7 @@ class ComposeAddPopupWindow private constructor(
         setOnDismissListener { onCloseListener() }
     }
 
-    enum class ComposeAddItem(public val stringRes: Int, public val drawableRes: Int) {
+    enum class ComposeAddItem(val stringRes: Int, val drawableRes: Int) {
         PHOTOS(R.string.photos, R.drawable.ic_image),
         CONTACT(R.string.contact, R.drawable.ic_contact),
         LOCATION(R.string.location, R.drawable.ic_my_location_),

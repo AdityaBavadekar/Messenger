@@ -21,6 +21,7 @@
     <color name="colorAccent">#03DAC5</color>
     <color name="colorEditText">#B3E5FC</color>
     <color name="colorThemeBasic">#FFFFFF</color>
+    <color name="colorThemeOpposite">#292929</color>
     <color name="colorThemeEmphasis">#F6F6F6</color>
     <color name="colorMessageDefault">#E3F2FD</color>
     <color name="colorMessageDefaultOutgoing">#E6EE9C</color>

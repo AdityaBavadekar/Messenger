@@ -53,10 +53,10 @@ object Constants {
         const val MESSAGE_TIMESTAMP_FORMAT = "h:mm a"
         const val TIMESTAMP_FORMAT_DAY = "d"
         const val TIMESTAMP_FORMAT_DAY_MONTH = "d MMMM "
-        const val TIMESTAMP_FORMAT_DAY_MONTH_YEAR = "E d MMMM, YYYY"
+        const val TIMESTAMP_FORMAT_DAY_MONTH_YEAR = "E d MMMM, yyyy"
         const val TIMESTAMP_FORMAT_FULL = "E, d MMMM YYYY, h:mm:ss"
-        const val UNDERSCORED_TIMESTAMP_FORMAT_FULL = "E_d_MMMM_YYYY_h_mm_ss"
-        const val SLASHED_TIMESTAMP_FORMAT_FULL = "d/MM/YYYY"
+        const val UNDERSCORED_TIMESTAMP_FORMAT_FULL = "E_d_MMMM_yyyy_h_mm_ss"
+        const val SLASHED_TIMESTAMP_FORMAT_FULL = "d/MM/yyyy"
     }
 
     internal object CloudPaths {
@@ -137,7 +137,7 @@ object Constants {
     }
 
     internal object FcmMessaging {
-        const val FCM_MESSAGING_BASE_URL = "https://fcm.googleapis.com/fcm/send"
+        const val FCM_MESSAGING_BASE_URL = "https://fcm.googleapis.com/fcm/send/"
         const val FCM_MESSAGING_SERVER_KEY =
             com.adityaamolbavadekar.messenger.BuildConfig.FCM_MESSAGING_SERVER_KEY
         const val FCM_MESSAGING_CONTENT_TYPE = "application/json"

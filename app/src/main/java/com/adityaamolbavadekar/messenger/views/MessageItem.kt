@@ -18,14 +18,17 @@ package com.adityaamolbavadekar.messenger.views
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.text.Spanned
+import android.text.SpannedString
+import android.text.style.BackgroundColorSpan
+import android.text.style.ForegroundColorSpan
 import android.util.AttributeSet
 import android.view.View
-import android.view.ViewGroup
 import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.appcompat.widget.PopupMenu
-import androidx.core.text.bold
 import androidx.core.text.buildSpannedString
+import androidx.core.text.inSpans
 import androidx.core.text.italic
 import androidx.core.view.updateLayoutParams
 import androidx.lifecycle.LifecycleOwner
@@ -83,6 +86,7 @@ class MessageItem @JvmOverloads constructor(
     private var replyClickListener: ReplyClickListener? = null
     private var reactionListener: OnReactionListener = getEmptyOnReactionListener()
     private var deletionListener: MessageDeletionListener = getEmptyDeletionListener()
+    private var searchData: SearchData? = null
     private val imageLoader = ImageLoader.with(this)
     private var itemIndex: Int = 0
     private var selectionKey: Long = 0
@@ -131,7 +135,7 @@ class MessageItem @JvmOverloads constructor(
         if (!this.wasBindedPreviously) {
             this.wasBindedPreviously = true
             if (isDebug) InternalLogger.logD(
-                "MessageItem", "onBind()\n" +
+                TAG, "onBind()\n" +
                         "isIncoming=$isIncoming" + "\n" +
                         "hasReply=$hasReply" + "\n" +
                         "hasLinkPreview=$hasLinkPreview" + "\n" +
@@ -170,7 +174,7 @@ class MessageItem @JvmOverloads constructor(
         super.onFinishInflate()
 
         context.resources.also {
-            updateLayoutParams<ViewGroup.MarginLayoutParams> {
+            updateLayoutParams<MarginLayoutParams> {
                 topMargin = it.getDimension(R.dimen.message_margin_top).toInt()
             }
             val messagePaddingHorizontal =
@@ -217,7 +221,16 @@ class MessageItem @JvmOverloads constructor(
         }
 
         checkNotNull(titleTextView) { "titleTextView cannot be null" }
-        titleTextView!!.text = getTitleText()
+        val titleText = getTitleText()
+        titleTextView!!.text = titleText
+        if (searchData != null && titleText.lowercase().contains(searchData!!.query.lowercase())) {
+            try {
+                val range = (titleText.indexOf(searchData!!.query)..searchData!!.query.length)
+                titleTextView!!.text = wrapSearchResult(SpannedString(titleText), range)
+            } catch (e: Exception) {
+                titleTextView!!.text = wrapSearchResult(titleText)
+            }
+        }
         titleTextView!!.setOnClickListener {
             onTitleClicked()
         }
@@ -244,10 +257,21 @@ class MessageItem @JvmOverloads constructor(
             return
         }
 
-        messageTextView!!.text = requireMessageRecord().message!!
-        TextStyler.parse(context, requireMessageRecord().message!!) { message ->
-            messageTextView!!.text = message
+        val messageText = requireMessageRecord().message!!
+        messageTextView!!.text = messageText
+        TextStyler.parse(context, messageText) { message ->
+            if (searchData != null && messageText.lowercase()
+                    .contains(searchData!!.query.lowercase())
+            ) {
+                try {
+                    val range = (messageText.indexOf(searchData!!.query)..searchData!!.query.length)
+                    messageTextView!!.text = wrapSearchResult(message, range)
+                } catch (e: Exception) {
+                    messageTextView!!.text = wrapSearchResult(message)
+                }
+            } else messageTextView!!.text = message
         }
+
         messageTextView!!.applyMessageBodyFontSize()
         setVisible(messageTextView!!)
     }
@@ -273,15 +297,13 @@ class MessageItem @JvmOverloads constructor(
         checkNotNull(linkPreviewView) { "linkPreviewView cannot be null" }
         val linkPreviewInfo = requireMessageRecord().linkPreviewInfo!!
         linkPreviewView!!.setLinkPreviewInfo(linkPreviewInfo)
-        linkPreviewView!!.setOnClickListener {
-            onLinkPreviewClicked(linkPreviewInfo.url)
-        }
+        linkPreviewView!!.setOnLinkClickListener(::onLinkPreviewClicked)
         setVisible(linkPreviewView!!)
     }
 
     private fun setReactions() {
         if (!requireMessageRecord().hasReactions()) {
-            reactionsView?.setCount(0)
+            reactionsView?.setReactionsList(listOf())
             reactionsView?.setOnClickListener(null)
             setGone(reactionsView)
             return
@@ -291,7 +313,7 @@ class MessageItem @JvmOverloads constructor(
         reactionsView!!.setOnClickListener {
             onReactionsViewClicked()
         }
-        reactionsView!!.setCount(requireMessageRecord().reactions.size)
+        reactionsView!!.setReactionsList(requireMessageRecord().reactions)
         setVisible(reactionsView!!)
     }
 
@@ -305,8 +327,8 @@ class MessageItem @JvmOverloads constructor(
 
         checkNotNull(photoAttachmentsView) { "photoAttachmentsView cannot be null" }
         photoAttachmentsView!!.addAttachments(requireMessageRecord().attachments)
-        photoAttachmentsView!!.setOnClickListener {
-            onAttachmentsViewClicked()
+        photoAttachmentsView!!.setOnAttachmentsClickListener {
+            onPhotoAttachmentsViewClicked(it)
         }
         setVisible(photoAttachmentsView!!)
     }
@@ -441,6 +463,7 @@ class MessageItem @JvmOverloads constructor(
         return true
     }
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     private fun updateSelectionState() {
         if (isSelectedMessageItem) {
             val transformation = MaterialElevationScale(true).apply {
@@ -498,13 +521,22 @@ class MessageItem @JvmOverloads constructor(
         reactionListener.onShouldShowReactionsInfo(requireMessageRecord())
     }
 
-    private fun onAttachmentsViewClicked() {
+    private fun onPhotoAttachmentsViewClicked(attachments: List<String>) {
         context.startActivity(
             ZoomableImageViewerActivity
                 .createNewIntent(
-                    context, requireMessageRecord().attachments,
+                    context, attachments,
                     getTitleText(), getTimestampText()
                 )
+        )
+    }
+
+    private fun onPhotoAttachmentsClicked(urls: List<String>) {
+        context.startActivity(
+            ZoomableImageViewerActivity.createNewIntent(
+                context, urls, getTitleText(),
+                simpleDateFormat(requireMessageRecord().timestamp)
+            )
         )
     }
 
@@ -552,8 +584,46 @@ class MessageItem @JvmOverloads constructor(
         this.selectionTrackerProvider = selectionTrackerBlock
     }
 
+    fun setSearchData(data: SearchData?) {
+        searchData = data
+    }
+
     fun setDebug(debug: Boolean) {
         isDebug = debug
+    }
+
+    //TODO
+    private fun wrapSearchResult(string: String): SpannedString =
+        wrapSearchResult(buildSpannedString { append(string) })
+
+    //TODO
+    private fun wrapSearchResult(string: SpannedString): SpannedString {
+        val backgroundColor = context.resources.getColor(R.color.colorThemeOpposite)
+        return buildSpannedString {
+            inSpans(BackgroundColorSpan(backgroundColor)) {
+                append(string)
+            }
+        }
+    }
+
+    private fun wrapSearchResult(string: SpannedString, range: IntRange): SpannedString {
+        val textColor = context.resources.getColor(R.color.colorThemeOpposite)
+        val backgroundColor = context.resources.getColor(R.color.colorThemeBasic)
+        return buildSpannedString {
+            append(string)
+            setSpan(
+                BackgroundColorSpan(backgroundColor),
+                range.first,
+                range.last,
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+            setSpan(
+                ForegroundColorSpan(textColor),
+                range.first,
+                range.last,
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+        }
     }
 
     companion object {

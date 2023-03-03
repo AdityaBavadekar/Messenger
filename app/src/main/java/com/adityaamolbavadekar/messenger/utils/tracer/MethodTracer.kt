@@ -55,7 +55,7 @@ class MethodTracer(private val methodName: String) {
         startTimeMillis = 0
     }
 
-    companion object{
+    companion object {
         private val TAG = MethodTracer::class.java.simpleName
     }
 

@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~    Copyright 2023 Aditya Bavadekar
   ~
   ~    Licensed under the Apache License, Version 2.0 (the "License");
@@ -45,8 +44,8 @@
                 style="@style/Messenger.Widget.RecyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
                 android:layout_marginBottom="@dimen/dimen_8"
+                android:orientation="horizontal"
                 android:scrollbars="none"
                 tools:listitem="@layout/group_selected_conversation_item" />
 
@@ -113,6 +112,25 @@
                     android:autofillHints=""
                     android:inputType="text"
                     tools:text="@tools:sample/lorem/random" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/messagingTypeHolder"
+                style="@style/Widget.Material3.TextInputLayout.FilledBox.ExposedDropdownMenu"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginHorizontal="15dp"
+                android:layout_marginBottom="@dimen/dimen_8"
+                app:boxCornerRadiusTopEnd="8dp"
+                android:hint="Messaging permission"
+                app:boxCornerRadiusTopStart="8dp">
+
+                <AutoCompleteTextView
+                    android:id="@+id/messagingType"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="none" />
+
             </com.google.android.material.textfield.TextInputLayout>
 
         </LinearLayout>

@@ -18,7 +18,6 @@ package com.adityaamolbavadekar.messenger.utils.wallpaper
 
 import android.content.Context
 import android.net.Uri
-import com.bumptech.glide.Glide
 import java.io.File
 
 class WallpaperUtil {

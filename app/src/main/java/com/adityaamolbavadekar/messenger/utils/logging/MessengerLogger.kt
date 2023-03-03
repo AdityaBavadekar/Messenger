@@ -52,9 +52,7 @@ class MessengerLogger(private val tag: String = MESSENGER_LOGGER_TAG) {
     }
 
     fun e(text: String, throwable: Throwable? = null) {
-        if (canLog(Log.ERROR)) {
-            Log.e(tag, text, throwable)
-        }
+        Log.e(tag, text, throwable) //Error logging is always allowed.
     }
 
     fun log(priority: Int, message: String, force: Boolean = false) {

@@ -17,12 +17,8 @@
 package com.adityaamolbavadekar.messenger.utils.textstyling
 
 import android.content.Context
-import android.graphics.Typeface
-import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.SpannedString
-import android.text.style.StrikethroughSpan
-import android.text.style.StyleSpan
 import android.text.style.TextAppearanceSpan
 import androidx.core.text.bold
 import androidx.core.text.buildSpannedString

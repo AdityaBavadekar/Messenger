@@ -21,7 +21,6 @@ import android.content.Intent
 import android.os.Bundle
 import com.adityaamolbavadekar.messenger.R
 import com.adityaamolbavadekar.messenger.databinding.ActivityMain2Binding
-import com.adityaamolbavadekar.messenger.ui.conversation.ConversationActivity
 import com.adityaamolbavadekar.messenger.utils.Constants
 import com.adityaamolbavadekar.messenger.utils.base.BaseActivity
 

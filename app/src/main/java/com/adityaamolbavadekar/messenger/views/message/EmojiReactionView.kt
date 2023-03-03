@@ -19,43 +19,37 @@ package com.adityaamolbavadekar.messenger.views.message
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.FrameLayout
-import android.widget.ImageView
 import android.widget.TextView
 import com.adityaamolbavadekar.messenger.R
-import com.adityaamolbavadekar.messenger.databinding.DocumentViewLayoutBinding
-import com.adityaamolbavadekar.messenger.model.Attachment
-import com.adityaamolbavadekar.messenger.utils.ImageLoader
+import com.adityaamolbavadekar.messenger.databinding.MessageReactionsIndicatorItemBinding
+import com.adityaamolbavadekar.messenger.databinding.MessageReactionsIndicatorV2ItemBinding
+import com.google.android.material.card.MaterialCardView
 
-// TODO: Complete this View and add to RecyclerViewTypes and add support for documents.
-class DocumentView @JvmOverloads constructor(
+class EmojiReactionView @JvmOverloads constructor(
     context: android.content.Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0,
-    defStyleRes: Int = R.style.Messenger_Widget_LinkPreviewView
+    defStyleRes: Int = R.style.Messenger_Widget_ReactionsView
 ) : FrameLayout(context, attrs, defStyleAttr, defStyleRes) {
 
-    private val imageView: ImageView
+    private val holder: MaterialCardView
     private val textView: TextView
-    private val imageLoader = ImageLoader.with(this)
-    private var document: Attachment? = null
+    private var reactionsCount: Int = 0
+        set(value) {
+            field = value
+            if (value <= 0) textView.text = null
+            else textView.text = context.getString(R.string.reacted_count_formatted, value)
+        }
 
     init {
         val inflatedView =
-            DocumentViewLayoutBinding.inflate(LayoutInflater.from(context), this, true)
-        imageView = inflatedView.imageView
-        textView = inflatedView.textView
+            MessageReactionsIndicatorItemBinding.inflate(LayoutInflater.from(context), this, true)
+        holder = inflatedView.reactionsHolder
+        textView = inflatedView.reactionIndicator
     }
 
-    fun setDocument(doc: Attachment) {
-        document = doc
-        setup()
+    fun setCount(count: Int) {
+        reactionsCount = count
     }
-
-    private fun setup() {
-        document?.let {
-            textView.text = it.contentType + " | " + it.size.toString()
-        }
-    }
-
 
 }

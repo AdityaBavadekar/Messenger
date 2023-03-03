@@ -31,9 +31,9 @@ interface RecyclableMessageItem {
         nextMessage: MessageRecord?,
         conversationRecord: ConversationRecord?,
         sender: Recipient?,
-        isIncomingMessage:Boolean,
-        itemSelectionKey:Long,
-        index:Int
+        isIncomingMessage: Boolean,
+        itemSelectionKey: Long,
+        index: Int
     )
 
     fun unbind()

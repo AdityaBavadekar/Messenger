@@ -34,14 +34,11 @@ interface ConversationPermissionType {
 
     fun permitAll() = PERMIT_ALL
     fun permitManagersOnly() = PERMIT_MANAGERS_ONLY
-
     fun isRestricted(permission: Int): Boolean {
         return permission == PERMIT_MANAGERS_ONLY
     }
 
     fun getField(conversation: BaseConversation): Int
-
-
     fun getPermissionString(permission: Int): String {
         return when (permission) {
             PERMIT_MANAGERS_ONLY -> "Mangers Only"

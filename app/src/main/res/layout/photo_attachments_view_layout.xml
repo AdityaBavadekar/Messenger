@@ -115,20 +115,11 @@
                     android:maxHeight="@dimen/message_image_height"
                     android:minHeight="150dp">
 
-                    <ImageView
-                        android:id="@+id/imageViewThree"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:maxHeight="@dimen/message_image_height"
-                        android:minHeight="150dp"
-                        android:scaleType="centerCrop"
-                        tools:src="@tools:sample/avatars" />
-
                     <TextView
                         android:id="@+id/blurTextView"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:alpha="0.87"
+                        android:alpha="1"
                         tools:visibility="visible"
                         android:background="@color/messenger_grey200"
                         android:gravity="center"
@@ -137,6 +128,15 @@
                         android:textAppearance="@style/TextAppearance.Messenger.LabelLarge"
                         android:visibility="gone"
                         tools:text="+3" />
+
+                    <ImageView
+                        android:id="@+id/imageViewThree"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:maxHeight="@dimen/message_image_height"
+                        android:minHeight="150dp"
+                        android:scaleType="centerCrop"
+                        tools:src="@tools:sample/avatars" />
 
                 </FrameLayout>
             </LinearLayout>

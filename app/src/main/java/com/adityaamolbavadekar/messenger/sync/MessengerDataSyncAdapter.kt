@@ -19,17 +19,13 @@ package com.adityaamolbavadekar.messenger.sync
 import android.accounts.Account
 import android.content.*
 import android.os.Bundle
-import android.text.format.DateUtils
-import com.adityaamolbavadekar.messenger.contact.ContactsReader
 import com.adityaamolbavadekar.messenger.database.conversations.ApplicationDatabase
 import com.adityaamolbavadekar.messenger.database.conversations.ApplicationDatabaseRepository
 import com.adityaamolbavadekar.messenger.managers.AuthManager
 import com.adityaamolbavadekar.messenger.managers.CloudDatabaseManager
 import com.adityaamolbavadekar.messenger.managers.PrefsManager
 import com.adityaamolbavadekar.messenger.model.User
-import com.adityaamolbavadekar.messenger.utils.Constants
 import com.adityaamolbavadekar.messenger.utils.OnResponseCallback
-import com.adityaamolbavadekar.messenger.utils.Permissions
 import com.adityaamolbavadekar.messenger.utils.extensions.runOnIOThread
 import com.adityaamolbavadekar.messenger.utils.logging.InternalLogger
 
@@ -80,7 +76,7 @@ class MessengerDataSyncAdapter @JvmOverloads constructor(
 
     }
 
-    companion object{
+    companion object {
         private val TAG = MessengerDataSyncAdapter::class.java.simpleName
     }
 

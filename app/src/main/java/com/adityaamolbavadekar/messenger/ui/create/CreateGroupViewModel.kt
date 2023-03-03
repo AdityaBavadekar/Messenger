@@ -22,11 +22,7 @@ import androidx.lifecycle.ViewModel
 import com.adityaamolbavadekar.messenger.database.conversations.DatabaseAndroidViewModel
 import com.adityaamolbavadekar.messenger.managers.AuthManager
 import com.adityaamolbavadekar.messenger.managers.CloudDatabaseManager
-import com.adityaamolbavadekar.messenger.model.ConversationRecord
-import com.adityaamolbavadekar.messenger.model.MessageRecord
-import com.adityaamolbavadekar.messenger.model.Recipient
-import com.adityaamolbavadekar.messenger.model.toUidList
-import com.adityaamolbavadekar.messenger.utils.Operation
+import com.adityaamolbavadekar.messenger.model.*
 import com.adityaamolbavadekar.messenger.utils.logging.InternalLogger
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.TaskCompletionSource
@@ -37,6 +33,7 @@ class CreateGroupViewModel : ViewModel() {
     val recipients: LiveData<List<Recipient>> = _recipients
     private val authManager = AuthManager()
     private lateinit var me: Recipient
+    var messagingPermissionType = MessagingPermissionType.permitAll()
 
     fun createNewGroup(
         conversationId: String,
@@ -57,7 +54,8 @@ class CreateGroupViewModel : ViewModel() {
                 authManager.uid,
                 photoUrl,
                 description = description,
-                conversationId = conversationId
+                conversationId = conversationId,
+                messagingPermissionType = messagingPermissionType
             )
         val groupCreationMessage =
             MessageRecord.header(

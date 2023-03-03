@@ -41,10 +41,10 @@ import org.jetbrains.annotations.NotNull;
  */
 @RequiresApi(21)
 class RoundRectDrawable extends Drawable {
-    private float mRadius;
     private final Paint mPaint;
     private final RectF mBoundsF;
     private final Rect mBoundsI;
+    private float mRadius;
     private float mPadding;
     private boolean mInsetForPadding = false;
     private boolean mInsetForRadius = true;
@@ -64,7 +64,7 @@ class RoundRectDrawable extends Drawable {
     }
 
     private void setBackground(ColorStateList color) {
-        mBackground = (color == null) ?  ColorStateList.valueOf(Color.TRANSPARENT) : color;
+        mBackground = (color == null) ? ColorStateList.valueOf(Color.TRANSPARENT) : color;
         mPaint.setColor(mBackground.getColorForState(getState(), mBackground.getDefaultColor()));
     }
 
@@ -129,15 +129,6 @@ class RoundRectDrawable extends Drawable {
         outline.setRoundRect(mBoundsI, mRadius);
     }
 
-    void setRadius(float radius) {
-        if (radius == mRadius) {
-            return;
-        }
-        mRadius = radius;
-        updateBounds(null);
-        invalidateSelf();
-    }
-
     @Override
     public void setAlpha(int alpha) {
         mPaint.setAlpha(alpha);
@@ -157,13 +148,22 @@ class RoundRectDrawable extends Drawable {
         return mRadius;
     }
 
-    public void setColor(@Nullable ColorStateList color) {
-        setBackground(color);
+    void setRadius(float radius) {
+        if (radius == mRadius) {
+            return;
+        }
+        mRadius = radius;
+        updateBounds(null);
         invalidateSelf();
     }
 
     public ColorStateList getColor() {
         return mBackground;
+    }
+
+    public void setColor(@Nullable ColorStateList color) {
+        setBackground(color);
+        invalidateSelf();
     }
 
     @Override
