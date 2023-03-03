@@ -119,7 +119,7 @@ object Constants {
         }
 
         fun getConversationPicturesDocument(): String {
-            return ("$CLOUD_PATH_PICTURES/PIC_" + UUID.randomUUID().toString()[3] + "_" +
+            return ("$CLOUD_PATH_PICTURES/PIC_" + UUID.randomUUID().toString()[:5] + "_" +
                     simpleDateFormat(
                         System.currentTimeMillis(),
                         TimestampFormats.UNDERSCORED_TIMESTAMP_FORMAT_FULL
