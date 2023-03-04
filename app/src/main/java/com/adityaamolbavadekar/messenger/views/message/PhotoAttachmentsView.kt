@@ -125,8 +125,8 @@ class PhotoAttachmentsView @JvmOverloads constructor(
                 imageLoader.load(attachments[1], imageView1, placeholderDrawable)
                 imageView2.isVisible = true
                 imageLoader.load(attachments[2], imageView2, placeholderDrawable)
-                imageView3.isVisible = true
-                imageLoader.load(attachments[3], imageView3, placeholderDrawable)
+                //imageView3.isVisible = true
+                //imageLoader.load(attachments[3], imageView3, placeholderDrawable)
                 imageView3Holder.isVisible = true
                 imageView3BlurTextView.text = "+${imagesSize - 4}"
                 imageView3BlurTextView.isVisible = true
