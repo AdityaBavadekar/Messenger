@@ -84,8 +84,11 @@ class ReactionsView @JvmOverloads constructor(
 
     private fun setReactionDataList(list: List<ReactionData>) {
         adapter.reactionDataList = list
-        if(list.isNotEmpty()) layoutManager.spanCount = min(list.size, 4)
-    }
+        if(list.isNotEmpty()) {
+            layoutManager.spanCount = min(list.size, 4)
+            adapter.notifyDataSetChanged()
+        }
+        }
 
     data class ReactionData(val reaction: String, val count: Int)
     private class EmojiReactionsListAdapter() :
