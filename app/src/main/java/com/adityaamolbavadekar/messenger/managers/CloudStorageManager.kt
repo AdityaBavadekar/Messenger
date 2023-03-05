@@ -17,6 +17,7 @@
 package com.adityaamolbavadekar.messenger.managers
 
 import android.net.Uri
+import com.adityaamolbavadekar.messenger.utils.AndroidUtils
 import com.adityaamolbavadekar.messenger.utils.Constants
 import com.adityaamolbavadekar.messenger.utils.Constants.Extras.EXTRA_TIMESTAMP
 import com.adityaamolbavadekar.messenger.utils.Constants.Extras.EXTRA_USER_UID
@@ -166,6 +167,30 @@ class CloudStorageManager {
                 InternalLogger.logE(TAG, "Unable to deleted document.", it)
             }
     }
+
+    fun uploadDocument(
+        docUri: Uri, metadata: StorageMetadata,
+        onProgress: (Int) -> Unit,
+        onSuccess: () -> Unit,
+        onFailure: (Exception) -> Unit,
+    ) =
+        runOnIOThread {
+            val fileName = AndroidUtils.createFileName(AndroidUtils.FILE_TYPE_OTHER)
+            val ref = db.getReference(
+                Constants.CloudPaths.getConversationDocumentPath(fileName)
+            )
+            ref.putFile(docUri, metadata)
+                .addOnProgressListener {
+                    onProgress(
+                        AndroidUtils.percent(
+                            it.bytesTransferred.toInt(),
+                            it.totalByteCount.toInt()
+                        )
+                    )
+                }
+                .addOnSuccessListener { onSuccess() }
+                .addOnFailureListener { onFailure(it) }
+        }
 
     companion object {
         private const val TAG = "CloudStorageManager"

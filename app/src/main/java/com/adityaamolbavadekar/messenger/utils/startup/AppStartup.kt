@@ -33,6 +33,7 @@ import com.adityaamolbavadekar.messenger.utils.logging.InternalLogger
 import com.adityaamolbavadekar.messenger.utils.shake.AppShakeDetector
 import com.adityaamolbavadekar.messenger.utils.theming.ThemeInfo.Companion.getPreferredThemeInfo
 import com.adityaamolbavadekar.messenger.utils.tracer.MethodTracer
+import java.io.File
 
 object AppStartup {
 
@@ -86,6 +87,23 @@ object AppStartup {
             } catch (e: Exception) {
                 InternalLogger.logE(TAG, "Unable to request sync", e)
             }
+        }
+
+        //TODO REMOVE
+        application.applicationContext.also{c->
+            InternalLogger.logD(TAG,"Files dir : ${c.filesDir}")
+            InternalLogger.logD(TAG,"Data dir : ${c.dataDir}")
+            InternalLogger.logD(TAG,"Media dirs(1) : ${c.getExternalMediaDirs().map{it.name}}")
+            InternalLogger.logD(TAG,"Media dirs(2) : ${c.getExternalMediaDirs().map{it.name}}")
+        }
+
+        try {
+            val f = File(application.applicationContext.filesDir, "Messenger")
+            if (!f.exists()) f.mkdir()
+            val readable = f.setReadable(true, false)
+            InternalLogger.logI(TAG, "Created directory(R=$readable) : ${f.absolutePath}")
+        } catch (e: Exception) {
+            InternalLogger.logE(TAG, "Unable to created Messenger dir", e)
         }
         methodTracer.putTraceData("onApplicationCreated", "finished").end()
     }

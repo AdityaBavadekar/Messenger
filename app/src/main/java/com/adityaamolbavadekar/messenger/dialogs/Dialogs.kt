@@ -42,7 +42,8 @@ object Dialogs {
 
     fun showLoadingDialog(
         context: Context,
-        message: String? = null, show: Boolean = true
+        message: String? = null,
+        show: Boolean = true
     ): AlertDialog {
         val dialog = MaterialAlertDialogBuilder(context)
             .setCancelable(false)
@@ -51,6 +52,26 @@ object Dialogs {
             .create()
         if (show) dialog.show()
         return dialog
+    }
+
+    fun showDefiniteProgressDialog(
+        context: Context,
+        message: String? = null,
+        show: Boolean = true,
+        p: ProgressDialog
+    ) {
+        val view = DialogLoadingBinding.inflate(LayoutInflater.from(context), null, false)
+        view.progressBar.isIndeterminate = false
+        val actionSetProgress: (Int) -> Unit = { progress ->
+            view.progressBar.progress = progress
+        }
+        val dialog = MaterialAlertDialogBuilder(context)
+            .setCancelable(false)
+            .setMessage(message)
+            .setView(R.layout.dialog_loading)
+            .create()
+        if (show) dialog.show()
+        p.invoke(dialog, actionSetProgress)
     }
 
     fun showWallpaperDialog(

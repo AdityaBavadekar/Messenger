@@ -21,6 +21,7 @@ abstract class BaseMessage public constructor(
     open val conversationId: String,
     open var message: String? = null,
     open var attachments: List<String> = listOf(),
+    open var documentAttachment: Attachment? = null,
     open var reactions: MutableList<ReactionRecord> = mutableListOf(),
     open val timestamp: Long = System.currentTimeMillis(),
     open var isDeleted: Boolean = false,
@@ -35,13 +36,13 @@ abstract class BaseMessage public constructor(
     open var type: Int = RecyclerViewType.TYPE_ITEM,
 ) : RemoteDatabasePersitable {
 
-
     override fun hashMap(): HashMap<String, Any?> {
         val map = hashMapOf(
             Fields.ID to id,
             Fields.CONVERSATION_ID to conversationId,
             Fields.MESSAGE to message,
             Fields.ATTACHMENTS to attachments,
+            Fields.DOC_ATTACHMENTS to documentAttachment,
             Fields.REACTIONS to reactions.toHashMapList(),
             Fields.TIMESTAMP to timestamp,
             Fields.IS_DELETED to isDeleted,
@@ -63,6 +64,7 @@ abstract class BaseMessage public constructor(
             const val CONVERSATION_ID = "conversationId"
             const val MESSAGE = "message"
             const val ATTACHMENTS = "attachments"
+            const val DOC_ATTACHMENTS = "documentAttachment"
             const val REACTIONS = "reactions"
             const val TIMESTAMP = "timestamp"
             const val IS_DELETED = "isDeleted"
@@ -116,8 +118,12 @@ abstract class BaseMessage public constructor(
         return reactions.isNotEmpty()
     }
 
-    fun hasAttachments(): Boolean {
+    fun hasPhotoAttachments(): Boolean {
         return attachments.isNotEmpty()
+    }
+
+    fun hasDocumentAttachments(): Boolean {
+        return documentAttachment != null
     }
 
     fun addReplyMessage(reply: MessageReplyRecord) {
@@ -149,7 +155,7 @@ abstract class BaseMessage public constructor(
 
     fun isTextOnly(): Boolean {
         if (isDeleted) return true
-        return (!hasAttachments() && !hasLinkPreview() && !hasReply() && hasMessage())
+        return (!hasPhotoAttachments() && !hasLinkPreview() && !hasReply() && hasMessage())
     }
 
     fun isReadBy(uid: String): Boolean {
@@ -197,6 +203,7 @@ abstract class BaseMessage public constructor(
         result = 31 * result + conversationId.hashCode()
         result = 31 * result + (message?.hashCode() ?: 0)
         result = 31 * result + attachments.hashCode()
+        result = 31 * result + documentAttachment.hashCode()
         result = 31 * result + reactions.hashCode()
         result = 31 * result + timestamp.hashCode()
         result = 31 * result + isDeleted.hashCode()
@@ -213,7 +220,9 @@ abstract class BaseMessage public constructor(
     }
 
     fun containsSearchQuery(query: String): Boolean {
-        return message?.lowercase()?.contains(query) == true || senderUsername.contains(query) || linkPreviewInfo?.containsSearchQuery(
+        return message?.lowercase()
+            ?.contains(query) == true || documentAttachment?.fileName?.lowercase()
+            ?.contains(query) == true || senderUsername.contains(query) || linkPreviewInfo?.containsSearchQuery(
             query
         ) == true
     }

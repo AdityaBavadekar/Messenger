@@ -201,6 +201,7 @@
     <string name="gifs">GIFs</string>
     <string name="remove_image_dialog">Remove this image?</string>
     <string name="download_title_messenger_update">Downloading Messenger update</string>
+    <string name="unable_to_open_file">Unable to open file</string>
 
     <string-array name="theme_chooser">
         <item>System Default</item>

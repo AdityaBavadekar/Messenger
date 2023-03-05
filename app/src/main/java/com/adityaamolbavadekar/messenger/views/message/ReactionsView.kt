@@ -18,8 +18,10 @@ package com.adityaamolbavadekar.messenger.views.message
 
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import androidx.core.view.setPadding
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ListAdapter
@@ -28,6 +30,7 @@ import com.adityaamolbavadekar.messenger.R
 import com.adityaamolbavadekar.messenger.databinding.EmojiReactionItemBinding
 import com.adityaamolbavadekar.messenger.databinding.MessageReactionsIndicatorV2ItemBinding
 import com.adityaamolbavadekar.messenger.model.ReactionRecord
+import com.adityaamolbavadekar.messenger.utils.AndroidUtils
 import com.google.android.material.card.MaterialCardView
 import java.lang.Integer.min
 
@@ -42,6 +45,7 @@ class ReactionsView @JvmOverloads constructor(
     private val reactionsList: RecyclerView
     private val adapter: EmojiReactionsListAdapter
     private val layoutManager: GridLayoutManager
+    private var clickListener: () -> Unit = {}
 
     init {
         val inflatedView =
@@ -53,9 +57,14 @@ class ReactionsView @JvmOverloads constructor(
         reactionsList.setHasFixedSize(true)
         adapter = EmojiReactionsListAdapter()
         reactionsList.adapter = adapter
+        reactionsList.overScrollMode = View.OVER_SCROLL_NEVER
         holder.setOnClickListener {
-            //TODO
+            clickListener()
         }
+    }
+
+    fun setReactionsClickListener(listener: () -> Unit) {
+        clickListener = listener
     }
 
     fun setReactionsList(list: List<ReactionRecord>) {
@@ -83,12 +92,13 @@ class ReactionsView @JvmOverloads constructor(
     }
 
     private fun setReactionDataList(list: List<ReactionData>) {
-        adapter.reactionDataList = list
-        if(list.isNotEmpty()) {
+        adapter.setReactionsDataList(list) {
+            if (list.isNotEmpty()) setPadding(AndroidUtils.toDP(4, context))
+        }
+        if (list.isNotEmpty()) {
             layoutManager.spanCount = min(list.size, 4)
-            adapter.notifyDataSetChanged()
         }
-        }
+    }
 
     data class ReactionData(val reaction: String, val count: Int)
     private class EmojiReactionsListAdapter() :
@@ -96,7 +106,12 @@ class ReactionsView @JvmOverloads constructor(
             ReactionsDiffCallback()
         ) {
 
-        var reactionDataList = listOf<ReactionData>()
+        private var reactionDataList = listOf<ReactionData>()
+
+        fun setReactionsDataList(list: List<ReactionData>, block: () -> Unit) {
+            this.reactionDataList = list
+            submitList(reactionDataList, block)
+        }
 
         class ReactionItemHolder(private val binding: EmojiReactionItemBinding) :
             RecyclerView.ViewHolder(binding.root) {

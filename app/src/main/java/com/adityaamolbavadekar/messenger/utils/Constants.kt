@@ -16,7 +16,11 @@
 
 package com.adityaamolbavadekar.messenger.utils
 
+import android.content.Context
+import com.adityaamolbavadekar.messenger.model.Id
 import com.adityaamolbavadekar.messenger.utils.extensions.simpleDateFormat
+import com.adityaamolbavadekar.messenger.utils.logging.InternalLogger
+import java.io.File
 import java.util.*
 
 object Constants {
@@ -50,6 +54,7 @@ object Constants {
     }
 
     internal object TimestampFormats {
+        const val NATURAL_FILE_NAME_FORMAT = "yyyyMMdd_HHmmss"
         const val MESSAGE_TIMESTAMP_FORMAT = "h:mm a"
         const val TIMESTAMP_FORMAT_DAY = "d"
         const val TIMESTAMP_FORMAT_DAY_MONTH = "d MMMM "
@@ -57,6 +62,66 @@ object Constants {
         const val TIMESTAMP_FORMAT_FULL = "E, d MMMM YYYY, h:mm:ss"
         const val UNDERSCORED_TIMESTAMP_FORMAT_FULL = "E_d_MMMM_yyyy_h_mm_ss"
         const val SLASHED_TIMESTAMP_FORMAT_FULL = "d/MM/yyyy"
+    }
+
+    internal object AppDirectories {
+        private const val NAME_PARENT_MEDIA_DIR = "Messenger"
+        private const val NAME_PARENT_IMAGES_DIR = NAME_PARENT_MEDIA_DIR + "/Messenger Images"
+        private const val NAME_PARENT_VIDEOS_DIR = NAME_PARENT_MEDIA_DIR + "/Messenger Videos"
+        private const val NAME_PARENT_DOCS_DIR = NAME_PARENT_MEDIA_DIR + "/Messenger Documents"
+        private const val NAME_PARENT_SENT_DOCS_DIR = NAME_PARENT_DOCS_DIR + "/Sent"
+
+        fun createDefaultDirs(context: Context){
+            try {
+                getMediaDir(context)
+                getDocsDir(context)
+                getImagesDir(context)
+                getVideosDir(context)
+            } catch (e: Exception) {
+                InternalLogger.logE("Constants","Unable create dirs",e)
+            }
+        }
+
+        fun getMediaDir(context: Context): File {
+            val dir =
+                AndroidUtils.getApplicationMediaDirectory(context).absolutePath + "/" + NAME_PARENT_MEDIA_DIR
+            val f = File(dir)
+            if (!f.exists()) f.mkdir()
+            return f
+        }
+
+        fun getSentDocsDir(context: Context): File {
+            val dir =
+                AndroidUtils.getApplicationMediaDirectory(context).absolutePath + "/" + NAME_PARENT_SENT_DOCS_DIR
+            val f = File(dir)
+            if (!f.exists()) f.mkdirs()
+            return f
+        }
+
+        fun getDocsDir(context: Context): File {
+            val dir =
+                AndroidUtils.getApplicationMediaDirectory(context).absolutePath + "/" + NAME_PARENT_DOCS_DIR
+            val f = File(dir)
+            if (!f.exists()) f.mkdirs()
+            return f
+        }
+
+        fun getImagesDir(context: Context): File {
+            val dir =
+                AndroidUtils.getApplicationMediaDirectory(context).absolutePath + "/" + NAME_PARENT_IMAGES_DIR
+            val f = File(dir)
+            if (!f.exists()) f.mkdirs()
+            return f
+        }
+
+        fun getVideosDir(context: Context): File {
+            val dir =
+                AndroidUtils.getApplicationMediaDirectory(context).absolutePath + "/" + NAME_PARENT_VIDEOS_DIR
+            val f = File(dir)
+            if (!f.exists()) f.mkdirs()
+            return f
+        }
+
     }
 
     internal object CloudPaths {
@@ -72,6 +137,7 @@ object Constants {
         private const val CLOUD_PATH_PROPERTIES = "properties"
         private const val CLOUD_PATH_CONVERSATIONS = "conversations"
         private const val CLOUD_PATH_PICTURES = "pictures"
+        private const val CLOUD_PATH_DOCUMENTS = "documents"
         private const val CLOUD_PATH_PRESENCE_STATUS = "presenceStatus"
 
         fun getUsersPath(): String {
@@ -119,11 +185,15 @@ object Constants {
         }
 
         fun getConversationPicturesDocument(): String {
-            return ("$CLOUD_PATH_PICTURES/PIC_" + UUID.randomUUID().toString().substring(0,5) + "_" +
+            return ("$CLOUD_PATH_PICTURES/PIC_" + Id.get(5) + "_" +
                     simpleDateFormat(
                         System.currentTimeMillis(),
                         TimestampFormats.UNDERSCORED_TIMESTAMP_FORMAT_FULL
                     ).uppercase(Locale.getDefault()))
+        }
+
+        fun getConversationDocumentPath(fileName: String): String {
+            return ("$CLOUD_PATH_DOCUMENTS/" + fileName)
         }
 
         fun getPresenceStatusRootPath(): String {

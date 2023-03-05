@@ -50,6 +50,25 @@
             android:maxHeight="@dimen/message_image_height"
             android:orientation="vertical">
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:maxWidth="@dimen/message_image_height"
+                android:maxHeight="@dimen/message_image_height"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/fileName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    android:padding="4dp"
+                    tools:text="File_Name.extension" />
+
+            </LinearLayout>
+
 
             <ImageView
                 android:id="@+id/imageView"
@@ -59,13 +78,23 @@
                 android:scaleType="centerCrop"
                 tools:src="@tools:sample/avatars" />
 
-            <TextView
-                android:id="@+id/textView"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:maxLines="1"
-                android:padding="4dp"
-                tools:text="PDF - 2MB" />
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/textView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:alpha="0.44"
+                    android:maxLines="1"
+                    android:padding="4dp"
+                    tools:text="PDF - 2MB" />
+
+            </LinearLayout>
 
         </LinearLayout>
 

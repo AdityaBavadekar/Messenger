@@ -18,14 +18,18 @@ package com.adityaamolbavadekar.messenger.views
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.text.Spanned
 import android.text.SpannedString
 import android.text.style.BackgroundColorSpan
 import android.text.style.ForegroundColorSpan
 import android.util.AttributeSet
 import android.view.View
+import android.webkit.MimeTypeMap
 import android.widget.RelativeLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.text.buildSpannedString
 import androidx.core.text.inSpans
@@ -51,10 +55,7 @@ import com.adityaamolbavadekar.messenger.utils.extensions.isNull
 import com.adityaamolbavadekar.messenger.utils.extensions.simpleDateFormat
 import com.adityaamolbavadekar.messenger.utils.logging.InternalLogger
 import com.adityaamolbavadekar.messenger.utils.textstyling.TextStyler
-import com.adityaamolbavadekar.messenger.views.message.LinkPreviewView
-import com.adityaamolbavadekar.messenger.views.message.PhotoAttachmentsView
-import com.adityaamolbavadekar.messenger.views.message.ReactionsView
-import com.adityaamolbavadekar.messenger.views.message.ReplyView
+import com.adityaamolbavadekar.messenger.views.message.*
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.transition.MaterialElevationScale
@@ -70,6 +71,7 @@ class MessageItem @JvmOverloads constructor(
     private var messageTextView: TextView? = null
     private var timestampTextView: TextView? = null
     private var photoAttachmentsView: PhotoAttachmentsView? = null
+    private var documentAttachmentsView: DocumentView? = null
     private var deliveryStatusView: DeliveryStatusView? = null
     private var reactionsView: ReactionsView? = null
     private var linkPreviewView: LinkPreviewView? = null
@@ -100,7 +102,8 @@ class MessageItem @JvmOverloads constructor(
     private var hasReply: Boolean = false
     private var hasLinkPreview: Boolean = false
     private var hasMessage: Boolean = false
-    private var hasAttachments: Boolean = false
+    private var hasPhotoAttachments: Boolean = false
+    private var hasDocumentAttachments: Boolean = false
     private var hasReactions: Boolean = false
 
     private var wasBindedPreviously: Boolean = false
@@ -127,7 +130,8 @@ class MessageItem @JvmOverloads constructor(
         this.hasReply = requireMessageRecord().hasReply()
         this.hasLinkPreview = requireMessageRecord().hasLinkPreview()
         this.hasMessage = requireMessageRecord().hasMessage()
-        this.hasAttachments = requireMessageRecord().hasAttachments()
+        this.hasPhotoAttachments = requireMessageRecord().hasPhotoAttachments()
+        this.hasDocumentAttachments = requireMessageRecord().hasDocumentAttachments()
         this.hasReactions = requireMessageRecord().hasReactions()
         this.selectionKey = itemSelectionKey
         this.itemIndex = index
@@ -140,7 +144,8 @@ class MessageItem @JvmOverloads constructor(
                         "hasReply=$hasReply" + "\n" +
                         "hasLinkPreview=$hasLinkPreview" + "\n" +
                         "hasMessage=$hasMessage" + "\n" +
-                        "hasAttachments=$hasAttachments" + "\n" +
+                        "hasPhotoAttachments=$hasPhotoAttachments" + "\n" +
+                        "hasDocumentAttachments=$hasDocumentAttachments" + "\n" +
                         "hasReactions=$hasReactions" + "\n" +
                         "isTextOnly=${messageRecord!!.isTextOnly()}" + "\n"
             )
@@ -157,6 +162,7 @@ class MessageItem @JvmOverloads constructor(
         setLinkPreview()
         setReactions()
         setImageAttachments()
+        setDocumentAttachments()
         setDeliveryStatus()
         setReply()
         bindSelection()
@@ -193,6 +199,7 @@ class MessageItem @JvmOverloads constructor(
         messageTextView = findViewById(R.id.message)
         timestampTextView = findViewById(R.id.stamp)
         photoAttachmentsView = findViewById(R.id.photoAttachmentView)
+        documentAttachmentsView = findViewById(R.id.documentAttachmentView)
         deliveryStatusView = findViewById(R.id.deliveryStatusView)
         reactionsView = findViewById(R.id.reactionsView)
         linkPreviewView = findViewById(R.id.linkView)
@@ -318,7 +325,7 @@ class MessageItem @JvmOverloads constructor(
     }
 
     private fun setImageAttachments() {
-        if (!requireMessageRecord().hasAttachments() || requireMessageRecord().isDeleted) {
+        if (!requireMessageRecord().hasPhotoAttachments() || requireMessageRecord().isDeleted) {
             photoAttachmentsView?.setOnClickListener(null)
             photoAttachmentsView?.removeAllAttachments()
             setGone(photoAttachmentsView)
@@ -331,6 +338,22 @@ class MessageItem @JvmOverloads constructor(
             onPhotoAttachmentsViewClicked(it)
         }
         setVisible(photoAttachmentsView!!)
+    }
+
+    private fun setDocumentAttachments() {
+        if (!requireMessageRecord().hasDocumentAttachments() || requireMessageRecord().isDeleted) {
+            documentAttachmentsView?.setOnClickListener(null)
+            documentAttachmentsView?.setDocument(null)
+            setGone(documentAttachmentsView)
+            return
+        }
+
+        checkNotNull(documentAttachmentsView) { "photoAttachmentsView cannot be null" }
+        documentAttachmentsView!!.setDocument(requireMessageRecord().documentAttachment!!)
+        documentAttachmentsView!!.setOnAttachmentClickListener {
+            onDocumentAttachmentClicked(it)
+        }
+        setVisible(documentAttachmentsView!!)
     }
 
     private fun setDeliveryStatus() {
@@ -441,7 +464,8 @@ class MessageItem @JvmOverloads constructor(
                             "hasReply=$hasReply" + "\n" +
                             "hasLinkPreview=$hasLinkPreview" + "\n" +
                             "hasMessage=$hasMessage" + "\n" +
-                            "hasAttachments=$hasAttachments" + "\n" +
+                            "hasPhotoAttachments=$hasPhotoAttachments (${requireMessageRecord().attachments.size})" + "\n" +
+                            "hasDocumentAttachments=$hasDocumentAttachments" + "\n" +
                             "hasReactions=$hasReactions" + "\n" +
                             "isTextOnly=${messageRecord!!.isTextOnly()}" + "\n"
 
@@ -529,6 +553,23 @@ class MessageItem @JvmOverloads constructor(
                     getTitleText(), getTimestampText()
                 )
         )
+    }
+
+    private fun onDocumentAttachmentClicked(attachment: Attachment) {
+        Intent(Intent.ACTION_VIEW).apply {
+            setDataAndType(Uri.fromFile(attachment.file()), attachment.mimeType())
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            try {
+                context.startActivity(this)
+            } catch (e: Exception) {
+                InternalLogger.logE(TAG, "Unable to start file open intent.", e)
+                Toast.makeText(
+                    context,
+                    context.getString(R.string.unable_to_open_file),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
     }
 
     private fun onPhotoAttachmentsClicked(urls: List<String>) {

@@ -22,12 +22,14 @@ import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
+import android.text.InputType
 import android.view.Menu
 import android.view.MenuItem
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.widget.SearchView
+import androidx.core.net.toFile
 import androidx.core.view.*
 import com.adityaamolbavadekar.messenger.R
 import com.adityaamolbavadekar.messenger.database.conversations.DatabaseAndroidViewModel
@@ -35,12 +37,10 @@ import com.adityaamolbavadekar.messenger.databinding.ConversationActivityBinding
 import com.adityaamolbavadekar.messenger.dialogs.Dialogs
 import com.adityaamolbavadekar.messenger.managers.CloudStorageManager
 import com.adityaamolbavadekar.messenger.managers.PrefsManager
-import com.adityaamolbavadekar.messenger.model.ConversationDraftMessage
-import com.adityaamolbavadekar.messenger.model.ConversationRecord
-import com.adityaamolbavadekar.messenger.model.MessageRecord
-import com.adityaamolbavadekar.messenger.model.Recipient
+import com.adityaamolbavadekar.messenger.model.*
 import com.adityaamolbavadekar.messenger.ui.conversation_info.ConversationInfoActivity
 import com.adityaamolbavadekar.messenger.ui.picture_upload_preview.PictureUploadPreviewActivity
+import com.adityaamolbavadekar.messenger.utils.AndroidUtils
 import com.adityaamolbavadekar.messenger.utils.Constants
 import com.adityaamolbavadekar.messenger.utils.Constants.EXTRA_CONVERSATION_ID
 import com.adityaamolbavadekar.messenger.utils.Constants.Extras.EXTRA_CONVERSATION_TYPE
@@ -117,6 +117,36 @@ class ConversationActivity : BaseActivity(), SearchView.OnQueryTextListener {
             }
         }
 
+    private val documentPickerLauncher =
+        registerForActivityResult(ActivityResultContracts.GetContent()) {
+            it?.let { docUri ->
+                Dialogs.showDefiniteProgressDialog(this, p = { loader, action ->
+                    cloudStorageManager.uploadDocument(docUri,
+                        metadata = buildStorageMetadata(),
+                        onProgress = { progress ->
+                            action(progress)
+                        },
+                        onSuccess = {
+                            loader.dismiss()
+                            try {
+                                val f = AndroidUtils.saveSentDocumentFile(docUri, this)
+                            } catch (e: Exception) {
+                            }
+                            val messageRecord =
+                                MessageRecord.from(
+                                    me,
+                                    conversationId,
+                                    Attachment.from(docUri.toFile())
+                                )
+                            sendMessage(messageRecord)
+                        },
+                        onFailure = {
+                            loader.dismiss()
+                        }
+                    )
+                })
+            }
+        }
 
     override fun onCreateActivity(savedInstanceState: Bundle?) {
         super.onCreateActivity(savedInstanceState)
@@ -132,9 +162,10 @@ class ConversationActivity : BaseActivity(), SearchView.OnQueryTextListener {
                     CONVERSATION_FRAGMENT_TAG
                 )
                 .runOnCommit {
-                    supportFragmentManager.findFragmentByTag(CONVERSATION_FRAGMENT_TAG)?.let {
-                        conversationFragment = (it as ConversationFragment)
-                    }
+                    supportFragmentManager.findFragmentByTag(CONVERSATION_FRAGMENT_TAG)
+                        ?.let {
+                            conversationFragment = (it as ConversationFragment)
+                        }
                 }
                 .commit()
         }
@@ -154,7 +185,10 @@ class ConversationActivity : BaseActivity(), SearchView.OnQueryTextListener {
         database.getRecipientsOfConversation(conversationId)
             .observe(this) { conversationWithRecipients ->
                 viewModel.onLocalConversationDataChanged(conversationWithRecipients)
-                InternalLogger.logD(TAG, "ConversationRecipients : $conversationWithRecipients")
+                InternalLogger.logD(
+                    TAG,
+                    "ConversationRecipients : $conversationWithRecipients"
+                )
             }
 
         database.getMessages(conversationId).observe(this) {
@@ -210,7 +244,12 @@ class ConversationActivity : BaseActivity(), SearchView.OnQueryTextListener {
         binding.composeBar.setOnAttachListener {
             currentInputType = InputType.ATTACHMENT
             KeyboardUtils.hideKeyboard(this)
-            ComposeAddPopupWindow.build({}, binding.root, this, latestKeyboardHeight) {
+            ComposeAddPopupWindow.build(
+                ::onAttachItemSelected,
+                binding.root,
+                this,
+                latestKeyboardHeight
+            ) {
                 currentInputType = InputType.NONE
                 KeyboardUtils.showKeyboard(this)
             }
@@ -319,6 +358,26 @@ class ConversationActivity : BaseActivity(), SearchView.OnQueryTextListener {
         binding.composeBar.isVisible = true
     }
 
+    private fun onAttachItemSelected(id: Int) {
+        val selection = try {
+            ComposeAddPopupWindow.ComposeAddItem.values()[id]
+        } catch (_: Exception) {
+            return
+        }
+        when (selection) {
+            ComposeAddPopupWindow.ComposeAddItem.PHOTOS -> {}
+            ComposeAddPopupWindow.ComposeAddItem.CONTACT -> {}
+            ComposeAddPopupWindow.ComposeAddItem.LOCATION -> {}
+            ComposeAddPopupWindow.ComposeAddItem.CAMERA -> {}
+            ComposeAddPopupWindow.ComposeAddItem.GIFS -> {}
+            ComposeAddPopupWindow.ComposeAddItem.FILES -> {}
+            ComposeAddPopupWindow.ComposeAddItem.STICKERS -> {}
+            ComposeAddPopupWindow.ComposeAddItem.DOCUMENTS -> {
+                documentPickerLauncher.launch("*/*")
+            }
+        }
+    }
+
     /**
      * Sends message with messageSender according to the type of conversation like Group,Self,P2P.
      * */
@@ -377,7 +436,12 @@ class ConversationActivity : BaseActivity(), SearchView.OnQueryTextListener {
             }
 
             binding.titleSubtitleHolder.setOnClickListener {
-                startActivity(ConversationInfoActivity.createNewIntent(this, conversation!!))
+                startActivity(
+                    ConversationInfoActivity.createNewIntent(
+                        this,
+                        conversation!!
+                    )
+                )
             }
 
         }
@@ -406,11 +470,14 @@ class ConversationActivity : BaseActivity(), SearchView.OnQueryTextListener {
         }
     }
 
-    private fun buildStorageMetadata(photoUri: Uri): StorageMetadata {
+    private fun buildStorageMetadata(): StorageMetadata {
         return StorageMetadata.Builder()
             .setCustomMetadata("uid", me.uid)
             .setCustomMetadata("conversationId", conversationId)
-            .setCustomMetadata("conversationType", conversation!!.conversationType().toString())
+            .setCustomMetadata(
+                "conversationType",
+                conversation!!.conversationType().toString()
+            )
             .build()
     }
 
@@ -437,7 +504,7 @@ class ConversationActivity : BaseActivity(), SearchView.OnQueryTextListener {
         contentUris.forEachIndexed { index, uri ->
             cloudStorageManager.savePicture(
                 uri,
-                buildStorageMetadata(uri),
+                buildStorageMetadata(),
                 responseCallback(index)
             )
         }
@@ -466,7 +533,8 @@ class ConversationActivity : BaseActivity(), SearchView.OnQueryTextListener {
         menuInflater.inflate(R.menu.conversation_fragment, menu)
         menu.let {
             it.findItem(R.id.action_add_reply)?.let { item ->
-                item.isVisible = (InternalLogger.isDebugBuild && conversation?.isGroup == true)
+                item.isVisible =
+                    (InternalLogger.isDebugBuild && conversation?.isGroup == true)
             }
             it.findItem(R.id.action_start_voice_call)?.let { item ->
                 item.isVisible = Constants.VOICE_CALL_SUPPORTED
