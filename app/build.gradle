@@ -50,6 +50,11 @@ android {
 
         buildConfigField "String", "FCM_MESSAGING_SERVER_KEY", "\"${properties.getProperty("FCM_MESSAGING_SERVER_KEY")}\""
         buildConfigField "String", "MESSENGER_URL", "\"https://github.com/AdityaBavadekar/Messenger\""
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments += ["room.schemaLocation": "$projectDir/schemas".toString()]
+            }
+        }
 
     }
 
