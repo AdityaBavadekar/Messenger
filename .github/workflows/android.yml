@@ -37,7 +37,7 @@ jobs:
       run: ./gradlew assembleDebug --stacktrace
     - name: Print files created by the successful build
       if: ${{ success() }}      
-      run: tree ./app/build/outputs/apk/debug
+      run: tree ./app/build/
     - name: Save reports of failed build
       if: ${{ failure() }}
       uses: actions/upload-artifact@v3
