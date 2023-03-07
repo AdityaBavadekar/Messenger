@@ -37,7 +37,7 @@ import com.adityaamolbavadekar.messenger.utils.logging.InternalLogger
         ConversationDraftMessage::class
     ],
     version = 1,
-    exportSchema = false
+    exportSchema = true
 )
 
 @TypeConverters(ModelConverters::class)
