@@ -41,7 +41,7 @@ import com.adityaamolbavadekar.messenger.utils.logging.InternalLogger
     ],
 
     version = 2,
-    exportSchema = false
+    exportSchema = true
 )
 
 @TypeConverters(ModelConverters::class)
