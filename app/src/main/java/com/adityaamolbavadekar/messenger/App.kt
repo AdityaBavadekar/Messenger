@@ -36,12 +36,13 @@ class App : Application(), Thread.UncaughtExceptionHandler {
         AppStartup.onApplicationCreated(this)
         super.onCreate()
         AppStartup.startApplicationInitialisation()
+        Thread.setDefaultUncaughtExceptionHandler(this)
     }
 
     override fun uncaughtException(t: Thread, e: Throwable) {
         InternalLogger.logE(
             TAG,
-            "**********************\nCRASH\n**********************\n$e\n",
+            "**********\nCRASH\n**********\n",
             e
         )
         PrefsManager(this.applicationContext).saveCrashInfo()
