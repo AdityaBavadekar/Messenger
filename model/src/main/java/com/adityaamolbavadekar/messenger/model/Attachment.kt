@@ -26,13 +26,26 @@ data class Attachment(
     @PrimaryKey(autoGenerate = false)
     val id: String = Id.get(),
     val size: Long,
+    val mimeType: String?,
     val fileName: String,
     val extension: String,
     val uploadTimestamp: Long,
-    val width: Int,//TODO
-    val height: Int,//TODO
+    val width: Int,
+    val height: Int,
     val absolutePath: String,
 ) {
+
+    constructor() : this(
+        id = Id.get(),
+        size = 0,
+        mimeType = null,
+        fileName = "",
+        extension = "",
+        uploadTimestamp = 0,
+        width = 0,
+        height = 0,
+        absolutePath = ""
+    )
 
     fun fileNameWithExtension() = "$fileName.$extension"
 
@@ -61,6 +74,7 @@ data class Attachment(
                 width = 0,
                 height = 0,
                 absolutePath = file.absolutePath,
+                mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(file.extension)
             )
         }
     }

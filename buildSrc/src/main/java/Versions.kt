@@ -18,8 +18,8 @@
 
 object Versions {
 
-    const val VERSION_NAME = "0.0.8" //XX.YY.ZZ [X:Major][Y:Minor][Z:Patch]
-    val VERSION_CODE = versionCodeGet()
+    const val VERSION_NAME = "0.0.8" //X.Y.Z [X:Major][Y:Minor][Z:Patch]
+    const val VERSION_CODE = 18
 
     const val COMPILE_SDK = 33
     const val BUILD_TOOLS_VERSION = "30.0.3"
@@ -61,33 +61,5 @@ object Versions {
     const val RECYCLER_VIEW_SELECTION = "1.1.0"
     const val RETROFIT = "2.6.2"
     const val ROOM = "2.5.0"
-
-    private fun versionCodeGet(): Int {
-        val size = 10000
-        var returnVersionCode = ""
-        var index = 0
-        var flagPre = false
-        for (it in VERSION_NAME){
-            if (it.isDigit()) {              
-                if(index == 0 && it == '0'){
-                    flagPre = true
-                    returnVersionCode = "1"
-                }else {
-                    if(flagPre && it!='0') returnVersionCode += it.toString()
-                    else if (!flagPre) returnVersionCode += it.toString()
-                }
-            }
-            index++
-        }
-        while (returnVersionCode.startsWith("0")) {
-            returnVersionCode = returnVersionCode.removePrefix("0")
-        }
-        if (returnVersionCode.trim().isEmpty()) return 1 * size
-        if (flagPre) return returnVersionCode.toInt()
-        while (returnVersionCode.length != size.toString().length) {
-            returnVersionCode += '0'
-        }
-        return returnVersionCode.toInt()
-    }
 
 }

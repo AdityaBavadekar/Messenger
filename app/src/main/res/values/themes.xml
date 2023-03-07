@@ -112,8 +112,8 @@
         <item name="colorPrimaryDark">?colorPrimary</item>
 
         <!--Font Family-->
-        <item name="fontFamily">@font/roboto_medium</item>
-        <item name="android:fontFamily">@font/roboto_medium</item>
+        <item name="fontFamily">@font/roboto_regular</item>
+        <item name="android:fontFamily">@font/roboto_regular</item>
 
         <item name="android:textColor">@android:color/black</item>
 
@@ -183,6 +183,7 @@
         <item name="dynamicColorThemeOverlay">@style/ThemeOverlay.Material3.DynamicColors.Light
         </item>
     </style>
+
     <style name="Messenger.Material3.BaseTheme.Dark" parent="Theme.Material3.Dark">
 
         <!-- Color palettes -->
@@ -221,8 +222,8 @@
         <item name="android:isLightTheme" tools:targetApi="q">true</item>
 
         <!--Font Family-->
-        <item name="fontFamily">@font/roboto_medium</item>
-        <item name="android:fontFamily">@font/roboto_medium</item>
+        <item name="fontFamily">@font/roboto_regular</item>
+        <item name="android:fontFamily">@font/roboto_regular</item>
 
         <item name="windowActionModeOverlay">true</item>
         <item name="android:windowLightStatusBar" tools:targetApi="m">false</item>
