@@ -47,7 +47,7 @@ class AndroidUtils private constructor() {
             val fileName = "DOC_"+createFileName(FILE_TYPE_OTHER) + "."
             val f = File(Constants.AppDirectories.getSentDocsDir(context).absolutePath + "/$fileName")
             f.createNewFile()
-            uri.toFile().copyTo(f,true)
+            File(uri.path).copyTo(f,true)
             return f
         }
 

@@ -52,6 +52,7 @@ import com.adityaamolbavadekar.messenger.utils.extensions.runOnMainThread
 import com.adityaamolbavadekar.messenger.utils.logging.InternalLogger
 import com.adityaamolbavadekar.messenger.views.compose.EmojiPopupWindow
 import com.google.firebase.storage.StorageMetadata
+import java.io.File
 
 class ConversationActivity : BaseActivity(), SearchView.OnQueryTextListener {
 
@@ -136,7 +137,7 @@ class ConversationActivity : BaseActivity(), SearchView.OnQueryTextListener {
                                 MessageRecord.from(
                                     me,
                                     conversationId,
-                                    Attachment.from(docUri.toFile())
+                                    Attachment.from(File(docUri.path))
                                 )
                             sendMessage(messageRecord)
                         },

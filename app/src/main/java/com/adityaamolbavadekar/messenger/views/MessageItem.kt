@@ -26,7 +26,6 @@ import android.text.style.BackgroundColorSpan
 import android.text.style.ForegroundColorSpan
 import android.util.AttributeSet
 import android.view.View
-import android.webkit.MimeTypeMap
 import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
@@ -317,7 +316,7 @@ class MessageItem @JvmOverloads constructor(
         }
 
         checkNotNull(reactionsView) { "reactionsView cannot be null" }
-        reactionsView!!.setOnClickListener {
+        reactionsView!!.setReactionsClickListener {
             onReactionsViewClicked()
         }
         reactionsView!!.setReactionsList(requireMessageRecord().reactions)

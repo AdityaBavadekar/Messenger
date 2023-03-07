@@ -16,6 +16,7 @@
 
 package com.adityaamolbavadekar.messenger.views.message
 
+import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
@@ -58,6 +59,7 @@ class ReactionsView @JvmOverloads constructor(
         adapter = EmojiReactionsListAdapter()
         reactionsList.adapter = adapter
         reactionsList.overScrollMode = View.OVER_SCROLL_NEVER
+        reactionsList.addItemDecoration(RectionsSpaceItemDecoration(AndroidUtils.toDP(4, context)))
         holder.setOnClickListener {
             clickListener()
         }
@@ -65,6 +67,22 @@ class ReactionsView @JvmOverloads constructor(
 
     fun setReactionsClickListener(listener: () -> Unit) {
         clickListener = listener
+    }
+
+    private class RectionsSpaceItemDecoration(private val space: Int) :
+        RecyclerView.ItemDecoration() {
+
+        override fun getItemOffsets(
+            outRect: Rect,
+            view: View,
+            parent: RecyclerView,
+            state: RecyclerView.State
+        ) {
+            outRect.left = space
+            outRect.right = space
+            outRect.bottom = space
+        }
+
     }
 
     fun setReactionsList(list: List<ReactionRecord>) {
@@ -101,7 +119,8 @@ class ReactionsView @JvmOverloads constructor(
     }
 
     data class ReactionData(val reaction: String, val count: Int)
-    private class EmojiReactionsListAdapter() :
+
+    private class EmojiReactionsListAdapter :
         ListAdapter<ReactionData, EmojiReactionsListAdapter.ReactionItemHolder>(
             ReactionsDiffCallback()
         ) {

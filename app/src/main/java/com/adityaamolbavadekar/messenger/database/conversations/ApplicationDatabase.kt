@@ -17,10 +17,7 @@
 package com.adityaamolbavadekar.messenger.database.conversations
 
 import android.content.Context
-import androidx.room.Database
-import androidx.room.Room
-import androidx.room.RoomDatabase
-import androidx.room.TypeConverters
+import androidx.room.*
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.adityaamolbavadekar.messenger.model.*
 import com.adityaamolbavadekar.messenger.utils.logging.InternalLogger
@@ -36,7 +33,14 @@ import com.adityaamolbavadekar.messenger.utils.logging.InternalLogger
         ConversationRecordRecipientCrossRef::class,
         ConversationDraftMessage::class
     ],
-    version = 1,
+    autoMigrations = [
+        AutoMigration(
+            from = 1,
+            to = 2
+        )
+    ],
+
+    version = 2,
     exportSchema = false
 )
 

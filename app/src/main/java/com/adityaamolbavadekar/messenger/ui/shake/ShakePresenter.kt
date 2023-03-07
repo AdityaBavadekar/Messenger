@@ -23,10 +23,10 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.widget.FrameLayout
 import androidx.activity.viewModels
+import androidx.core.view.doOnLayout
 import com.adityaamolbavadekar.messenger.R
 import com.adityaamolbavadekar.messenger.utils.Constants
 import com.adityaamolbavadekar.messenger.utils.ScreenCaptureUtil
-import com.adityaamolbavadekar.messenger.utils.ScreenCaptureUtil.Companion.to
 import com.adityaamolbavadekar.messenger.utils.base.LifecycleLoggerActivity
 import com.adityaamolbavadekar.messenger.utils.logging.InternalLogger
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -42,19 +42,20 @@ class ShakePresenter : LifecycleLoggerActivity() {
         val root = FrameLayout(this).apply {
             this.background = ColorDrawable(Color.TRANSPARENT)
             this.setOnClickListener { finishIfNotAlready() }
+            doOnLayout {
+                try {
+                    val file = File.createTempFile("screen-capture-image", ".jpeg")
+                    val capture = ScreenCaptureUtil.to(window.decorView.rootView, file)
+                    if (capture) InternalLogger.logD(
+                        TAG,
+                        "Successfully saved screenCapture to ${file.absolutePath}"
+                    )
+                } catch (e: Exception) {
+                }
+            }
         }
 
         setContentView(root)
-
-        try {
-            val file = File.createTempFile("screen-capture-image", ".jpeg")
-            val capture = ScreenCaptureUtil.cap(window.decorView.rootView).to(file)
-            if (capture) InternalLogger.logD(
-                TAG,
-                "Successfully saved screenCapture to ${file.absolutePath}"
-            )
-        } catch (e: Exception) {
-        }
 
         MaterialAlertDialogBuilder(this)
             .setTitle(getString(R.string.shake_to_send_feedback))

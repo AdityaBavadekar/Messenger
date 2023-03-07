@@ -29,6 +29,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.adityaamolbavadekar.messenger.R
 import com.adityaamolbavadekar.messenger.databinding.EmojiFragmentBinding
 import com.adityaamolbavadekar.messenger.model.Emoji
+import com.adityaamolbavadekar.messenger.utils.EmojiUtils
 import com.adityaamolbavadekar.messenger.utils.extensions.runOnIOThread
 import com.adityaamolbavadekar.messenger.utils.logging.InternalLogger
 import com.google.android.material.tabs.TabLayout
@@ -59,7 +60,7 @@ private constructor(
         isOutsideTouchable = true
         elevation = setElevation
         runOnIOThread {
-            loadEmojiData()?.let {
+            EmojiUtils.loadEmojiData(parent.context)?.let {
                 _emojisList.postValue(it)
             }
         }
@@ -112,39 +113,6 @@ private constructor(
         activeTabCategory = EmojiBottomFragment.EmojiCategeory.getAt(id)
         activeTabId = activeTabCategory.ordinal
         refresh()
-    }
-
-    private fun loadEmojiData(): List<Emoji>? {
-        getEmojis()?.let {
-            val emojiDataClassType = object : TypeToken<List<Emoji>>() {}.type
-            return try {
-                val emojiList = Gson().fromJson<List<Emoji>>(it, emojiDataClassType)
-                InternalLogger.logD(
-                    TAG,
-                    "Loaded EmojiList :" + emojiList.size.toString()
-                )
-                emojiList
-            } catch (e: Exception) {
-                InternalLogger.logE(TAG, "Unable to read emoji list", e)
-                null
-            }
-        }
-        return null
-    }
-
-    private fun getEmojis(): String? {
-        val jsonString: String
-        return try {
-            val reader = parent.context.resources
-                .openRawResource(R.raw.emoji_dataset)
-                .bufferedReader()
-            jsonString = reader.use { it.readText() }
-            reader.close()
-            jsonString
-        } catch (e: Exception) {
-            InternalLogger.logE(TAG, "Unable to read emojis", e)
-            null
-        }
     }
 
     private fun refresh() {
