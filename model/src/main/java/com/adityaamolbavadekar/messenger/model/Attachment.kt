@@ -16,9 +16,10 @@
 
 package com.adityaamolbavadekar.messenger.model
 
+import android.net.Uri
 import android.webkit.MimeTypeMap
-import androidx.room.Ignore
 import androidx.room.Entity
+import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import java.io.File
 
@@ -51,6 +52,7 @@ data class Attachment(
     fun fileNameWithExtension() = "$fileName.$extension"
 
     fun readableSize(): Pair<SizeUnit, Int> {
+        if (size == 0.toLong()) return Pair(SizeUnit.B, 0)
         val sizeKb = size / 1024
         val sizeMb = size / sizeKb
         return if (sizeMb > 0) Pair(SizeUnit.MB, sizeMb.toInt())
@@ -79,6 +81,27 @@ data class Attachment(
                 mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(file.extension)
             )
         }
-    }
 
+        fun from(uri: Uri, fileName: String, size: Long, mimeType: String?): Attachment {
+            var fileExtension = ""
+            MimeTypeMap.getSingleton().getExtensionFromMimeType(mimeType)?.let {
+                fileExtension = it
+            }
+            if (fileExtension == "" && fileName.contains(".")) {
+                fileExtension =
+                    fileName.subSequence(fileName.lastIndexOf("."), fileName.lastIndex).toString()
+            }
+
+            return Attachment(
+                size = size,
+                fileName = fileName,
+                extension = fileExtension,
+                uploadTimestamp = System.currentTimeMillis(),
+                width = 0,
+                height = 0,
+                absolutePath = uri.toString(),
+                mimeType = mimeType
+            )
+        }
+    }
 }

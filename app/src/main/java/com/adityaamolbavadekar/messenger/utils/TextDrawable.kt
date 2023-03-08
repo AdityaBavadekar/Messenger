@@ -104,7 +104,7 @@ class TextDrawable(
         }
 
         fun createDefaultWithText(text: String,context: Context): TextDrawable {
-            size(AndroidUtils.toDP(24,context))
+            size(AndroidUtils.toDP(48,context))
             this.text = text
             return getRoundDrawable()
         }

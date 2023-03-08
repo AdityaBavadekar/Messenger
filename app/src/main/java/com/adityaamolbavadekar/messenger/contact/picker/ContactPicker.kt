@@ -44,6 +44,7 @@ import com.adityaamolbavadekar.messenger.utils.Permissions
 import com.adityaamolbavadekar.messenger.utils.base.BaseActivity
 import com.adityaamolbavadekar.messenger.utils.base.BindingHelperFragment
 import com.adityaamolbavadekar.messenger.utils.extensions.load
+import com.adityaamolbavadekar.messenger.utils.extensions.runOnIOThread
 import com.adityaamolbavadekar.messenger.utils.logging.InternalLogger
 import com.adityaamolbavadekar.messenger.utils.recyclerview.BaseItemHolder
 import com.adityaamolbavadekar.messenger.utils.recyclerview.BaseListAdapter
@@ -137,6 +138,11 @@ class ContactPicker : BaseActivity() {
             }
             cloudDatabaseManager.getUsersManager().observeUsers(this)
             cloudDatabaseManager.getUsersManager().getPublicUsersList()
+            runOnIOThread {
+                database.getRecipients().collect {
+                    contactsPickerAdapter.submitList(it)
+                }
+            }
             Permissions.ReadContacts.doIfDenied(requireContext()) {
                 contactsPermissionLauncher.launch(Permissions.ReadContacts.permissionName)
             }
@@ -144,11 +150,12 @@ class ContactPicker : BaseActivity() {
 
         override fun onSuccess(t: List<User>) {
             val recipientsList = t.toRecipientsList(me.uid)
-            contactsPickerAdapter.submitList(recipientsList)
             database.insertRecipients(recipientsList)
         }
 
-        override fun onFailure(e: Exception?) {}
+        override fun onFailure(e: Exception?) {
+            //TODO handle exception
+        }
 
         override fun onItemClick(item: Recipient) {
             super.onItemClick(item)
@@ -173,28 +180,17 @@ class ContactPicker : BaseActivity() {
                         }
                     }
 
-                    val conversation = ConversationRecord.newPerson2Person(item, me)
-                    database.insertConversation(conversation, listOf(item, me))
-                    startActivity(
-                        ConversationActivity.createNewIntent(
-                            requireContext(),
-                            conversation
-                        )
-                    )
-                    requireActivity().finish()
-                    return@directGetConversationsOfRecipient
-                } else {
-                    val conversation = ConversationRecord.newPerson2Person(item, me)
-                    database.insertConversation(conversation, listOf(item, me))
-                    startActivity(
-                        ConversationActivity.createNewIntent(
-                            requireContext(),
-                            conversation
-                        )
-                    )
-                    requireActivity().finish()
-                    return@directGetConversationsOfRecipient
                 }
+                val conversation = ConversationRecord.newPerson2Person(item, me)
+                database.insertConversation(conversation, listOf(item, me))
+                startActivity(
+                    ConversationActivity.createNewIntent(
+                        requireContext(),
+                        conversation
+                    )
+                )
+                requireActivity().finish()
+                return@directGetConversationsOfRecipient
             }
         }
 

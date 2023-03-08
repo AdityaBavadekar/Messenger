@@ -59,7 +59,7 @@ class ReactionsView @JvmOverloads constructor(
         adapter = EmojiReactionsListAdapter()
         reactionsList.adapter = adapter
         reactionsList.overScrollMode = View.OVER_SCROLL_NEVER
-        reactionsList.addItemDecoration(RectionsSpaceItemDecoration(AndroidUtils.toDP(4, context)))
+        reactionsList.addItemDecoration(RectionsSpaceItemDecoration(AndroidUtils.toDP(2, context)))
         holder.setOnClickListener {
             clickListener()
         }
@@ -80,7 +80,6 @@ class ReactionsView @JvmOverloads constructor(
         ) {
             outRect.left = space
             outRect.right = space
-            outRect.bottom = space
         }
 
     }
