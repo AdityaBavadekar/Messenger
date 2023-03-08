@@ -37,7 +37,7 @@ jobs:
       run: ./gradlew assembleDebug --stacktrace
     - name: Print files created by the successful build
       if: ${{ success() }}      
-      run: git config user.email "messenger@githubactions.com" && git config user.name "Message Actions" && git add app/schemas && git commit -m "Added Schemas" && git push
+      run: tree app/build/outputs/apk
     - name: Save reports of failed build
       if: ${{ failure() }}
       uses: actions/upload-artifact@v3
