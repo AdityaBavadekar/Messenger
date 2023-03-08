@@ -55,7 +55,6 @@ android {
                 arguments += ["room.schemaLocation": "$projectDir/schemas".toString()]
             }
         }
-
     }
 
     signingConfigs {

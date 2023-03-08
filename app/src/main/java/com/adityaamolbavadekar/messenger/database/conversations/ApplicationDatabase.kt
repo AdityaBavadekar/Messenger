@@ -34,14 +34,13 @@ import com.adityaamolbavadekar.messenger.utils.logging.InternalLogger
         ConversationRecordRecipientCrossRef::class,
         ConversationDraftMessage::class
     ],
+    version = 1,
     autoMigrations = [
         AutoMigration(
             from = 1,
             to = 2
         )
     ],
-
-    version = 2,
     exportSchema = true
 )
 
