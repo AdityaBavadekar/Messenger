@@ -68,5 +68,9 @@ data class LinkPreviewInfo(
         return title == null || body == null || imgUrl == null
     }
 
+    fun containsSearchQuery(query: String): Boolean {
+        return title?.lowercase()?.contains(query) == true || body?.lowercase()?.contains(query) == true || url.contains(query)
+    }
+
 }
 

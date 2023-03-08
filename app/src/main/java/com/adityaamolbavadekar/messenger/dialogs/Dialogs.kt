@@ -24,6 +24,7 @@ import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.adityaamolbavadekar.messenger.R
 import com.adityaamolbavadekar.messenger.databinding.*
 import com.adityaamolbavadekar.messenger.managers.InternetManager
@@ -31,9 +32,11 @@ import com.adityaamolbavadekar.messenger.managers.PrefsManager
 import com.adityaamolbavadekar.messenger.model.ReactionRecord
 import com.adityaamolbavadekar.messenger.model.Recipient
 import com.adityaamolbavadekar.messenger.model.valueOf
+import com.adityaamolbavadekar.messenger.utils.EmojiUtils
 import com.adityaamolbavadekar.messenger.utils.extensions.load
 import com.adityaamolbavadekar.messenger.utils.logging.InternalLogger
 import com.adityaamolbavadekar.messenger.utils.theming.ThemeInfo
+import com.adityaamolbavadekar.messenger.views.compose.EmojiBottomFragment
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.navigation.NavigationView
@@ -42,15 +45,36 @@ object Dialogs {
 
     fun showLoadingDialog(
         context: Context,
-        message: String? = null,show:Boolean=true
+        message: String? = null,
+        show: Boolean = true
     ): AlertDialog {
         val dialog = MaterialAlertDialogBuilder(context)
             .setCancelable(false)
             .setMessage(message)
             .setView(R.layout.dialog_loading)
             .create()
-        if(show) dialog.show()
+        if (show) dialog.show()
         return dialog
+    }
+
+    fun showDefiniteProgressDialog(
+        context: Context,
+        message: String? = null,
+        show: Boolean = true,
+        p: ProgressDialog
+    ) {
+        val view = DialogLoadingBinding.inflate(LayoutInflater.from(context), null, false)
+        view.progressBar.isIndeterminate = false
+        val actionSetProgress: (Int) -> Unit = { progress ->
+            view.progressBar.progress = progress
+        }
+        val dialog = MaterialAlertDialogBuilder(context)
+            .setCancelable(false)
+            .setMessage(message)
+            .setView(R.layout.dialog_loading)
+            .create()
+        if (show) dialog.show()
+        p.invoke(dialog, actionSetProgress)
     }
 
     fun showWallpaperDialog(
@@ -109,6 +133,30 @@ object Dialogs {
             val reaction = view.reactionEditText.text.toString()
             dialog.dismiss()
             onShouldSaveReaction(reaction)
+        }
+        view.close.setOnClickListener {
+            dialog.dismiss()
+        }
+        dialog.setContentView(view.root)
+        dialog.show()
+        return dialog
+    }
+
+
+    fun showReactionChooserDialogV2(
+        context: Context,
+        onShouldSaveReaction: (String) -> Unit
+    ): BottomSheetDialog {
+        val dialog = BottomSheetDialog(context)
+        val view = DialogReactionChooserV2Binding.inflate(LayoutInflater.from(context), null, false)
+        val listAdapter = EmojiBottomFragment.EmojiPagerAdapter {
+            onShouldSaveReaction(it.getParsedEmoji())
+        }
+        view.list.adapter = listAdapter
+        view.list.layoutManager =
+            LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        EmojiUtils.loadEmojiData(context)?.let {
+            listAdapter.submitList(it)
         }
         view.close.setOnClickListener {
             dialog.dismiss()
@@ -245,6 +293,29 @@ object Dialogs {
             .setPositiveButton(context.getString(R.string.yes)) { d, _ ->
                 d.dismiss()
                 shouldContinue(true)
+            }
+            .create()
+            .show()
+    }
+
+
+    fun showRemoveImageDialog(
+        context: Context,
+        message: String = context.getString(
+            R.string.remove_image_dialog
+        ),
+        shouldRemoveImage: (Boolean) -> Unit
+    ) {
+        MaterialAlertDialogBuilder(context)
+            .setCancelable(true)
+            .setMessage(message)
+            .setNeutralButton(context.getString(R.string.cancel)) { d, _ ->
+                d.dismiss()
+                shouldRemoveImage(false)
+            }
+            .setPositiveButton(context.getString(R.string.yes)) { d, _ ->
+                d.dismiss()
+                shouldRemoveImage(true)
             }
             .create()
             .show()
@@ -416,7 +487,7 @@ object Dialogs {
         context: Context,
         title: Int,
         arrayInt: Int,
-        checkedItemId:Int,
+        checkedItemId: Int,
         onChanged: (Int) -> Unit
     ) {
         MaterialAlertDialogBuilder(context)

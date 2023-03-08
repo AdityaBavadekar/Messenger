@@ -18,9 +18,4 @@ package com.adityaamolbavadekar.messenger.ui.share
 
 import androidx.appcompat.app.AppCompatActivity
 
-class ExportedShareActivity : AppCompatActivity() {
-
-
-
-
-}
+class ExportedShareActivity : AppCompatActivity()

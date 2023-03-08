@@ -16,6 +16,7 @@
 
 package com.adityaamolbavadekar.messenger.ui.conversation
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -74,6 +75,7 @@ class ConversationFragment : BindingHelperFragment<ConversationFragmentBinding>(
         InternalLogger.logD(TAG, "ConversationId : $conversationId")
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun setupViews() {
 
         /* Main messages recycler view */
@@ -105,6 +107,15 @@ class ConversationFragment : BindingHelperFragment<ConversationFragmentBinding>(
             messagesAdapter.submitList(it)
             onShouldChangeFabVisibility(shouldHide = (it.isEmpty() || it.size <= 4))
         }
+
+        viewModel.searchData.observe(viewLifecycleOwner) {
+            messagesAdapter.setSearchData(it)
+            messagesAdapter.notifyDataSetChanged()
+            it?.searchMessages?.let { messagesPositions ->
+		if (messagesPositions.isNotEmpty()) messageRecyclerView.scrollLinearLayoutToPosition(messagesPositions.first())
+            }
+        }
+
     }
 
 
@@ -152,7 +163,7 @@ class ConversationFragment : BindingHelperFragment<ConversationFragmentBinding>(
      * */
     fun onShouldChangeFabVisibility(shouldHide: Boolean = false, force: Boolean = false) {
         val lastMessagePosition = messagesAdapter.currentList.lastIndex
-        if (messageRecyclerView.findLastVisibleItemPosition() == lastMessagePosition && !force) {
+        if (messageRecyclerView.findFirstVisibleItemPosition() == lastMessagePosition && !force) {
             binding.jumpToBottom.isGone = true
             return
         } else {
@@ -161,6 +172,7 @@ class ConversationFragment : BindingHelperFragment<ConversationFragmentBinding>(
             } else {
                 binding.jumpToBottom.isVisible = true
             }
+            return
         }
     }
 
@@ -186,7 +198,7 @@ class ConversationFragment : BindingHelperFragment<ConversationFragmentBinding>(
         try {
             messageRecyclerView.scrollLinearLayoutToPosition(0)
         } catch (e: Exception) {
-            InternalLogger.e(TAG,"Unable to scroll to position 0.",e)
+            InternalLogger.e(TAG, "Unable to scroll to position 0.", e)
         }
     }
 
@@ -199,7 +211,7 @@ class ConversationFragment : BindingHelperFragment<ConversationFragmentBinding>(
     }
 
     override fun onShouldShowReactionChooser(messageRecord: MessageRecord) {
-        Dialogs.showReactionChooserDialog(requireContext()) { reaction ->
+        Dialogs.showReactionChooserDialogV2(requireContext()) { reaction ->
             val currentList = messagesAdapter.currentList.toMutableList()
             if (currentList.contains(messageRecord)) {
                 val index = currentList.indexOf(messageRecord)

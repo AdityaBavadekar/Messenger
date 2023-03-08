@@ -25,7 +25,7 @@ import com.adityaamolbavadekar.messenger.utils.startup.AppStartup
 import com.adityaamolbavadekar.pinlog.PinLog
 import com.google.firebase.FirebaseApp
 
-class App : Application(),Thread.UncaughtExceptionHandler {
+class App : Application(), Thread.UncaughtExceptionHandler {
 
     val database: ApplicationDatabase by lazy {
         ApplicationDatabase.get(this)
@@ -36,16 +36,18 @@ class App : Application(),Thread.UncaughtExceptionHandler {
         AppStartup.onApplicationCreated(this)
         super.onCreate()
         AppStartup.startApplicationInitialisation()
+        Thread.setDefaultUncaughtExceptionHandler(this)
     }
 
     override fun uncaughtException(t: Thread, e: Throwable) {
         InternalLogger.logE(
             TAG,
-            "**********************\nCRASH\n**********************\n$e\n",
+            "**********\nCRASH\n**********\n",
             e
         )
         PrefsManager(this.applicationContext).saveCrashInfo()
-        PinLog.CrashReporter().sendCrashReportWithEmail(t, e, arrayOf(Constants.SUPPORT_EMAIL), null, null)
+        PinLog.CrashReporter()
+            .sendCrashReportWithEmail(t, e, arrayOf(Constants.SUPPORT_EMAIL), null, null)
     }
 
     companion object {

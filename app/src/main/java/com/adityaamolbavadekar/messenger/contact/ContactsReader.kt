@@ -23,7 +23,6 @@ import androidx.core.database.getStringOrNull
 import com.adityaamolbavadekar.messenger.utils.Permissions
 import com.adityaamolbavadekar.messenger.utils.extensions.runOnIOThread
 import com.adityaamolbavadekar.messenger.utils.extensions.runOnMainThread
-import com.adityaamolbavadekar.messenger.utils.logging.InternalLogger
 
 class ContactsReader(private val context: Context) {
 
@@ -52,7 +51,7 @@ class ContactsReader(private val context: Context) {
 
     private fun getContact(c: Cursor): ContactInfo? {
         val name = c.getStringOrNull(0)
-        val number = c.getStringOrNull(1)       
+        val number = c.getStringOrNull(1)
         return if (number == null || number.trim().isEmpty()) null
         else ContactInfo(name, number)
     }

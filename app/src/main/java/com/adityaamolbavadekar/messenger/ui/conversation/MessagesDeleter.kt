@@ -24,22 +24,35 @@ import com.google.firebase.ktx.Firebase
 
 class MessagesDeleter {
 
-    fun deleteForEveryoneP2P(p2pRecipientUid:String,message:MessageRecord): MutableList<Boolean> {
-        val completion = mutableListOf(false,false)
+    fun deleteForEveryoneP2P(
+        p2pRecipientUid: String,
+        message: MessageRecord
+    ): MutableList<Boolean> {
+        val completion = mutableListOf(false, false)
         Firebase.database
-            .getReference(Constants.CloudPaths.getP2PMessagesPath(p2pRecipientUid,message.senderUid) + "/${message.id}")
+            .getReference(
+                Constants.CloudPaths.getP2PMessagesPath(
+                    p2pRecipientUid,
+                    message.senderUid
+                ) + "/${message.id}"
+            )
             .setValue(message.delete())
             .addOnSuccessListener { completion[0] = true }
             .addOnFailureListener { completion[0] = false }
         Firebase.database
-            .getReference(Constants.CloudPaths.getP2PMessagesPath(message.senderUid,p2pRecipientUid) + "/${message.id}")
+            .getReference(
+                Constants.CloudPaths.getP2PMessagesPath(
+                    message.senderUid,
+                    p2pRecipientUid
+                ) + "/${message.id}"
+            )
             .setValue(message.delete())
             .addOnSuccessListener { completion[1] = true }
             .addOnFailureListener { completion[1] = false }
         return completion
     }
 
-    fun deleteForEveryoneGroup(message:MessageRecord): Task<Void> {
+    fun deleteForEveryoneGroup(message: MessageRecord): Task<Void> {
         return Firebase.database
             .getReference(Constants.CloudPaths.getGroupMessagesPath(message.conversationId) + "/${message.id}")
             .setValue(message.delete())
@@ -52,7 +65,7 @@ class MessagesDeleter {
         return Firebase.database
             .getReference(
                 Constants.CloudPaths.getP2PMessagesPath(
-                    message.senderUid,p2pRecipientUid
+                    message.senderUid, p2pRecipientUid
                 ) + "/${message.id}"
             )
             .setValue(message.delete())

@@ -84,9 +84,12 @@ object AppStartup {
             try {
                 ContentResolver.requestSync(it, Constants.DATA_SYNC_AUTHORITY, Bundle())
             } catch (e: Exception) {
-                InternalLogger.logE(TAG,"Unable to request sync",e)
+                InternalLogger.logE(TAG, "Unable to request sync", e)
             }
         }
+
+        Constants.AppDirectories.createDefaultDirs(application.applicationContext)
+
         methodTracer.putTraceData("onApplicationCreated", "finished").end()
     }
 
@@ -104,7 +107,7 @@ object AppStartup {
         }
 
         override fun onFailure(e: Exception) {
-            InternalLogger.logE(TAG,"Unable to check for updates",e)
+            InternalLogger.logE(TAG, "Unable to check for updates", e)
         }
     }
 

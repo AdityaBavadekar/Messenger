@@ -24,10 +24,7 @@ import com.adityaamolbavadekar.messenger.utils.extensions.runOnMainThread
 import com.adityaamolbavadekar.messenger.utils.logging.InternalLogger
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.TaskCompletionSource
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
 import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
@@ -90,7 +87,8 @@ class CloudDatabaseManager {
     /*Update database display name for user*/
     fun updateUserProfileInfo(
         map: HashMap<String, Any?>,
-        userId: String) =
+        userId: String
+    ) =
         CoroutineScope(Dispatchers.Default).launch {
 
             map.forEach { pair ->
@@ -428,6 +426,21 @@ class CloudDatabaseManager {
             } catch (e: Exception) {
                 InternalLogger.logE(TAG, "Unable to get Messages list", e)
                 onResponseCallback.onFailure(e)
+            }
+        }
+
+        fun observeMessagesFromDatabaseV2(
+            ofUser: String,
+            withUser: String,
+            childEventListener: ChildEventListener
+        ) {
+            ref = Firebase.database
+                .getReference(Constants.CloudPaths.getP2PMessagesPath(ofUser, withUser))
+            InternalLogger.logI(TAG, "P2P Messages Listener added on $ref")
+            try {
+                ref!!.addChildEventListener(childEventListener)
+            } catch (e: Exception) {
+                InternalLogger.logE(TAG, "Unable to get Messages list", e)
             }
         }
         /*[END] P2P*/

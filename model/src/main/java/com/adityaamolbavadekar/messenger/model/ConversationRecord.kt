@@ -230,6 +230,7 @@ data class ConversationRecord(
             url: String? = null,
             conversationId: String = Id.getSpecial(),
             description: String? = null,
+            messagingPermissionType: Int = MessagingPermissionType.permitAll(),
         ): ConversationRecord {
             val desc: String? = if (description == null || description.trim().isEmpty()) {
                 null
@@ -256,6 +257,8 @@ data class ConversationRecord(
                 isP2P = false,
                 creatorUid = creatorUid,
                 recipientsInfo = recipientInfoHashMap.remoteRecipientToHashMapList(),
+                messagingPermissionType = messagingPermissionType,
+                editingPermissionType = messagingPermissionType
             )
         }
 
@@ -274,6 +277,8 @@ data class ConversationRecord(
         recipientUids =
             remoteConversation.recipientsInfo.map { it["uid"] as String }.toMutableList()
         recipientsInfo = remoteConversation.recipientsInfo
+        messagingPermissionType = remoteConversation.messagingPermissionType
+        editingPermissionType = remoteConversation.editingPermissionType
         return this
     }
 

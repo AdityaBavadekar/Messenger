@@ -40,6 +40,7 @@ class LinkPreviewView @JvmOverloads constructor(
     private val urlTextView: TextView
     private val imageView: ImageView
     private val imageLoader = ImageLoader.with(this)
+    private var clickListener: (String) -> Unit = {}
 
     private var internalLinkPreviewInfo: LinkPreviewInfo? = null
         set(value) {
@@ -55,6 +56,7 @@ class LinkPreviewView @JvmOverloads constructor(
         bodyTextView = inflatedView.linkSubtitle
         urlTextView = inflatedView.host
         imageView = inflatedView.previewImageView
+        holder.setOnClickListener { clickListener(requireNotNull(internalLinkPreviewInfo) { "LinkPreview cannot be null" }.url) }
     }
 
     private fun notifyDataChanged() {
@@ -74,6 +76,10 @@ class LinkPreviewView @JvmOverloads constructor(
 
     fun setLinkPreviewInfo(info: LinkPreviewInfo?) {
         internalLinkPreviewInfo = info
+    }
+
+    fun setOnLinkClickListener(listener: (String) -> Unit) {
+        clickListener = listener
     }
 
     fun getLinkPreviewInfo() = internalLinkPreviewInfo

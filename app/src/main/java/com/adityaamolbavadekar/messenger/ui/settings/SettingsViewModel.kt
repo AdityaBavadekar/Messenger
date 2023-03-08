@@ -28,9 +28,9 @@ import java.io.File
 class SettingsViewModel : ViewModel() {
 
     private val _isLoading = MutableLiveData(false)
-    val isLoading : LiveData<Boolean> = _isLoading
+    val isLoading: LiveData<Boolean> = _isLoading
 
-    fun getLogsInFile(callback: (File?) -> Unit){
+    fun getLogsInFile(callback: (File?) -> Unit) {
         viewModelScope.launch {
             _isLoading.postValue(true)
             val file = PinLog.getAllPinLogsInFile()

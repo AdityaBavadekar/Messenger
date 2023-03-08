@@ -30,6 +30,7 @@
         android:maxLength="3"
         android:padding="@dimen/dimen_4"
         android:textSize="22sp"
-        tools:text="😁" />
+        tools:text="😁"
+        />
 
 </FrameLayout>

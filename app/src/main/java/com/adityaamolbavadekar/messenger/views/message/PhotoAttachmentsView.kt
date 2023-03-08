@@ -16,6 +16,7 @@
 
 package com.adityaamolbavadekar.messenger.views.message
 
+import android.annotation.SuppressLint
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.FrameLayout
@@ -26,7 +27,6 @@ import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import com.adityaamolbavadekar.messenger.R
 import com.adityaamolbavadekar.messenger.databinding.PhotoAttachmentsViewLayoutBinding
-import com.adityaamolbavadekar.messenger.ui.zoom.ZoomableImageViewerActivity
 import com.adityaamolbavadekar.messenger.utils.ImageLoader
 
 class PhotoAttachmentsView @JvmOverloads constructor(
@@ -45,6 +45,7 @@ class PhotoAttachmentsView @JvmOverloads constructor(
     private val imageView3Holder: FrameLayout
     private val imageView3BlurTextView: TextView
     private val imageLoader = ImageLoader.with(this)
+    private var clickListener: (List<String>) -> Unit = {}
 
     private var attachments: MutableList<String> = mutableListOf()
 
@@ -59,8 +60,12 @@ class PhotoAttachmentsView @JvmOverloads constructor(
         imageView3 = inflatedView.imageViewThree
         imageView3Holder = inflatedView.imageViewThreeHolder
         imageView3BlurTextView = inflatedView.blurTextView
+        inflatedView.holder.setOnClickListener {
+            clickListener(attachments)
+        }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun notifyDataChanged() {
         if (attachments.isEmpty()) {
             imageLoader.clear(imageView0)
@@ -75,23 +80,21 @@ class PhotoAttachmentsView @JvmOverloads constructor(
         }
 
         val placeholderDrawable = R.drawable.ic_image
-        val imagesSize = attachments.size
-
-        when {
-            imagesSize == 1 -> {
+        when (val imagesSize = attachments.size) {
+            1 -> {
                 imageView0.isVisible = true
                 imageLoader.load(attachments[0], imageView0, placeholderDrawable)
                 imageView1.isGone = true
                 linear1.isGone = true
             }
-            imagesSize == 2 -> {
+            2 -> {
                 imageView0.isVisible = true
                 imageLoader.load(attachments[0], imageView0, placeholderDrawable)
                 imageView1.isVisible = true
                 imageLoader.load(attachments[1], imageView1, placeholderDrawable)
                 linear1.isGone = true
             }
-            imagesSize == 3 -> {
+            3 -> {
                 imageView0.isVisible = true
                 imageLoader.load(attachments[0], imageView0, placeholderDrawable)
                 imageView1.isVisible = true
@@ -103,7 +106,7 @@ class PhotoAttachmentsView @JvmOverloads constructor(
                 imageView3.isGone = true
                 linear1.isVisible = true
             }
-            imagesSize == 4 -> {
+            4 -> {
                 imageView0.isVisible = true
                 imageLoader.load(attachments[0], imageView0, placeholderDrawable)
                 imageView1.isVisible = true
@@ -115,31 +118,27 @@ class PhotoAttachmentsView @JvmOverloads constructor(
                 imageLoader.load(attachments[3], imageView3, placeholderDrawable)
                 linear1.isVisible = true
             }
-            imagesSize > 4 -> {
+            else -> {
                 imageView0.isVisible = true
                 imageLoader.load(attachments[0], imageView0, placeholderDrawable)
                 imageView1.isVisible = true
                 imageLoader.load(attachments[1], imageView1, placeholderDrawable)
                 imageView2.isVisible = true
                 imageLoader.load(attachments[2], imageView2, placeholderDrawable)
-                imageView3.isVisible = true
-                imageLoader.load(attachments[3], imageView3, placeholderDrawable)
+                //imageView3.isVisible = true
+                //imageLoader.load(attachments[3], imageView3, placeholderDrawable)
                 imageView3Holder.isVisible = true
-                imageView3BlurTextView.isVisible = true
                 imageView3BlurTextView.text = "+${imagesSize - 4}"
+                imageView3BlurTextView.isVisible = true
                 linear1.isVisible = true
             }
         }
 
-        setOnClickListener{
-            ZoomableImageViewerActivity.createNewIntent(context,attachments)
-        }
 
     }
 
-    fun addAttachment(url: String) {
-        checkNotExistsAndAdd(listOf(url))
-        notifyDataChanged()
+    fun setOnAttachmentsClickListener(listener: (List<String>) -> Unit) {
+        clickListener = listener
     }
 
     fun addAttachments(urls: List<String>) {

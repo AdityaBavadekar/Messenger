@@ -24,7 +24,8 @@ class MessengerDataSyncService : Service() {
 
     override fun onCreate() {
         synchronized(mSyncAdapterLock) {
-            mDataSyncAdapter = mDataSyncAdapter ?: MessengerDataSyncAdapter(applicationContext, true)
+            mDataSyncAdapter =
+                mDataSyncAdapter ?: MessengerDataSyncAdapter(applicationContext, true)
         }
     }
 

@@ -75,7 +75,7 @@ class MessagesSelectionCallback(
         fragment.selectionTracker.clearSelection()
     }
 
-    fun addOnCopyListener(block: ()->(Unit)): MessagesSelectionCallback {
+    fun addOnCopyListener(block: () -> (Unit)): MessagesSelectionCallback {
         this.onCopyListener = block
         return this
     }

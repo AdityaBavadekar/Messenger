@@ -32,6 +32,7 @@ import com.google.gson.reflect.TypeToken
 object PhoneNumberUtils {
 
     private const val TAG = "PhoneNumberUtils"
+
     data class CompletePhoneNumber(val phoneNumber: String, val countryCode: String)
 
     fun requestPhoneNumber(

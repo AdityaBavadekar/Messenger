@@ -18,7 +18,6 @@ package com.adityaamolbavadekar.messenger.managers
 
 import androidx.appcompat.app.AppCompatActivity
 import com.adityaamolbavadekar.messenger.utils.logging.InternalLogger
-import com.google.firebase.ktx.Firebase
 
 object LinksHandler {
 

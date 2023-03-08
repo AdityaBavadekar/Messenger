@@ -29,6 +29,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.adityaamolbavadekar.messenger.R
 import com.adityaamolbavadekar.messenger.databinding.EmojiFragmentBinding
 import com.adityaamolbavadekar.messenger.model.Emoji
+import com.adityaamolbavadekar.messenger.utils.EmojiUtils
 import com.adityaamolbavadekar.messenger.utils.extensions.runOnIOThread
 import com.adityaamolbavadekar.messenger.utils.logging.InternalLogger
 import com.google.android.material.tabs.TabLayout
@@ -42,7 +43,8 @@ private constructor(
     private val binding: EmojiFragmentBinding,
     setWidth: Int,
     setHeight: Int,
-    setElevation: Float
+    setElevation: Float,
+    private val onCloseListener: () -> Unit
 ) :
     PopupWindow(binding.root, setWidth, setHeight, /*focusable*/true),
     TabLayout.OnTabSelectedListener {
@@ -58,12 +60,13 @@ private constructor(
         isOutsideTouchable = true
         elevation = setElevation
         runOnIOThread {
-            loadEmojiData()?.let {
+            EmojiUtils.loadEmojiData(parent.context)?.let {
                 _emojisList.postValue(it)
             }
         }
         doOnCreateView()
         showAtLocation(/*parent*/parent,/*gravity*/Gravity.BOTTOM,/*x*/0,/*y*/0)
+        setOnDismissListener { onCloseListener() }
     }
 
     private fun doOnCreateView() {
@@ -112,39 +115,6 @@ private constructor(
         refresh()
     }
 
-    private fun loadEmojiData(): List<Emoji>? {
-        getEmojis()?.let {
-            val emojiDataClassType = object : TypeToken<List<Emoji>>() {}.type
-            return try {
-                val emojiList = Gson().fromJson<List<Emoji>>(it, emojiDataClassType)
-                InternalLogger.logD(
-                    TAG,
-                    "Loaded EmojiList :" + emojiList.size.toString()
-                )
-                emojiList
-            } catch (e: Exception) {
-                InternalLogger.logE(TAG, "Unable to read emoji list", e)
-                null
-            }
-        }
-        return null
-    }
-
-    private fun getEmojis(): String? {
-        val jsonString: String
-        return try {
-            val reader = parent.context.resources
-                .openRawResource(R.raw.emoji_dataset)
-                .bufferedReader()
-            jsonString = reader.use { it.readText() }
-            reader.close()
-            jsonString
-        } catch (e: Exception) {
-            InternalLogger.logE(TAG, "Unable to read emojis", e)
-            null
-        }
-    }
-
     private fun refresh() {
         emojisList.value?.let { list ->
             listAdapter.submitList(list.filter { it.category == activeTabId })
@@ -159,7 +129,8 @@ private constructor(
             onEmojiClicked: (String) -> Unit,
             parent: View,
             context: Context,
-            windowHeight: Int
+            windowHeight: Int,
+            onCloseListener: () -> Unit
         ): EmojiPopupWindow {
             val binding =
                 EmojiFragmentBinding.inflate(LayoutInflater.from(context), null, false)
@@ -167,7 +138,15 @@ private constructor(
             val elevation = context.resources.getDimension(R.dimen.emoji_popup_elevation)
             var height = context.resources.getDimension(R.dimen.emoji_popup_min_height).toInt()
             if (height < windowHeight) height = windowHeight
-            return EmojiPopupWindow(onEmojiClicked, parent, binding, width, height, elevation)
+            return EmojiPopupWindow(
+                onEmojiClicked,
+                parent,
+                binding,
+                width,
+                height,
+                elevation,
+                onCloseListener
+            )
         }
     }
 }

@@ -54,7 +54,7 @@ object NotificationSender {
     ) {
         val fcmTokens = mutableListOf<String>()
         recipients.forEach { fcmTokens.addAll(it.fcmTokens) }
-        InternalLogger.logI(TAG,"Sending notification to ${fcmTokens.size} Tokens.")
+        InternalLogger.logI(TAG, "Sending notification to ${fcmTokens.size} Tokens.")
         fcmTokens.forEach { token -> sendNotification(data, token) }
     }
 

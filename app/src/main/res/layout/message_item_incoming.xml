@@ -69,6 +69,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
+            <com.adityaamolbavadekar.messenger.views.message.DocumentView
+                android:id="@+id/documentAttachmentView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
             <TextView
                 android:id="@+id/message"
                 android:layout_width="wrap_content"

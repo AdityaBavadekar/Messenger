@@ -106,10 +106,10 @@ fun getDate(milis: Long, context: Context? = null): String {
     if (cal[Calendar.YEAR] == m[Calendar.YEAR]) {
         dateFormat = TIMESTAMP_FORMAT_DAY_MONTH
         //Return DD MMMM  [2]
-        if (cal[Calendar.DAY_OF_MONTH] == m[Calendar.DAY_OF_MONTH]) {
+        if (cal[Calendar.DAY_OF_YEAR] == m[Calendar.DAY_OF_YEAR]) {
             return context?.getString(R.string.today) ?: "Today"
             //Return Today
-        } else if (cal[Calendar.DAY_OF_MONTH] - 1 == m[Calendar.DAY_OF_MONTH]) {
+        } else if (cal[Calendar.DAY_OF_YEAR] - 1 == m[Calendar.DAY_OF_YEAR]) {
             return context?.getString(R.string.yesterday) ?: "Yesterday"
             //Return Yesterday
         }
@@ -127,7 +127,7 @@ fun getDateForConversationListLastUpdated(milis: Long, context: Context? = null)
     val dateFormat: String
     if (cal[Calendar.YEAR] == m[Calendar.YEAR]) {
         dateFormat = MESSAGE_TIMESTAMP_FORMAT
-        if (cal[Calendar.DAY_OF_MONTH] - 1 == m[Calendar.DAY_OF_MONTH]) {
+        if (cal[Calendar.DAY_OF_YEAR] - 1 == m[Calendar.DAY_OF_YEAR]) {
             return context?.getString(R.string.yesterday) ?: "Yesterday"
             //Return Yesterday
         }
@@ -143,8 +143,8 @@ fun getDateStub(milis: Long): String {
     val cal = Calendar.getInstance()
     return if (cal[Calendar.YEAR] == now[Calendar.YEAR]) {
         when {
-            cal[Calendar.DAY_OF_MONTH] == now[Calendar.DAY_OF_MONTH] -> "T" //Today
-            cal[Calendar.DAY_OF_MONTH] - 1 == now[Calendar.DAY_OF_MONTH] -> "Y" //Yesterday
+            cal[Calendar.DAY_OF_YEAR] == now[Calendar.DAY_OF_YEAR] -> "T" //Today
+            cal[Calendar.DAY_OF_YEAR] - 1 == now[Calendar.DAY_OF_YEAR] -> "Y" //Yesterday
             else -> simpleDateFormat(milis, TIMESTAMP_FORMAT_DAY)
         }
     } else simpleDateFormat(milis, TIMESTAMP_FORMAT_DAY_MONTH_YEAR)
@@ -152,13 +152,14 @@ fun getDateStub(milis: Long): String {
 
 fun simpleDateFormat(long: Long, format: String = TIMESTAMP_FORMAT_DAY_MONTH_YEAR): String {
     return SimpleDateFormat(format, Locale.ENGLISH).format(Date(long))
+    //TODO("VERSION.SDK_INT < N")
 }
 
 fun NavigationBarView.disableTooltip() {
     setOnLongClickListener { true }
     val menuSize = menu.size()
     for (menuItemIndex in menuSize until menuSize - 1) {
-        menu.getItem(menuItemIndex).actionView?.let{TooltipCompat.setTooltipText(it, null)}
+        menu.getItem(menuItemIndex).actionView?.let { TooltipCompat.setTooltipText(it, null) }
     }
 }
 

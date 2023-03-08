@@ -16,18 +16,67 @@
 
 package com.adityaamolbavadekar.messenger.model
 
+import android.webkit.MimeTypeMap
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import java.io.File
+
+@Entity(tableName = "attachments_table")
 data class Attachment(
-    val id:String = Id.get(),
-    val contentType: String,
-    val mimeType: String?,
+    @PrimaryKey(autoGenerate = false)
+    val id: String = Id.get(),
     val size: Long,
+    val mimeType: String?,
     val fileName: String,
-    val location: String,
-    val uploadTimestamp:Long,
-    val width: String,
-    val height:String,
+    val extension: String,
+    val uploadTimestamp: Long,
+    val width: Int,
+    val height: Int,
+    val absolutePath: String,
+) {
 
-){
+    constructor() : this(
+        id = Id.get(),
+        size = 0,
+        mimeType = null,
+        fileName = "",
+        extension = "",
+        uploadTimestamp = 0,
+        width = 0,
+        height = 0,
+        absolutePath = ""
+    )
 
+    fun fileNameWithExtension() = "$fileName.$extension"
+
+    fun readableSize(): Pair<SizeUnit, Int> {
+        val sizeKb = size / 1024
+        val sizeMb = size / sizeKb
+        return if (sizeMb > 0) Pair(SizeUnit.MB, sizeMb.toInt())
+        else Pair(SizeUnit.KB, sizeKb.toInt())
+    }
+
+    fun mimeType(): String? {
+        return MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension)
+    }
+
+    fun file(): File {
+        return File(absolutePath)
+    }
+
+    companion object {
+        fun from(file: File): Attachment {
+            return Attachment(
+                size = file.length(),
+                fileName = file.nameWithoutExtension,
+                extension = file.extension,
+                uploadTimestamp = System.currentTimeMillis(),
+                width = 0,
+                height = 0,
+                absolutePath = file.absolutePath,
+                mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(file.extension)
+            )
+        }
+    }
 
 }

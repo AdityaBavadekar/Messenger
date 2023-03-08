@@ -29,7 +29,8 @@ import com.adityaamolbavadekar.messenger.utils.recyclerview.BaseItemHolder
 class ViewPagerAdapters {
 
     class ImageSliderPagerAdapter(
-        private val onClick: ((Uri) -> Unit)? = null
+        private val onClick: ((Uri) -> Unit)? = null,
+        private val onLongClick: ((Uri) -> Unit)? = null
     ) :
         ListAdapter<Uri, BaseItemHolder<Uri>>(UriDiffCallback()) {
 
@@ -55,7 +56,8 @@ class ViewPagerAdapters {
 
         class SmallItemHolder private constructor(
             private val b: ItemImageSliderSmallBinding,
-            private val onClick: (Uri) -> Unit
+            private val onClick: (Uri) -> Unit,
+            private val onLongClick: (Uri) -> Unit
         ) :
             BaseItemHolder<Uri>(b.root) {
 
@@ -65,16 +67,25 @@ class ViewPagerAdapters {
                 onItemClickCallback: OnItemClickCallback<Uri>?
             ) {
                 b.root.setOnClickListener { onClick(t) }
+                b.root.setOnLongClickListener {
+                    onLongClick(t)
+                    true
+                }
                 b.imageView.load(t, false)
             }
 
-            constructor(parent: ViewGroup, onClick: (Uri) -> Unit) : this(
+            constructor(
+                parent: ViewGroup,
+                onClick: (Uri) -> Unit,
+                onLongClick: (Uri) -> Unit
+            ) : this(
                 ItemImageSliderSmallBinding.inflate(
                     LayoutInflater.from(
                         parent.context
                     ), parent, false
                 ),
-                onClick
+                onClick,
+                onLongClick
             )
         }
 
@@ -90,7 +101,7 @@ class ViewPagerAdapters {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseItemHolder<Uri> {
             return if (onClick == null) LargeItemHolder(parent)
-            else SmallItemHolder(parent, onClick)
+            else SmallItemHolder(parent, onClick, onLongClick!!)
         }
 
         override fun onBindViewHolder(holder: BaseItemHolder<Uri>, position: Int) {

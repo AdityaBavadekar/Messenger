@@ -66,18 +66,19 @@ class MessageSender {
         //Before sending message change it's status to sent
         m.markAsSent()
         InternalLogger.logD(TAG, "Saving message to sendersCollection")
+        var savedToSendersCollection = false
+        var savedToReceiversCollection = false
         messagesManager.saveMessageToDatabase(
             m,
             uid = m.senderUid,
             uidB = receiverUid
-        ) {}
+        ) { savedToSendersCollection = it }
         InternalLogger.logD(TAG, "Saving message to receiverCollection")
         messagesManager.saveMessageToDatabase(
             m,
             uid = receiverUid,
             uidB = m.senderUid,
-            responseCallback
-        )
+        ) { savedToReceiversCollection = it }
 
         if (!conversationsAdded.contains(receiverUid)) {
             Firebase.database.getReference(Constants.CloudPaths.getUserConversationsPath(m.senderUid))
@@ -88,6 +89,8 @@ class MessageSender {
                 .setValue(false)
             conversationsAdded.add(receiverUid)
         }
+
+        responseCallback(savedToSendersCollection && savedToReceiversCollection)
 
     }
 

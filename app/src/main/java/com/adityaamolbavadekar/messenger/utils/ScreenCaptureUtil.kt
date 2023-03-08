@@ -17,27 +17,45 @@
 package com.adityaamolbavadekar.messenger.utils
 
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Canvas
 import android.view.View
+import java.io.ByteArrayOutputStream
 import java.io.File
+import java.io.FileOutputStream
+import java.io.OutputStream
 
 @Suppress("DEPRECATION")
 class ScreenCaptureUtil {
     companion object {
-        fun cap(v: View): Bitmap {
-            v.isDrawingCacheEnabled = true
-            v.buildDrawingCache(true)
-            val b = Bitmap.createBitmap(v.drawingCache)
-            v.isDrawingCacheEnabled = false
-            return b!!
+
+        private const val QUALITY_HIGH = 100
+        private const val QUALITY_MEDIUM = 50
+        private const val QUALITY_LOW = 25
+
+        fun capture(v: View): Bitmap? {
+            val stream = ByteArrayOutputStream()
+            val bitmap = Bitmap.createBitmap(v.width, v.height, Bitmap.Config.ARGB_8888)
+            val canvas = Canvas(bitmap)
+            v.background?.draw(canvas)
+            v.draw(canvas)
+            bitmap.compress(Bitmap.CompressFormat.JPEG, QUALITY_HIGH, stream as OutputStream?)
+            val byteArray = stream.toByteArray()
+            return BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
         }
 
         fun to(view: View, file: File): Boolean {
-            return cap(view).to(file)
+            return capture(view)?.saveTo(file) ?: false
         }
 
-        fun Bitmap.to(file: File): Boolean {
+        private fun Bitmap.saveTo(file: File): Boolean {
             return try {
-                compress(Bitmap.CompressFormat.JPEG, 100, file.outputStream())
+                if (!file.exists()) file.createNewFile()
+                val stream = FileOutputStream(file)
+                compress(Bitmap.CompressFormat.PNG, QUALITY_HIGH, stream)
+                stream.close()
+                stream.flush()
+                true
             } catch (e: Exception) {
                 false
             }

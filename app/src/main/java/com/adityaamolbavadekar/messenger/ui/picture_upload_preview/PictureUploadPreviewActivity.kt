@@ -26,19 +26,35 @@ import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.adityaamolbavadekar.messenger.databinding.ActivityPictureUploadPreviewBinding
-import com.adityaamolbavadekar.messenger.ui.registration.IsoCountrySelectionFragment
+import com.adityaamolbavadekar.messenger.dialogs.Dialogs
 import com.adityaamolbavadekar.messenger.utils.base.BaseActivity
 
 class PictureUploadPreviewActivity : BaseActivity() {
 
     private lateinit var binding: ActivityPictureUploadPreviewBinding
+    private var imageUrisList = mutableListOf<Uri>()
     private val smallPagerAdapter =
-        ViewPagerAdapters.ImageSliderPagerAdapter { onShouldSwitchVisibleImage(it) }
+        ViewPagerAdapters.ImageSliderPagerAdapter(
+            ::onShouldSwitchVisibleImage,
+            ::onShouldRemoveImage
+        )
     private val largePagerAdapter = ViewPagerAdapters.ImageSliderPagerAdapter()
 
     private fun onShouldSwitchVisibleImage(imageUri: Uri) {
         if (largePagerAdapter.itemCount <= 1) return
         binding.imagesSliderLarge.currentItem = largePagerAdapter.currentList.indexOf(imageUri)
+    }
+
+    private fun onShouldRemoveImage(imageUri: Uri) {
+        if (largePagerAdapter.itemCount <= 1) return
+        Dialogs.showRemoveImageDialog(this) { shouldRemove ->
+            if (shouldRemove) {
+                imageUrisList.remove(imageUri)
+                setupViewPagers()
+                binding.imagesSliderLarge.currentItem = 0
+                binding.imagesSliderSmall.scrollToPosition(0)
+            }
+        }
     }
 
     override fun onCreateActivity(savedInstanceState: Bundle?) {
@@ -47,14 +63,14 @@ class PictureUploadPreviewActivity : BaseActivity() {
         setContentView(binding.root)
         setSupportActionBar(binding.toolbar)
         val photoUrls =
-            requireNotNull(intent.getStringArrayExtra(EXTRA_STREAM), { "Urls are required." })
+            requireNotNull(intent.getStringArrayExtra(EXTRA_STREAM)) { "Urls are required." }
         binding.input.setOnSendListener {
             val extras = Intent()
             // TODO binding.composeBar.extraLinkInfo?.let { info -> message.addLinkInfo(info) }
             if (binding.input.composeText?.toString()?.trim()?.isNotEmpty() == true) {
                 extras.putExtra(EXTRA_TEXT, binding.input.composeText!!.toString())
             }
-            extras.putExtra(EXTRA_STREAM, photoUrls)
+            extras.putExtra(EXTRA_STREAM, getUrisStringArray())
             setResult(Activity.RESULT_OK, extras)
             finish()
         }
@@ -63,13 +79,8 @@ class PictureUploadPreviewActivity : BaseActivity() {
         binding.imagesSliderSmall.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         val urisList = getUriList(photoUrls)
-        largePagerAdapter.submitList(urisList)
-        smallPagerAdapter.submitList(urisList)
-        if (urisList.size == 1) {
-            binding.imagesSliderSmall.isGone = true
-        } else {
-            binding.imagesSliderSmall.isVisible = true
-        }
+        imageUrisList.addAll(urisList)
+        setupViewPagers()
         binding.toolbar.setNavigationOnClickListener {
             setResult(Activity.RESULT_CANCELED)
             finish()
@@ -77,6 +88,19 @@ class PictureUploadPreviewActivity : BaseActivity() {
 
     }
 
+    private fun setupViewPagers() {
+        largePagerAdapter.submitList(imageUrisList)
+        smallPagerAdapter.submitList(imageUrisList)
+        if (imageUrisList.size == 1) {
+            binding.imagesSliderSmall.isGone = true
+        } else {
+            binding.imagesSliderSmall.isVisible = true
+        }
+    }
+
+    private fun getUrisStringArray():Array<String>{
+        return imageUrisList.map{it.toString()}.toTypedArray()
+    }
     companion object {
         private val TAG = PictureUploadPreviewActivity::class.java.simpleName
         fun getUriList(photoUrls: Array<String>): List<Uri> {

@@ -22,11 +22,14 @@ import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
+import android.text.InputType
 import android.view.Menu
 import android.view.MenuItem
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.appcompat.widget.SearchView
+import androidx.core.net.toFile
 import androidx.core.view.*
 import com.adityaamolbavadekar.messenger.R
 import com.adityaamolbavadekar.messenger.database.conversations.DatabaseAndroidViewModel
@@ -34,12 +37,10 @@ import com.adityaamolbavadekar.messenger.databinding.ConversationActivityBinding
 import com.adityaamolbavadekar.messenger.dialogs.Dialogs
 import com.adityaamolbavadekar.messenger.managers.CloudStorageManager
 import com.adityaamolbavadekar.messenger.managers.PrefsManager
-import com.adityaamolbavadekar.messenger.model.ConversationDraftMessage
-import com.adityaamolbavadekar.messenger.model.ConversationRecord
-import com.adityaamolbavadekar.messenger.model.MessageRecord
-import com.adityaamolbavadekar.messenger.model.Recipient
+import com.adityaamolbavadekar.messenger.model.*
 import com.adityaamolbavadekar.messenger.ui.conversation_info.ConversationInfoActivity
 import com.adityaamolbavadekar.messenger.ui.picture_upload_preview.PictureUploadPreviewActivity
+import com.adityaamolbavadekar.messenger.utils.AndroidUtils
 import com.adityaamolbavadekar.messenger.utils.Constants
 import com.adityaamolbavadekar.messenger.utils.Constants.EXTRA_CONVERSATION_ID
 import com.adityaamolbavadekar.messenger.utils.Constants.Extras.EXTRA_CONVERSATION_TYPE
@@ -49,12 +50,11 @@ import com.adityaamolbavadekar.messenger.utils.base.BaseActivity
 import com.adityaamolbavadekar.messenger.utils.extensions.asApplicationClass
 import com.adityaamolbavadekar.messenger.utils.extensions.runOnMainThread
 import com.adityaamolbavadekar.messenger.utils.logging.InternalLogger
-import com.adityaamolbavadekar.messenger.views.compose.ComposeBottomFragment
-import com.adityaamolbavadekar.messenger.views.compose.EmojiBottomFragment
 import com.adityaamolbavadekar.messenger.views.compose.EmojiPopupWindow
 import com.google.firebase.storage.StorageMetadata
+import java.io.File
 
-class ConversationActivity : BaseActivity() {
+class ConversationActivity : BaseActivity(), SearchView.OnQueryTextListener {
 
     private val windowInsetsAnimationCallback = object : WindowInsetsAnimationCompat.Callback(
         DISPATCH_MODE_STOP
@@ -90,18 +90,18 @@ class ConversationActivity : BaseActivity() {
     private val cloudStorageManager = CloudStorageManager()
     private var conversationFragment: ConversationFragment? = null
     private var latestKeyboardHeight: Int = 0
-    private var composeBottomFragment: ComposeBottomFragment? = null
-    private var bottomFragmentType = BottomFragmentType.NONE
-
-    enum class BottomFragmentType { ADD, EMOJI, NONE }
+    private var currentInputType: InputType = InputType.NONE
 
     private val activityLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             if (it.resultCode == Activity.RESULT_OK && it.data != null) {
                 val messageText = it.data!!.getStringExtra(Intent.EXTRA_TEXT) ?: ""
                 val contentUris = it.data!!.getStringArrayExtra(Intent.EXTRA_STREAM)!!
-
-                savePicture(PictureUploadPreviewActivity.getUriList(contentUris)) { uris ->
+                InternalLogger.debugInfo(
+                    TAG,
+                    "**ActivityResult**\nMessage : $messageText\nContentUris :$contentUris"
+                )
+                savePictures(PictureUploadPreviewActivity.getUriList(contentUris)) { uris ->
                     val messageRecord =
                         MessageRecord.from(me, conversationId, messageText, uris)
                     sendMessage(messageRecord)
@@ -118,6 +118,36 @@ class ConversationActivity : BaseActivity() {
             }
         }
 
+    private val documentPickerLauncher =
+        registerForActivityResult(ActivityResultContracts.GetContent()) {
+            it?.let { docUri ->
+                Dialogs.showDefiniteProgressDialog(this, p = { loader, action ->
+                    cloudStorageManager.uploadDocument(docUri,
+                        metadata = buildStorageMetadata(),
+                        onProgress = { progress ->
+                            action(progress)
+                        },
+                        onSuccess = {
+                            loader.dismiss()
+                            try {
+                                val f = AndroidUtils.saveSentDocumentFile(docUri, this)
+                            } catch (e: Exception) {
+                            }
+                            val messageRecord =
+                                MessageRecord.from(
+                                    me,
+                                    conversationId,
+                                    Attachment.from(File(docUri.path))
+                                )
+                            sendMessage(messageRecord)
+                        },
+                        onFailure = {
+                            loader.dismiss()
+                        }
+                    )
+                })
+            }
+        }
 
     override fun onCreateActivity(savedInstanceState: Bundle?) {
         super.onCreateActivity(savedInstanceState)
@@ -133,9 +163,10 @@ class ConversationActivity : BaseActivity() {
                     CONVERSATION_FRAGMENT_TAG
                 )
                 .runOnCommit {
-                    supportFragmentManager.findFragmentByTag(CONVERSATION_FRAGMENT_TAG)?.let {
-                        conversationFragment = (it as ConversationFragment)
-                    }
+                    supportFragmentManager.findFragmentByTag(CONVERSATION_FRAGMENT_TAG)
+                        ?.let {
+                            conversationFragment = (it as ConversationFragment)
+                        }
                 }
                 .commit()
         }
@@ -155,7 +186,10 @@ class ConversationActivity : BaseActivity() {
         database.getRecipientsOfConversation(conversationId)
             .observe(this) { conversationWithRecipients ->
                 viewModel.onLocalConversationDataChanged(conversationWithRecipients)
-                InternalLogger.logD(TAG, "ConversationRecipients : $conversationWithRecipients")
+                InternalLogger.logD(
+                    TAG,
+                    "ConversationRecipients : $conversationWithRecipients"
+                )
             }
 
         database.getMessages(conversationId).observe(this) {
@@ -196,29 +230,30 @@ class ConversationActivity : BaseActivity() {
             deleteDraft()
         }
 
-        /** Toggles visibility of emoji keyboard. */
         binding.composeBar.setOnEmojiButtonClickListener {
-            if (bottomFragmentType != BottomFragmentType.EMOJI) {
-                InternalLogger.logD(TAG,"setOnEmojiButtonClickListener 0")
-                KeyboardUtils.hideKeyboard(this)
-                composeBottomFragment = EmojiBottomFragment(latestKeyboardHeight) {
-                    binding.composeBar.appendComposeText(it)
-                }
-                bottomFragmentType = BottomFragmentType.EMOJI
-                addFragmentToBottom()
-            } else removeAnyAddedBottomFragments()
-        }
-
-        binding.composeBar.setOnEmojiButtonClickListener {
-            InternalLogger.logD(TAG,"setOnEmojiButtonClickListener 1")
+            currentInputType = InputType.EMOJI
+            KeyboardUtils.hideKeyboard(this)
             EmojiPopupWindow.build({
                 binding.composeBar.appendComposeText(it)
-            }, binding.root, this, latestKeyboardHeight)
+            }, binding.root, this, latestKeyboardHeight) {
+                currentInputType = InputType.NONE
+                KeyboardUtils.showKeyboard(this)
+            }
         }
 
-        /** Toggles visibility of add bottomsheet. */
+        /** Toggles visibility of add bottom sheet. */
         binding.composeBar.setOnAttachListener {
-            ComposeAddPopupWindow.build({}, binding.root, this, latestKeyboardHeight)
+            currentInputType = InputType.ATTACHMENT
+            KeyboardUtils.hideKeyboard(this)
+            ComposeAddPopupWindow.build(
+                ::onAttachItemSelected,
+                binding.root,
+                this,
+                latestKeyboardHeight
+            ) {
+                currentInputType = InputType.NONE
+                KeyboardUtils.showKeyboard(this)
+            }
         }
 
         /* Send button
@@ -236,6 +271,9 @@ class ConversationActivity : BaseActivity() {
             binding.composeBar.extraLinkInfo?.let { info -> message.addLinkInfo(info) }
             sendMessage(message)
         }
+
+        //TODO
+        binding.composeBar.setOnScheduleListener {}
 
         binding.composeBar.setOnAttachImagesListener {
             //Open image picker
@@ -304,32 +342,6 @@ class ConversationActivity : BaseActivity() {
 
     }
 
-    private fun addFragmentToBottom() {
-        supportFragmentManager.beginTransaction()
-            .replace(binding.fragmentContainer.id, composeBottomFragment!!)
-            .runOnCommit {
-                KeyboardUtils.hideKeyboard(this)
-                binding.composeBar.disableSoftInputKeyboardInput()
-            }
-            .commit()
-    }
-
-    private fun removeAnyAddedBottomFragments(showKeyboard: Boolean = true): Boolean {
-        if (composeBottomFragment == null) return false
-        composeBottomFragment?.let { fragment ->
-            bottomFragmentType = BottomFragmentType.NONE
-            supportFragmentManager.beginTransaction()
-                .remove(fragment)
-                .commit()
-        }
-        composeBottomFragment = null
-        binding.composeBar.enableSoftInputKeyboardInput()
-        if (showKeyboard) {
-            KeyboardUtils.showKeyboard(this)
-        }
-        return true
-    }
-
     private fun initWindowInsetsImeAnimations() {
         ViewCompat.setWindowInsetsAnimationCallback(
             binding.composeBar,
@@ -347,14 +359,39 @@ class ConversationActivity : BaseActivity() {
         binding.composeBar.isVisible = true
     }
 
+    private fun onAttachItemSelected(id: Int) {
+        val selection = try {
+            ComposeAddPopupWindow.ComposeAddItem.values()[id]
+        } catch (_: Exception) {
+            return
+        }
+        when (selection) {
+            ComposeAddPopupWindow.ComposeAddItem.PHOTOS -> {}
+            ComposeAddPopupWindow.ComposeAddItem.CONTACT -> {}
+            ComposeAddPopupWindow.ComposeAddItem.LOCATION -> {}
+            ComposeAddPopupWindow.ComposeAddItem.CAMERA -> {}
+            ComposeAddPopupWindow.ComposeAddItem.GIFS -> {}
+            ComposeAddPopupWindow.ComposeAddItem.FILES -> {}
+            ComposeAddPopupWindow.ComposeAddItem.STICKERS -> {}
+            ComposeAddPopupWindow.ComposeAddItem.DOCUMENTS -> {
+                documentPickerLauncher.launch("*/*")
+            }
+        }
+    }
+
     /**
      * Sends message with messageSender according to the type of conversation like Group,Self,P2P.
      * */
     private fun sendMessage(message: MessageRecord) {
-        viewModel.sendMessage(message) {
-            binding.composeBar.doOnMessageSent()
-            conversationFragment?.onNewMessageSent()
-        }
+        viewModel.sendMessage(message)
+            .addOnSuccessListener {
+                binding.composeBar.doOnMessageSent()
+                conversationFragment?.onNewMessageSent()
+            }
+            .addOnFailureListener {
+                binding.composeBar.doOnMessageSent()
+                conversationFragment?.onNewMessageSent()
+            }
     }
 
     private fun deleteDraft() {
@@ -400,7 +437,12 @@ class ConversationActivity : BaseActivity() {
             }
 
             binding.titleSubtitleHolder.setOnClickListener {
-                startActivity(ConversationInfoActivity.createNewIntent(this, conversation!!))
+                startActivity(
+                    ConversationInfoActivity.createNewIntent(
+                        this,
+                        conversation!!
+                    )
+                )
             }
 
         }
@@ -417,7 +459,7 @@ class ConversationActivity : BaseActivity() {
     override fun onBackPressed() {
         super.onBackPressed()
         if (!closeImeIfVisible()) {
-            if (!removeAnyAddedBottomFragments(false)) finish()
+            if (currentInputType == InputType.NONE) finish()
         }
     }
 
@@ -429,37 +471,110 @@ class ConversationActivity : BaseActivity() {
         }
     }
 
-    private fun savePicture(contentUris: List<Uri>, onSuccess: (List<String>) -> Unit) {
+    private fun buildStorageMetadata(): StorageMetadata {
+        return StorageMetadata.Builder()
+            .setCustomMetadata("uid", me.uid)
+            .setCustomMetadata("conversationId", conversationId)
+            .setCustomMetadata(
+                "conversationType",
+                conversation!!.conversationType().toString()
+            )
+            .build()
+    }
+
+    private fun savePictures(contentUris: List<Uri>, onSuccess: (List<String>) -> Unit) {
         val loader = Dialogs.showLoadingDialog(this)
         val uploadedReturnUri = mutableListOf<String>()
-        for ((index, uri) in contentUris.withIndex()) {
-            cloudStorageManager.savePicture(uri,
-                StorageMetadata.Builder()
-                    .setCustomMetadata("uid", me.uid)
-                    .setCustomMetadata("conversationId", conversationId)
-                    .setCustomMetadata(
-                        "isGroup",
-                        if (conversation!!.isGroup) "true" else "false"
-                    )
-                    .setCustomMetadata("isP2P", if (conversation!!.isP2P) "true" else "false")
-                    .build(),
-                object : OnResponseCallback<Uri, Exception> {
-                    override fun onSuccess(t: Uri) {
-                        uploadedReturnUri.add(t.toString())
-                        if (index == contentUris.lastIndex) {
-                            loader.dismiss()
-                            onSuccess(uploadedReturnUri)
-                        }
-                    }
-
-                    override fun onFailure(e: Exception) {
+        val responseCallback = { index: Int ->
+            object : OnResponseCallback<Uri, Exception> {
+                override fun onSuccess(t: Uri) {
+                    uploadedReturnUri.add(t.toString())
+                    if (index == contentUris.lastIndex) {
                         loader.dismiss()
-                        showToastMessage(R.string.oops_something_went_wrong_try_again_later)
-                        return
+                        onSuccess(uploadedReturnUri)
                     }
                 }
+
+                override fun onFailure(e: Exception) {
+                    loader.dismiss()
+                    showToastMessage(R.string.oops_something_went_wrong_try_again_later)
+                    return
+                }
+            }
+        }
+        contentUris.forEachIndexed { index, uri ->
+            cloudStorageManager.savePicture(
+                uri,
+                buildStorageMetadata(),
+                responseCallback(index)
             )
         }
+
+    }
+
+    override fun onPause() {
+        super.onPause()
+        saveDraft()
+        viewModel.executeOnPause()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        if (currentInputType != InputType.NONE) {
+            binding.composeBar.disableSoftInputKeyboardInput()
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        viewModel.executeOnDestroy()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.conversation_fragment, menu)
+        menu.let {
+            it.findItem(R.id.action_add_reply)?.let { item ->
+                item.isVisible =
+                    (InternalLogger.isDebugBuild && conversation?.isGroup == true)
+            }
+            it.findItem(R.id.action_start_voice_call)?.let { item ->
+                item.isVisible = Constants.VOICE_CALL_SUPPORTED
+            }
+        }
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.action_add_reply -> {
+                val list = viewModel.messages.value!!
+                if (list.isEmpty() || conversation?.isGroup == false) return true
+                val last = list.first()
+                val sender = groupRecipients.random()
+                val messageRecord = MessageRecord.createCopyOf(
+                    last,
+                    sender.uid,
+                    sender.username,
+                    System.currentTimeMillis()
+                )
+                viewModel.sendMessage(messageRecord, false)
+            }
+            R.id.action_search -> {
+                (item.actionView as SearchView).apply {
+                    setOnQueryTextListener(this@ConversationActivity)
+                    setOnCloseListener {
+                        viewModel.stopSearch()
+                        true
+                    }
+                }
+            }
+        }
+
+        return super.onOptionsItemSelected(item)
+    }
+
+    override fun shouldSupportFullscreen(): Boolean {
+        return true
     }
 
     companion object {
@@ -476,7 +591,7 @@ class ConversationActivity : BaseActivity() {
         fun createNewIntent(context: Context, conversation: ConversationRecord): Intent {
             val i = Intent(context, ConversationActivity::class.java)
                 .putExtra(EXTRA_CONVERSATION_ID, conversation.conversationId)
-                .putExtra(Constants.Extras.EXTRA_CONVERSATION_TYPE, conversation.conversationType())
+                .putExtra(EXTRA_CONVERSATION_TYPE, conversation.conversationType())
             if (conversation.isP2P) {
                 i.putExtra(Constants.Extras.EXTRA_USER_UID, conversation.p2PRecipientUid())
             }
@@ -487,55 +602,13 @@ class ConversationActivity : BaseActivity() {
         private const val CONVERSATION_FRAGMENT_TAG = "conversation_fragment"
     }
 
-    override fun onPause() {
-        super.onPause()
-        saveDraft()
-        viewModel.executeOnPause()
-    }
+    enum class InputType { ATTACHMENT, EMOJI, NONE }
 
-    override fun onStart() {
-        super.onStart()
-        if (composeBottomFragment != null && bottomFragmentType != BottomFragmentType.NONE) {
-            binding.composeBar.disableSoftInputKeyboardInput()
-        }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        viewModel.executeOnDestroy()
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.conversation_fragment, menu)
-        menu.let {
-            it.findItem(R.id.action_add_reply)?.let { item ->
-                if (InternalLogger.isDebugBuild && conversation?.isGroup == true) {
-                    item.isVisible = true
-                }
-            }
-        }
+    override fun onQueryTextSubmit(query: String?): Boolean {
+        viewModel.search(query)
         return true
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.id.action_add_reply) {
-            val list = viewModel.messages.value!!
-            if (list.isEmpty() || conversation?.isGroup == false) return true
-            val last = list.first()
-            val sender = groupRecipients.random()
-            val messageRecord = MessageRecord.createCopyOf(
-                last,
-                sender.uid,
-                sender.username,
-                System.currentTimeMillis()
-            )
-            viewModel.sendMessage(messageRecord, false) {}
-        }
-        return super.onOptionsItemSelected(item)
-    }
-
-    override fun shouldSupportFullscreen(): Boolean {
-        return true
-    }
+    override fun onQueryTextChange(newText: String?): Boolean = false
 
 }

@@ -16,10 +16,17 @@
 
 package com.adityaamolbavadekar.messenger.utils
 
+import android.content.Context
+import com.adityaamolbavadekar.messenger.model.Id
 import com.adityaamolbavadekar.messenger.utils.extensions.simpleDateFormat
+import com.adityaamolbavadekar.messenger.utils.logging.InternalLogger
+import java.io.File
 import java.util.*
 
 object Constants {
+
+    const val VOICE_CALL_SUPPORTED = false
+
 
     const val CONTACTS_SYNC_NOT_PROMPTED: Int = 1
     const val CONTACTS_SYNC_ALLOWED: Int = 2
@@ -47,13 +54,74 @@ object Constants {
     }
 
     internal object TimestampFormats {
+        const val NATURAL_FILE_NAME_FORMAT = "yyyyMMdd_HHmmss"
         const val MESSAGE_TIMESTAMP_FORMAT = "h:mm a"
         const val TIMESTAMP_FORMAT_DAY = "d"
         const val TIMESTAMP_FORMAT_DAY_MONTH = "d MMMM "
-        const val TIMESTAMP_FORMAT_DAY_MONTH_YEAR = "E d MMMM, YYYY"
+        const val TIMESTAMP_FORMAT_DAY_MONTH_YEAR = "E d MMMM, yyyy"
         const val TIMESTAMP_FORMAT_FULL = "E, d MMMM YYYY, h:mm:ss"
-        const val UNDERSCORED_TIMESTAMP_FORMAT_FULL = "E_d_MMMM_YYYY_h_mm_ss"
-        const val SLASHED_TIMESTAMP_FORMAT_FULL = "d/MM/YYYY"
+        const val UNDERSCORED_TIMESTAMP_FORMAT_FULL = "E_d_MMMM_yyyy_h_mm_ss"
+        const val SLASHED_TIMESTAMP_FORMAT_FULL = "d/MM/yyyy"
+    }
+
+    internal object AppDirectories {
+        private const val NAME_PARENT_MEDIA_DIR = "Messenger"
+        private const val NAME_PARENT_IMAGES_DIR = NAME_PARENT_MEDIA_DIR + "/Messenger Images"
+        private const val NAME_PARENT_VIDEOS_DIR = NAME_PARENT_MEDIA_DIR + "/Messenger Videos"
+        private const val NAME_PARENT_DOCS_DIR = NAME_PARENT_MEDIA_DIR + "/Messenger Documents"
+        private const val NAME_PARENT_SENT_DOCS_DIR = NAME_PARENT_DOCS_DIR + "/Sent"
+
+        fun createDefaultDirs(context: Context){
+            try {
+                getMediaDir(context)
+                getDocsDir(context)
+                getImagesDir(context)
+                getVideosDir(context)
+            } catch (e: Exception) {
+                InternalLogger.logE("Constants","Unable create dirs",e)
+            }
+        }
+
+        fun getMediaDir(context: Context): File {
+            val dir =
+                AndroidUtils.getApplicationMediaDirectory(context).absolutePath + "/" + NAME_PARENT_MEDIA_DIR
+            val f = File(dir)
+            if (!f.exists()) f.mkdir()
+            return f
+        }
+
+        fun getSentDocsDir(context: Context): File {
+            val dir =
+                AndroidUtils.getApplicationMediaDirectory(context).absolutePath + "/" + NAME_PARENT_SENT_DOCS_DIR
+            val f = File(dir)
+            if (!f.exists()) f.mkdirs()
+            return f
+        }
+
+        fun getDocsDir(context: Context): File {
+            val dir =
+                AndroidUtils.getApplicationMediaDirectory(context).absolutePath + "/" + NAME_PARENT_DOCS_DIR
+            val f = File(dir)
+            if (!f.exists()) f.mkdirs()
+            return f
+        }
+
+        fun getImagesDir(context: Context): File {
+            val dir =
+                AndroidUtils.getApplicationMediaDirectory(context).absolutePath + "/" + NAME_PARENT_IMAGES_DIR
+            val f = File(dir)
+            if (!f.exists()) f.mkdirs()
+            return f
+        }
+
+        fun getVideosDir(context: Context): File {
+            val dir =
+                AndroidUtils.getApplicationMediaDirectory(context).absolutePath + "/" + NAME_PARENT_VIDEOS_DIR
+            val f = File(dir)
+            if (!f.exists()) f.mkdirs()
+            return f
+        }
+
     }
 
     internal object CloudPaths {
@@ -69,6 +137,7 @@ object Constants {
         private const val CLOUD_PATH_PROPERTIES = "properties"
         private const val CLOUD_PATH_CONVERSATIONS = "conversations"
         private const val CLOUD_PATH_PICTURES = "pictures"
+        private const val CLOUD_PATH_DOCUMENTS = "documents"
         private const val CLOUD_PATH_PRESENCE_STATUS = "presenceStatus"
 
         fun getUsersPath(): String {
@@ -116,11 +185,15 @@ object Constants {
         }
 
         fun getConversationPicturesDocument(): String {
-            return ("$CLOUD_PATH_PICTURES/PIC_" +
+            return ("$CLOUD_PATH_PICTURES/PIC_" + Id.get(5) + "_" +
                     simpleDateFormat(
-                                        System.currentTimeMillis(),
-                                        TimestampFormats.UNDERSCORED_TIMESTAMP_FORMAT_FULL
-                                    ).uppercase(Locale.getDefault()))
+                        System.currentTimeMillis(),
+                        TimestampFormats.UNDERSCORED_TIMESTAMP_FORMAT_FULL
+                    ).uppercase(Locale.getDefault()))
+        }
+
+        fun getConversationDocumentPath(fileName: String): String {
+            return ("$CLOUD_PATH_DOCUMENTS/" + fileName)
         }
 
         fun getPresenceStatusRootPath(): String {
@@ -134,14 +207,17 @@ object Constants {
     }
 
     internal object FcmMessaging {
-        const val FCM_MESSAGING_BASE_URL = "https://fcm.googleapis.com/fcm/send"
-        const val FCM_MESSAGING_SERVER_KEY =com.adityaamolbavadekar.messenger.BuildConfig.FCM_MESSAGING_SERVER_KEY
-        const val FCM_MESSAGING_CONTENT_TYPE ="application/json"
+        const val FCM_MESSAGING_BASE_URL = "https://fcm.googleapis.com/fcm/send/"
+        const val FCM_MESSAGING_SERVER_KEY =
+            com.adityaamolbavadekar.messenger.BuildConfig.FCM_MESSAGING_SERVER_KEY
+        const val FCM_MESSAGING_CONTENT_TYPE = "application/json"
     }
 
     internal object Application {
-        const val TERMS_LINK = "https://github.com/AdityaBavadekar/Messenger/blob/main/PrivacyPolicy.md"
-        const val POLICY_LINK = "https://github.com/AdityaBavadekar/Messenger/blob/main/PrivacyPolicy.md"
+        const val TERMS_LINK =
+            "https://github.com/AdityaBavadekar/Messenger/blob/main/PrivacyPolicy.md"
+        const val POLICY_LINK =
+            "https://github.com/AdityaBavadekar/Messenger/blob/main/PrivacyPolicy.md"
     }
 
     internal object FilesNames {

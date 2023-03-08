@@ -24,6 +24,13 @@ class Id {
             return UUID.randomUUID().toString()
         }
 
+        fun get(length: Int): String {
+            val id = get()
+            return if (length > 0 && length < id.length - 1)
+                id.subSequence(0..length).toString()
+            else id
+        }
+
         fun getSpecial(): String {
             val id1 = get()
             val len = id1.length

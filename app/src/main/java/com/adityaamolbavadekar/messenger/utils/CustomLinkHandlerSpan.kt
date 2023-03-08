@@ -91,11 +91,6 @@ class CustomLinkHandlerSpan(urlString: String) : ClickableSpan() {
             }
         }
 
-        fun ofSpan(textView: TextView, span: ClickableSpan) {
-            val s = textView.text as Spanned
-
-        }
-
         private const val URL_SPAN_ID = 1011
     }
 

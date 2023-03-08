@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~    Copyright 2023 Aditya Bavadekar
   ~
   ~    Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,8 +23,15 @@
         android:title="@string/voice_call"
         app:showAsAction="ifRoom" />
 
-     <item
-         android:id="@+id/action_add_reply"
-         android:title="Add reply" />
+    <item
+        android:id="@+id/action_search"
+        android:icon="@drawable/ic_search"
+        android:title="@string/search"
+        app:actionViewClass="androidx.appcompat.widget.SearchView"
+        app:showAsAction="ifRoom|collapseActionView" />
+
+    <item
+        android:id="@+id/action_add_reply"
+        android:title="Add reply" />
 
 </menu>

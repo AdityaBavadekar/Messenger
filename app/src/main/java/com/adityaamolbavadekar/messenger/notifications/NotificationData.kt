@@ -47,7 +47,7 @@ data class NotificationData(
                 return NotificationData(
                     "true",
                     senderName,
-                    message?:"",
+                    message ?: "",
                     timestamp.toString(),
                     senderName,
                     senderUid,
@@ -73,7 +73,7 @@ data class NotificationData(
                 return NotificationData(
                     "true",
                     groupName,
-                    message?:"",
+                    message ?: "",
                     timestamp.toString(),
                     senderName,
                     senderUid,

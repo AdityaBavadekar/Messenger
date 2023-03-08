@@ -26,8 +26,8 @@ abstract class BaseListAdapter<T, VH : BaseItemHolder<T>>(
 ) :
     ListAdapter<T, VH>(diffUtil) {
 
-    fun setOnClickListener(callback: BaseItemHolder.OnItemClickCallback<T>?){
-        this.onItemClickCallback= callback
+    fun setOnClickListener(callback: BaseItemHolder.OnItemClickCallback<T>?) {
+        this.onItemClickCallback = callback
     }
 
     /*START Selection*/
@@ -37,7 +37,8 @@ abstract class BaseListAdapter<T, VH : BaseItemHolder<T>>(
     }
 
     fun getItemSelectionTracker(): SelectionTracker<Long> {
-        return this.selectionTracker?:throw NullPointerException("selectionTracker was requested but was null.")
+        return this.selectionTracker
+            ?: throw NullPointerException("selectionTracker was requested but was null.")
     }
     /*END Selection*/
 

@@ -59,7 +59,6 @@
 
     <style name="Messenger.Widget.Appbar.ConversationStyle" parent="Messenger.Widget.Appbar.Surface">
         <item name="elevation">@dimen/appbar_elevation</item>
-        <item name="android:background">@color/color_conversation_appbar</item>
     </style>
 
     <style name="Messenger.Widget.AvatarImageView.Default" parent="android:Widget.ImageButton">

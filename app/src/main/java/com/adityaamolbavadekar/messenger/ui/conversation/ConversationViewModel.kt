@@ -24,12 +24,16 @@ import com.adityaamolbavadekar.messenger.managers.CloudDatabaseManager
 import com.adityaamolbavadekar.messenger.model.*
 import com.adityaamolbavadekar.messenger.notifications.NotificationData
 import com.adityaamolbavadekar.messenger.notifications.NotificationSender
-import com.adityaamolbavadekar.messenger.utils.Constants
 import com.adityaamolbavadekar.messenger.utils.OnResponseCallback
 import com.adityaamolbavadekar.messenger.utils.extensions.findFirstMessage
 import com.adityaamolbavadekar.messenger.utils.extensions.getDateStub
 import com.adityaamolbavadekar.messenger.utils.extensions.runOnIOThread
 import com.adityaamolbavadekar.messenger.utils.logging.InternalLogger
+import com.google.android.gms.tasks.Task
+import com.google.android.gms.tasks.TaskCompletionSource
+import com.google.firebase.database.ChildEventListener
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import kotlinx.coroutines.Job
 
 class ConversationViewModel : ViewModel() {
@@ -56,6 +60,8 @@ class ConversationViewModel : ViewModel() {
     private val _conversationTitle: MutableLiveData<String> =
         MutableLiveData("")
     val conversationTitle: LiveData<String> = _conversationTitle
+    private val _searchData: MutableLiveData<SearchData?> = MutableLiveData(null)
+    val searchData: LiveData<SearchData?> = _searchData
     private lateinit var database: DatabaseAndroidViewModel
     private val messageSender = MessageSender()
     private val cloudDatabaseManager = CloudDatabaseManager()
@@ -141,24 +147,14 @@ class ConversationViewModel : ViewModel() {
     }
 
     private fun markAsNotSent(m: MessageRecord) = runOnIOThread {
-        val l = _messages.value!!.toMutableList()
-        val i = l.indexOf(m)
-        if (i != -1) {
-            m.markAsNotSent()
-            l[i] = m
-        }
-        _messages.postValue(l.toList())
+        m.markAsNotSent()
+        database.insertOrUpdateMessage(m)
         InternalLogger.logD("MessageStatus", "MarkedAs : [NOT_SENT]")
     }
 
     private fun marksAsSent(m: MessageRecord) = runOnIOThread {
-        val l = _messages.value!!.toMutableList()
-        val i = l.indexOf(m)
-        if (i != -1) {
-            m.markAsSent()
-            l[i] = m
-        }
-        _messages.postValue(l.toList())
+        m.markAsSent()
+        database.insertOrUpdateMessage(m)
         InternalLogger.logD("MessageStatus", "MarkedAs : [SENT]")
     }
 
@@ -205,24 +201,28 @@ class ConversationViewModel : ViewModel() {
     }
 
     private fun createDateHeaders(list: List<MessageRecord>): Job {
-        return generateDateHeaders(list)
+        return runOnIOThread {
+            val timestamps = messages.value!!.filter { it.isTimestampHeader() }
+            val newList = TimestampsGenerator.generate(list, timestamps)
+            database.insertOrUpdateMessages(newList)
+        }
+//        return generateDateHeaders(list)
     }
 
     private fun generateDateHeaders(list: List<MessageRecord>): Job {
         return runOnIOThread {
             val newList = mutableListOf<MessageRecord>()
             val mList = list.sortedBy { it.timestamp }
-            if (mList.lastIndex == 0) {
-                //Contains only one message
-            }
             mList
                 .forEachIndexed { index, messageRecord ->
-                    if (messageRecord.isTimestampHeader()) return@forEachIndexed
+                    if (messageRecord.isTimestampHeader()) {
+                        newList.add(messageRecord)
+                        return@forEachIndexed
+                    }
 
                     val currentTimestampString = getDateStub(messageRecord.timestamp)
                     // Previous index is +1 as we set reverseLayout=true
                     val prev = list.getOrNull(index + 1)
-
                     if (index == list.lastIndex) {
                         //index is list's lastIndex means that there is no previous message, so we first add
                         //the message and then a timestamp for current message.
@@ -270,6 +270,11 @@ class ConversationViewModel : ViewModel() {
             .observeMessagesFromDatabase(
                 me.uid, p2pUid, onGetObservedMessagesResponseCallback
             )
+        if (InternalLogger.isDebugBuild) {
+            messagesManager.observeMessagesFromDatabaseV2(
+                me.uid, p2pUid, childEventListener
+            )
+        }
         if (observeStatus) {
             statusManager.observeStatus(p2pUid) {
                 _status.postValue(it)
@@ -298,9 +303,14 @@ class ConversationViewModel : ViewModel() {
 
     fun sendMessage(
         message: MessageRecord,
-        sendNotifications: Boolean = true,
-        invokeBlock: () -> Unit
-    ) {
+        sendNotifications: Boolean = true
+    ): Task<Void> {
+        val source = TaskCompletionSource<Void>()
+        /*if (!InternetManager.isAvailable) {
+            markAsNotSent(message)
+            source.setException(NetworkErrorException())
+            return source.task
+        }*/
         lastMessage = message
         val conversation = conversationWithRecipients.value!!.conversationRecord
         database.insertOrUpdateMessage(message)
@@ -312,25 +322,25 @@ class ConversationViewModel : ViewModel() {
                 messageSender.sendP2PMessage(
                     message,
                     conversation.recipientUids.last()
-                ) { onMessageSaved(it, sendNotifications) }
+                ) {
+                    onMessageSaved(it, sendNotifications)
+                }
             }
             conversation.isSelf -> {
                 messageSender.sendSelfMessage(message) { onMessageSaved(it, sendNotifications) }
             }
         }
-        invokeBlock()
+        source.setResult(null)
+        return source.task
     }
 
     private fun onMessageSaved(isMessageSaved: Boolean, sendNotifications: Boolean) {
         lastMessage?.let { messageRecord ->
             if (isMessageSaved) {
                 marksAsSent(messageRecord)
-                if (!sendNotifications) {
-                    return onShouldSendNotification(messageRecord)
-                } else return
-            } else {
-                markAsNotSent(messageRecord)
-            }
+                if (sendNotifications) onShouldSendNotification(messageRecord)
+                else return
+            } else markAsNotSent(messageRecord)
         }
     }
 
@@ -358,7 +368,7 @@ class ConversationViewModel : ViewModel() {
             NotificationSender.sendNotification(data, recipients)
         } catch (e: Exception) {
             InternalLogger.logE(
-                "ChatViewModel",
+                TAG,
                 "Unable to send notification to other person.",
                 e
             )
@@ -372,11 +382,13 @@ class ConversationViewModel : ViewModel() {
 
     fun delete(messageRecord: MessageRecord, forEveryone: Boolean) {
         if (forEveryone) {
-            if(conversationType == ConversationRecord.CONVERSATION_TYPE_P2P){
+            if (conversationType == ConversationRecord.CONVERSATION_TYPE_P2P) {
                 val p2pUid = conversationWithRecipients.value!!.conversationRecord.p2PRecipientUid()
-                messageDeleter.deleteForEveryoneP2P(p2pUid,messageRecord)
+                messageDeleter.deleteForEveryoneP2P(p2pUid, messageRecord)
             }
-            if(conversationType == ConversationRecord.CONVERSATION_TYPE_GROUP)messageDeleter.deleteForEveryoneGroup(messageRecord)
+            if (conversationType == ConversationRecord.CONVERSATION_TYPE_GROUP) messageDeleter.deleteForEveryoneGroup(
+                messageRecord
+            )
         } else {
             if (conversationType == ConversationRecord.CONVERSATION_TYPE_P2P) {
                 val p2pUid = conversationWithRecipients.value!!.conversationRecord.p2PRecipientUid()
@@ -384,6 +396,45 @@ class ConversationViewModel : ViewModel() {
             }
         }
     }
+
+    fun stopSearch() {
+        _searchData.postValue(null)
+    }
+
+    fun search(query: String?) {
+        if (query != null && query.trim().isNotEmpty()) {
+            val searchMessages = mutableListOf<Int>()
+            messages.value!!.forEachIndexed { index, m ->
+                if (m.containsSearchQuery(query))
+                    searchMessages.add(index)
+            }
+            _searchData.postValue(SearchData(query, searchMessages))
+        }
+    }
+
+    private val childEventListener = object : ChildEventListener {
+        override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
+            //val m = snapshot.getValue<MessageRecord>()
+            InternalLogger.debugInfo(TAG, "childEventListener.onChildAdded : ${snapshot.ref}")
+        }
+
+        override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
+            InternalLogger.debugInfo(TAG, "childEventListener.onChildChanged : ${snapshot.ref}")
+        }
+
+        override fun onChildRemoved(snapshot: DataSnapshot) {
+            InternalLogger.debugInfo(TAG, "childEventListener.onChildRemoved : ${snapshot.ref}")
+        }
+
+        override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
+            InternalLogger.debugInfo(TAG, "childEventListener.onChildMoved : ${snapshot.ref}")
+        }
+
+        override fun onCancelled(error: DatabaseError) {
+            InternalLogger.logE(TAG, "childEventListener.onCancelled", error.toException())
+        }
+    }
+
 
     companion object {
         private val TAG = ConversationViewModel::class.java.simpleName

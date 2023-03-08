@@ -117,7 +117,8 @@ class MessengerAccountAuthenticator(private val context: Context) :
         }
 
         fun account(context: Context): Account? {
-            return accountManager(context).getAccountsByType(MessengerAccountInfo.ACCOUNT_TYPE).firstOrNull()
+            return accountManager(context).getAccountsByType(MessengerAccountInfo.ACCOUNT_TYPE)
+                .firstOrNull()
         }
 
         fun accountManager(context: Context): AccountManager {

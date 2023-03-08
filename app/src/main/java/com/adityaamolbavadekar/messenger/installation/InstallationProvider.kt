@@ -70,7 +70,7 @@ class InstallationProvider : ContentProvider() {
         return 0
     }
 
-    companion object{
+    companion object {
         private val TAG = InstallationProvider::class.java.simpleName
     }
 }

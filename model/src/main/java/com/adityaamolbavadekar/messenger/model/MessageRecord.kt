@@ -23,9 +23,10 @@ import androidx.room.PrimaryKey
 data class MessageRecord(
     @PrimaryKey(autoGenerate = false)
     override val id: String = Id.get(),
-    override var conversationId: String="",
+    override var conversationId: String = "",
     override var message: String? = null,
-    override val attachments: List<String> = listOf(),
+    override var attachments: List<String> = listOf(),
+    override var documentAttachment: Attachment? = null,
     override var reactions: MutableList<ReactionRecord> = mutableListOf(),
     override val timestamp: Long = System.currentTimeMillis(),
     override var isDeleted: Boolean = false,
@@ -43,6 +44,7 @@ data class MessageRecord(
     conversationId,
     message,
     attachments,
+    documentAttachment,
     reactions,
     timestamp,
     isDeleted,
@@ -71,6 +73,22 @@ data class MessageRecord(
                 message = text,
                 attachments = urls,
                 reactions = reactions,
+                senderUid = sender.uid,
+                senderUsername = sender.username,
+                viewedBy = listOf(sender.uid)
+            )
+        }
+
+        fun from(
+            sender: Recipient,
+            conversationId: String,
+            attachment: Attachment
+        ): MessageRecord {
+            return MessageRecord(
+                conversationId = conversationId,
+                message = null,
+                documentAttachment = attachment,
+                reactions = mutableListOf(),
                 senderUid = sender.uid,
                 senderUsername = sender.username,
                 viewedBy = listOf(sender.uid)

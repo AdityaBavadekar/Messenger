@@ -20,6 +20,7 @@ import androidx.room.TypeConverter
 import com.adityaamolbavadekar.messenger.model.LinkPreviewInfo
 import com.adityaamolbavadekar.messenger.model.MessageReplyRecord
 import com.adityaamolbavadekar.messenger.model.ReactionRecord
+import com.adityaamolbavadekar.messenger.model.Attachment
 import com.adityaamolbavadekar.messenger.model.Recipient
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -98,6 +99,23 @@ class ModelConverters {
         fun toMessageReplyRecord(json: String?): MessageReplyRecord? {
             if (json == null) return null
             val type = object : TypeToken<MessageReplyRecord>() {}.type
+            return Gson().fromJson(json, type)
+        }
+
+
+        @JvmStatic
+        @TypeConverter
+        fun fromDocumentAttachment(list: Attachment?): String? {
+            if (list == null) return null
+            val type = object : TypeToken<Attachment>() {}.type
+            return Gson().toJson(list, type)
+        }
+
+        @JvmStatic
+        @TypeConverter
+        fun toDocumentAttachment(json: String?): Attachment? {
+            if (json == null) return null
+            val type = object : TypeToken<Attachment>() {}.type
             return Gson().fromJson(json, type)
         }
 

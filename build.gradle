@@ -16,3 +16,7 @@ plugins {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
+task bumpVersion(type:Exec,description :"Upgrade version name and version code." ,group :"Versioning") doLast(){
+    commandLine 'python ' , 'bumpVersion.py'
+}

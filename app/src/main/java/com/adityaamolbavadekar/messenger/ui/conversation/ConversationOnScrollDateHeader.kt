@@ -18,17 +18,13 @@ package com.adityaamolbavadekar.messenger.ui.conversation
 
 import android.content.Context
 import android.view.View
-import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
-import android.view.animation.TranslateAnimation
 import android.widget.TextView
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
-import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import com.adityaamolbavadekar.messenger.R
 import com.adityaamolbavadekar.messenger.utils.extensions.getDate
-import java.util.*
 
 class ConversationOnScrollDateHeader(
     private val textView: TextView,
@@ -73,6 +69,7 @@ class ConversationOnScrollDateHeader(
                 view.isGone = true
                 isHiding = false
             }
+
             override fun onAnimationRepeat(animation: Animation?) {}
         })
         view.startAnimation(animation)

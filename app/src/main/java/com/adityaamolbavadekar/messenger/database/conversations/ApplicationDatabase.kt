@@ -17,10 +17,7 @@
 package com.adityaamolbavadekar.messenger.database.conversations
 
 import android.content.Context
-import androidx.room.Database
-import androidx.room.Room
-import androidx.room.RoomDatabase
-import androidx.room.TypeConverters
+import androidx.room.*
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.adityaamolbavadekar.messenger.model.*
 import com.adityaamolbavadekar.messenger.utils.logging.InternalLogger
@@ -33,10 +30,17 @@ import com.adityaamolbavadekar.messenger.utils.logging.InternalLogger
         MessageRecord::class,
         ReactionRecord::class,
         Recipient::class,
+        Attachment::class,
         ConversationRecordRecipientCrossRef::class,
         ConversationDraftMessage::class
     ],
     version = 1,
+    autoMigrations = [
+        AutoMigration(
+            from = 1,
+            to = 2
+        )
+    ],
     exportSchema = true
 )
 
@@ -62,10 +66,10 @@ abstract class ApplicationDatabase : RoomDatabase() {
             }
         }
 
-        private val callback = object: RoomDatabase.Callback() {
+        private val callback = object : Callback() {
             override fun onCreate(db: SupportSQLiteDatabase) {
                 super.onCreate(db)
-                InternalLogger.logD("RoomDatabase.Callback","Database created")
+                InternalLogger.logD("RoomDatabase.Callback", "Database created")
             }
         }
 

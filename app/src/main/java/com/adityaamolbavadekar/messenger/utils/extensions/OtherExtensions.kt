@@ -97,7 +97,7 @@ fun Application.asApplicationClass(): App {
 
 fun List<MessageRecord>.findFirstMessage(): MessageRecord? {
     var index = 0
-    while (index != lastIndex){
+    while (index != lastIndex) {
         if (!get(index).isTimestampHeader()) return get(index)
         index++
     }

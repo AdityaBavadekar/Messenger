@@ -47,6 +47,7 @@ class MessagesAdapter(private val lifecycleOwner: LifecycleOwner) :
     ) {
 
     private var isGroup: Boolean = false
+    private var searchData: SearchData? = null
     private var isDebug: Boolean = InternalLogger.isDebugBuild
     private var recipients = listOf<Recipient>()
     private var conversationRecord: ConversationRecord? = null
@@ -210,6 +211,7 @@ class MessagesAdapter(private val lifecycleOwner: LifecycleOwner) :
             onReactionListener?.let { view.setOnReactionListener(it) }
             view.setSelectionTracker { getItemSelectionTracker() }
             deletionListener?.let { view.setOnDeletionListener(it) }
+            view.setSearchData(searchData)
             view.setDebug(isDebug)
             view.bind(
                 lifecycleOwner = lifecycleOwner,
@@ -270,6 +272,10 @@ class MessagesAdapter(private val lifecycleOwner: LifecycleOwner) :
 
     override fun getItemId(position: Int): Long {
         return position.toLong()
+    }
+
+    fun setSearchData(data: SearchData?) {
+        searchData = data
     }
 
     class MessagesDiffCallback : DiffUtil.ItemCallback<MessageRecord>() {

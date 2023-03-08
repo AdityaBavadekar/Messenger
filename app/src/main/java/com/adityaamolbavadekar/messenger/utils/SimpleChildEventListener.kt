@@ -17,6 +17,6 @@
 package com.adityaamolbavadekar.messenger.utils
 
 interface SimpleChildEventListener<T> {
-    fun onAdded(item:T)
+    fun onAdded(item: T)
     fun onChanged(item: T)
 }

@@ -15,8 +15,10 @@
   ~    limitations under the License.
   -->
 
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <item android:color="@color/colorWallpaperDefault" android:alpha="0.76" />
-
-</selector>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="16dp"
+    android:id="@+id/textView"
+    />

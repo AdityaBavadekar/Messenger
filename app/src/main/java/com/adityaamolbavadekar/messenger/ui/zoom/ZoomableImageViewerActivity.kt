@@ -46,7 +46,6 @@ class ZoomableImageViewerActivity : BaseActivity() {
         binding.imagesSliderLarge.currentItem = largePagerAdapter.currentList.indexOf(imageUri)
     }
 
-
     override fun onCreateActivity(savedInstanceState: Bundle?) {
         super.onCreateActivity(savedInstanceState)
         binding = ActivityPictureUploadPreviewBinding.inflate(layoutInflater)
@@ -86,6 +85,7 @@ class ZoomableImageViewerActivity : BaseActivity() {
                 .putExtra(EXTRA_TITLE, extraTitle)
                 .putExtra(EXTRA_SUBTITLE, extraSubtitle)
         }
+
         private const val TAG = "ZoomableImageViewerActivity"
         private const val EXTRA_TITLE = "extra_title"
         private const val EXTRA_SUBTITLE = "extra_subtitle"
