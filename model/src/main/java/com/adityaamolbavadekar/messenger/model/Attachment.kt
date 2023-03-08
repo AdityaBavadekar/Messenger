@@ -17,6 +17,7 @@
 package com.adityaamolbavadekar.messenger.model
 
 import android.webkit.MimeTypeMap
+import androidx.room.Ignore
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.io.File
@@ -56,6 +57,7 @@ data class Attachment(
         else Pair(SizeUnit.KB, sizeKb.toInt())
     }
 
+    @Ignore
     fun mimeType(): String? {
         return MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension)
     }
