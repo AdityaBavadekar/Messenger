@@ -83,7 +83,7 @@
                         android:orientation="horizontal"
                         android:paddingVertical="@dimen/dimen_2">
 
-                        <com.adityaamolbavadekar.messenger.views.AvatarImageView
+                        <com.adityaamolbavadekar.messenger.views.image.AvatarImageView
                             android:id="@+id/profile_picture_image_view"
                             android:layout_width="@dimen/toolbar_profile_picture_size"
                             android:layout_height="@dimen/toolbar_profile_picture_size"

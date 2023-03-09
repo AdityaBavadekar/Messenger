@@ -54,7 +54,7 @@
 
         </com.google.android.material.appbar.AppBarLayout>
 
-        <com.adityaamolbavadekar.messenger.views.AvatarImageView
+        <com.adityaamolbavadekar.messenger.views.image.AvatarImageView
             android:layout_width="@dimen/toolbar_profile_picture_size_large"
             android:layout_height="@dimen/toolbar_profile_picture_size_large"
             android:layout_gravity="center"
