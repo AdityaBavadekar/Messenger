@@ -1,7 +1,7 @@
 package com.adityaamolbavadekar.messenger.model
 
-enum class SizeUnit {
-    B, KB, MB, GB, TB;
+enum class SizeUnit(val bytes:Int) {
+    B(1), KB(1024), MB(1048576), GB(1073741824);
 
     companion object {
         fun format(size: Long): String {
