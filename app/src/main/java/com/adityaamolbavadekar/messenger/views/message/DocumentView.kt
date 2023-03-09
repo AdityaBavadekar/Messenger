@@ -78,7 +78,7 @@ class DocumentView @JvmOverloads constructor(
                 .append(" | ")
                 .append(it.readableSize().second)
                 .append(" ")
-                .append(if (it.readableSize().first.name)
+                .append(it.readableSize().first.name)
             it.extension.uppercase() + " | " + it.size.toString()
             fileNameTextView.text = it.fileNameWithExtension()
             Glide.with(imageView)
