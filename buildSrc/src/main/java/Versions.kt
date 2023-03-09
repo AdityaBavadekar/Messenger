@@ -18,8 +18,8 @@
 
 object Versions {
 
-    const val VERSION_NAME = "0.0.8" //X.Y.Z [X:Major][Y:Minor][Z:Patch]
-    const val VERSION_CODE = 18
+    const val VERSION_NAME = "0.0.9" //X.Y.Z [X:Major][Y:Minor][Z:Patch]
+    const val VERSION_CODE = 19
 
     const val COMPILE_SDK = 33
     const val BUILD_TOOLS_VERSION = "30.0.3"
