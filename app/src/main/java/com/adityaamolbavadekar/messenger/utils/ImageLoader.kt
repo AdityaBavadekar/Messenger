@@ -18,6 +18,7 @@
 
 package com.adityaamolbavadekar.messenger.utils
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.net.Uri
@@ -82,6 +83,7 @@ class ImageLoader private constructor(private val context: Context) {
         return load(uri, into, circleCrop, null, placeholderDrawable)
     }
 
+    @SuppressLint("CheckResult")
     fun load(
         uri: Uri,
         into: ImageView,
@@ -91,10 +93,8 @@ class ImageLoader private constructor(private val context: Context) {
         overrideSize: Int? = null
     ): ViewTarget<ImageView, Drawable> {
         val builder = Glide.with(context).load(uri)
-        builder.apply {
-            diskCacheStrategy(DiskCacheStrategy.ALL)
-            overrideSize?.let { override(it) }
-        }
+        builder.diskCacheStrategy(DiskCacheStrategy.ALL)
+        overrideSize?.let { builder.override(it) }
         if (circleCrop) builder.circleCrop()
         if (placeholderDrawable.isNotNull()) builder.placeholder(placeholderDrawable!!)
         if (placeholderInt.isNotNull()) builder.placeholder(placeholderInt!!)

@@ -35,6 +35,7 @@ import com.adityaamolbavadekar.messenger.managers.AuthManager
 import com.adityaamolbavadekar.messenger.managers.PrefsManager.Companion.applyFontSize
 import com.adityaamolbavadekar.messenger.managers.PrefsManager.Companion.prefs
 import com.adityaamolbavadekar.messenger.model.*
+import com.adityaamolbavadekar.messenger.model.RecyclerViewType.Companion.TYPE_HEADER
 import com.adityaamolbavadekar.messenger.utils.extensions.getDate
 import com.adityaamolbavadekar.messenger.utils.logging.InternalLogger
 import com.adityaamolbavadekar.messenger.utils.recyclerview.BaseItemHolder
@@ -76,8 +77,19 @@ class MessagesAdapter(private val lifecycleOwner: LifecycleOwner) :
     override fun getItemViewType(position: Int): Int {
         val messageRecord = getItem(position)
         return if (messageRecord.type == RecyclerViewType.TYPE_ITEM) {
-            if (messageRecord.senderUid == myUid) RecyclerViewType.TYPE_OUTGOING_ITEM
-            else RecyclerViewType.TYPE_INCOMING_ITEM
+            if (messageRecord.isSender(myUid)) {
+                if (messageRecord.isTextOnly()) {
+                    TYPE_OUTGOING_ITEM
+                } else {
+                    TYPE_OUTGOING_TEXT_ONLY_ITEM
+                }
+            } else {
+                if (messageRecord.isTextOnly()) {
+                    TYPE_INCOMING_ITEM
+                } else {
+                    TYPE_INCOMING_TEXT_ONLY_ITEM
+                }
+            }
         } else {
             messageRecord.type
         }
@@ -89,8 +101,8 @@ class MessagesAdapter(private val lifecycleOwner: LifecycleOwner) :
     ): MessageBaseItemHolder {
         inflateMessageItemLayout(parent, viewType)?.let { return it }
         return when (viewType) {
-            RecyclerViewType.TYPE_TIMESTAMP_HEADER -> TimestampHeader(parent)
-            RecyclerViewType.TYPE_HEADER -> HeaderHolder(parent)
+            TYPE_TIMESTAMP_HEADER -> TimestampHeader(parent)
+            TYPE_HEADER -> HeaderHolder(parent)
             else -> throw IllegalArgumentException("Cannot create viewHolder of type $viewType !")
         }
     }
@@ -105,18 +117,18 @@ class MessagesAdapter(private val lifecycleOwner: LifecycleOwner) :
     }
 
     private fun inflateMessageItemLayout(parent: ViewGroup, type: Int): MessageItemHolder? {
-        if (type !in RecyclerViewType.messageItemViewTypes) return null
+        if (type !in messageItemViewTypes) return null
         val messageItem: MessageItem = when (type) {
-            RecyclerViewType.TYPE_OUTGOING_TEXT_ONLY_ITEM -> {
+            TYPE_OUTGOING_TEXT_ONLY_ITEM -> {
                 inflateLayout(parent, getLayoutResForMessage(isIncoming = false, textOnly = true))
             }
-            RecyclerViewType.TYPE_OUTGOING_ITEM -> {
+            TYPE_OUTGOING_ITEM -> {
                 inflateLayout(parent, getLayoutResForMessage(isIncoming = false, textOnly = false))
             }
-            RecyclerViewType.TYPE_INCOMING_TEXT_ONLY_ITEM -> {
+            TYPE_INCOMING_TEXT_ONLY_ITEM -> {
                 inflateLayout(parent, getLayoutResForMessage(isIncoming = true, textOnly = true))
             }
-            RecyclerViewType.TYPE_INCOMING_ITEM -> {
+            TYPE_INCOMING_ITEM -> {
                 inflateLayout(parent, getLayoutResForMessage(isIncoming = true, textOnly = false))
             }
             else -> return null
@@ -283,7 +295,7 @@ class MessagesAdapter(private val lifecycleOwner: LifecycleOwner) :
             oldItem: MessageRecord,
             newItem: MessageRecord
         ): Boolean {
-            return (oldItem.id == newItem.id)
+            return oldItem.id == newItem.id
         }
 
         override fun areContentsTheSame(
@@ -296,6 +308,21 @@ class MessagesAdapter(private val lifecycleOwner: LifecycleOwner) :
 
     companion object {
         private val TAG = MessagesAdapter::class.java.simpleName
+
+        /* For Messages */
+        private const val TYPE_TIMESTAMP_HEADER = 10
+        private const val TYPE_OUTGOING_ITEM = 101
+        private const val TYPE_OUTGOING_TEXT_ONLY_ITEM = 102
+        private const val TYPE_INCOMING_ITEM = 201
+        private const val TYPE_INCOMING_TEXT_ONLY_ITEM = 202
+
+        private val messageItemViewTypes = listOf(
+            TYPE_OUTGOING_ITEM,
+            TYPE_OUTGOING_TEXT_ONLY_ITEM,
+            TYPE_INCOMING_ITEM,
+            TYPE_INCOMING_TEXT_ONLY_ITEM
+        )
+
         fun TextView.applyMessageBodyFontSize() {
             val f = when (context.prefs.getInt(PreferenceKeys.TEXT_SIZE, FontSize.MEDIUM)) {
                 FontSize.SMALL -> R.style.TextAppearance_Messenger_Message_BodySmall

@@ -19,7 +19,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/reactionsHolder"
-    style="?materialCardViewFilledStyle"
     android:maxWidth="@dimen/message_max_width"
     android:minWidth="@dimen/message_min_width"
     android:layout_width="match_parent"

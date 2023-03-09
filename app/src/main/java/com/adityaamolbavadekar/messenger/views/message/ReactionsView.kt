@@ -32,7 +32,7 @@ import com.adityaamolbavadekar.messenger.databinding.EmojiReactionItemBinding
 import com.adityaamolbavadekar.messenger.databinding.MessageReactionsIndicatorV2ItemBinding
 import com.adityaamolbavadekar.messenger.model.ReactionRecord
 import com.adityaamolbavadekar.messenger.utils.AndroidUtils
-import com.google.android.material.card.MaterialCardView
+import com.adityaamolbavadekar.messenger.utils.ColorUtils
 import java.lang.Integer.min
 
 class ReactionsView @JvmOverloads constructor(
@@ -42,7 +42,7 @@ class ReactionsView @JvmOverloads constructor(
     defStyleRes: Int = R.style.Messenger_Widget_ReactionsView
 ) : FrameLayout(context, attrs, defStyleAttr, defStyleRes) {
 
-    private val holder: MaterialCardView
+    private val holder: FrameLayout
     private val reactionsList: RecyclerView
     private val adapter: EmojiReactionsListAdapter
     private val layoutManager: GridLayoutManager
@@ -111,7 +111,11 @@ class ReactionsView @JvmOverloads constructor(
 
     private fun setReactionDataList(list: List<ReactionData>) {
         adapter.setReactionsDataList(list) {
-            if (list.isNotEmpty()) setPadding(AndroidUtils.toDP(4, context))
+            if (list.isNotEmpty()) {
+                setPadding(AndroidUtils.toDP(4, context))
+            }else{
+                setPadding(AndroidUtils.toDP(0, context))
+            }
         }
         if (list.isNotEmpty()) {
             layoutManager.spanCount = min(list.size, 4)
@@ -135,8 +139,10 @@ class ReactionsView @JvmOverloads constructor(
         class ReactionItemHolder(private val binding: EmojiReactionItemBinding) :
             RecyclerView.ViewHolder(binding.root) {
             fun bind(reaction: ReactionData) {
+                val colorUtils = ColorUtils(binding.holder.context)
                 binding.emojiTextView.text = reaction.reaction
                 binding.countTextView.text = reaction.count.toString()
+                binding.holder.setBackgroundColor(colorUtils.getPrimaryColor())
             }
         }
         override fun getItemViewType(position: Int): Int = 0
@@ -157,7 +163,7 @@ class ReactionsView @JvmOverloads constructor(
         }
     }
 
-    private class ReactionsDiffCallback() : DiffUtil.ItemCallback<ReactionData>() {
+    private class ReactionsDiffCallback : DiffUtil.ItemCallback<ReactionData>() {
 
         override fun areItemsTheSame(oldItem: ReactionData, newItem: ReactionData): Boolean {
             return oldItem.reaction == newItem.reaction

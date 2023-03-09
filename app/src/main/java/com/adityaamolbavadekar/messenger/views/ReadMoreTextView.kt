@@ -10,7 +10,7 @@ import androidx.core.text.buildSpannedString
 import androidx.core.text.inSpans
 import com.adityaamolbavadekar.messenger.R
 
-class ReadMoreClipTextView @JvmOverloads constructor(
+class ReadMoreTextView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyle: Int = 0

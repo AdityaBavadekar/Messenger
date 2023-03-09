@@ -16,77 +16,40 @@
 
 package com.adityaamolbavadekar.messenger.utils;
 
-import android.content.Context;
-import android.content.res.Resources;
-import android.content.res.TypedArray;
-import android.graphics.drawable.Drawable;
-import android.util.AttributeSet;
-import android.util.TypedValue;
+import android.content.Context
+import android.graphics.Color
+import android.util.TypedValue
+import androidx.annotation.AttrRes
+import androidx.core.content.ContextCompat
+import com.adityaamolbavadekar.messenger.R
 
-import androidx.annotation.AttrRes;
-import androidx.annotation.ColorRes;
-import androidx.annotation.DimenRes;
-import androidx.annotation.DrawableRes;
-import androidx.core.content.ContextCompat;
+class ColorUtils(private val context: Context) : ColorsUtility, Color() {
 
-import com.adityaamolbavadekar.messenger.R;
-
-public class ColorUtils {
-
-    protected Context context;
-    protected Resources resources;
-    protected AttributeSet attrs;
-
-    protected ColorUtils(Context context, AttributeSet attrs) {
-        this.context = context;
-        this.resources = context.getResources();
-        this.attrs = attrs;
+    override fun getPrimaryColor(): Int {
+        return getColorForAttribute(R.attr.colorPrimary)
     }
 
-    protected final int getSystemAccentColor() {
-        return getColorForAttribute(R.attr.colorAccent);
+    override fun getSurfaceColor(): Int {
+        return getColorForAttribute(R.attr.colorSurface)
     }
 
-    protected final int getSystemPrimaryColor() {
-        return getColorForAttribute(R.attr.colorPrimary);
+    override fun getThemeMainColor(): Int {
+        return context.resources.getColor(R.color.colorThemeBasic)
     }
 
-    protected final int getSystemPrimaryDarkColor() {
-        return getColorForAttribute(R.attr.colorPrimaryDark);
+    override fun getOppositeColor(): Int {
+        return context.resources.getColor(R.color.colorThemeOpposite)
     }
 
-    protected final int getSystemPrimaryTextColor() {
-        return getColorForAttribute(android.R.attr.textColorPrimary);
+    override fun applyAlpha(color: Int, alpha: Int): Int {
+        return androidx.core.graphics.ColorUtils.setAlphaComponent(color, alpha)
     }
 
-    protected final int getSystemHintColor() {
-        return getColorForAttribute(android.R.attr.textColorHint);
-    }
-
-    protected final int getColorForAttribute(@AttrRes int attr) {
-        TypedValue typedValue = new TypedValue();
-
-        TypedArray a = context.obtainStyledAttributes(typedValue.data, new int[]{attr});
-        int color = a.getColor(0, 0);
-        a.recycle();
-
-        return color;
-    }
-
-    protected final int getDimension(@DimenRes int dimen) {
-        return resources.getDimensionPixelSize(dimen);
-    }
-
-    protected final int getColor(@ColorRes int color) {
-        return ContextCompat.getColor(context, color);
-    }
-
-    protected final Drawable getDrawable(@DrawableRes int drawable) {
-        return ContextCompat.getDrawable(context, drawable);
-    }
-
-    protected final Drawable getVectorDrawable(@DrawableRes int drawable) {
-        return ContextCompat.getDrawable(context, drawable);
+    override fun getColorForAttribute(@AttrRes attr: Int): Int {
+        val typedValue = TypedValue()
+        context.theme.resolveAttribute(attr, typedValue, true)
+        return ContextCompat.getColor(context, typedValue.resourceId)
     }
 
 }
+

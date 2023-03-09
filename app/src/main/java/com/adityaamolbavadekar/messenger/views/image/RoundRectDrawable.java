@@ -13,7 +13,7 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package com.adityaamolbavadekar.messenger.views;
+package com.adityaamolbavadekar.messenger.views.image;
 
 import android.content.res.ColorStateList;
 import android.graphics.Canvas;

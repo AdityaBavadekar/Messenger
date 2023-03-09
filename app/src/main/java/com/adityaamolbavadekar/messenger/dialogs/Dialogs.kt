@@ -150,6 +150,7 @@ object Dialogs {
         val dialog = BottomSheetDialog(context)
         val view = DialogReactionChooserV2Binding.inflate(LayoutInflater.from(context), null, false)
         val listAdapter = EmojiBottomFragment.EmojiPagerAdapter {
+            dialog.dismiss()
             onShouldSaveReaction(it.getParsedEmoji())
         }
         view.list.adapter = listAdapter
