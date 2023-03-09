@@ -80,15 +80,15 @@ class MessagesAdapter(private val lifecycleOwner: LifecycleOwner) :
         return if (messageRecord.type == RecyclerViewType.TYPE_ITEM) {
             if (messageRecord.isSender(myUid)) {
                 if (messageRecord.isTextOnly()) {
-                    TYPE_OUTGOING_ITEM
-                } else {
                     TYPE_OUTGOING_TEXT_ONLY_ITEM
+                } else {
+                    TYPE_OUTGOING_ITEM
                 }
             } else {
                 if (messageRecord.isTextOnly()) {
-                    TYPE_INCOMING_ITEM
-                } else {
                     TYPE_INCOMING_TEXT_ONLY_ITEM
+                } else {
+                    TYPE_INCOMING_ITEM
                 }
             }
         } else {

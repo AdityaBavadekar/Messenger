@@ -76,7 +76,7 @@ class DocumentView @JvmOverloads constructor(
             textView.text = StringBuilder()
                 .append(it.extension)
                 .append(" | ")
-                .append(it.readableSize().second)
+                .append(it.readableSize().second.toString())
                 .append(" ")
                 .append(it.readableSize().first.name)
             it.extension.uppercase() + " | " + it.size.toString()

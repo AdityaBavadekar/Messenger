@@ -347,7 +347,7 @@ class MessageItem @JvmOverloads constructor(
             return
         }
 
-        checkNotNull(documentAttachmentsView) { "photoAttachmentsView cannot be null" }
+        checkNotNull(documentAttachmentsView) { "documentAttachmentsView cannot be null" }
         documentAttachmentsView!!.setDocument(requireMessageRecord().documentAttachment!!)
         documentAttachmentsView!!.setOnAttachmentClickListener {
             onDocumentAttachmentClicked(it)

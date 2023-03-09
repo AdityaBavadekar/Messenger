@@ -31,6 +31,7 @@ import com.adityaamolbavadekar.messenger.model.ConversationRecord
 import com.adityaamolbavadekar.messenger.ui.conversation.ConversationActivity
 import com.adityaamolbavadekar.messenger.utils.base.BindingHelperFragment
 import com.adityaamolbavadekar.messenger.utils.recyclerview.BaseItemHolder
+import com.adityaamolbavadekar.messenger.utils.extensions.runOnIOThread
 
 /**
  * Displays list of conversations.
@@ -61,19 +62,25 @@ class ConversationListFragment : BindingHelperFragment<ConversationListFragmentB
             adapter = conversationListAdapter
             layoutManager = linearLayoutManager
         }
-        viewModel.conversations.observe(viewLifecycleOwner) {
-            conversationListAdapter.submitList(it)
-            if (it.isEmpty()) {
-                binding.conversationRecyclerView.isGone = true
-                binding.noConversationsLayout.isVisible = true
-            } else {
-                binding.conversationRecyclerView.isVisible = true
-                binding.noConversationsLayout.isGone = true
+
+        runOnIOThread {
+            database.getConversations().collect {
+                conversationListAdapter.submitList(it)
+                if (it.isEmpty()) {
+                    binding.conversationRecyclerView.isGone = true
+                    binding.noConversationsLayout.isVisible = true
+                } else {
+                    binding.conversationRecyclerView.isVisible = true
+                    binding.noConversationsLayout.isGone = true
+                }
             }
         }
 
-        viewModel.recipients.observe(viewLifecycleOwner) {
-            conversationListAdapter.setRecipients(it)
+        
+        runOnIOThread{
+            database.getRecipients().collect {
+                 conversationListAdapter.setRecipients(it)
+            }
         }
 
         (requireActivity() as MainActivity).setOnFabClickListener {
