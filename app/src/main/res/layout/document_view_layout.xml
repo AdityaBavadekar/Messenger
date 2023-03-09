@@ -18,7 +18,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/holder"
-    style="@style/Messenger.Widget.PhotoAttachmentsView.Card"
+    style="@style/Messenger.Widget.PhotoAttachmentsView"
     android:layout_width="@dimen/message_max_width"
     android:maxWidth="@dimen/message_image_height"
     app:cardCornerRadius="@dimen/message_corner_radius"

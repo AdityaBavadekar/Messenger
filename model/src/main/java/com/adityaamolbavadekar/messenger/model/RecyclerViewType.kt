@@ -26,20 +26,7 @@ class RecyclerViewType {
         const val TYPE_HEADER = 2
         const val TYPE_PINNED_HEADER = 3
         const val TYPE_FOOTER = 4
-
-        /* For Messages */
         const val TYPE_TIMESTAMP_HEADER = 10
-        const val TYPE_OUTGOING_ITEM = 101
-        const val TYPE_OUTGOING_TEXT_ONLY_ITEM = 102
-        const val TYPE_INCOMING_ITEM = 201
-        const val TYPE_INCOMING_TEXT_ONLY_ITEM = 202
-
-        val messageItemViewTypes = listOf(
-            TYPE_OUTGOING_ITEM,
-            TYPE_OUTGOING_TEXT_ONLY_ITEM,
-            TYPE_INCOMING_ITEM,
-            TYPE_INCOMING_TEXT_ONLY_ITEM
-        )
 
     }
 

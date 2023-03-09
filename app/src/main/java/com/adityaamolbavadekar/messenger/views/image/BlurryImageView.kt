@@ -16,7 +16,7 @@
 
 @file:Suppress("DEPRECATION")
 
-package com.adityaamolbavadekar.messenger.views
+package com.adityaamolbavadekar.messenger.views.image
 
 import android.content.Context
 import android.graphics.Bitmap

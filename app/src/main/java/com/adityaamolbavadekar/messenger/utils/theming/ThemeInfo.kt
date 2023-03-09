@@ -63,5 +63,18 @@ enum class ThemeInfo(val id: Int, private val nightMode: Int) {
                 else -> SystemDefault
             }
         }
+
+        fun isDark(context: Context): Boolean {
+            return context.getPreferredThemeInfo() == Dark
+        }
+
+        fun isLight(context: Context): Boolean {
+            return context.getPreferredThemeInfo() == Light
+        }
+
+        fun isSystem(context: Context): Boolean {
+            return context.getPreferredThemeInfo() == SystemDefault
+        }
+
     }
 }

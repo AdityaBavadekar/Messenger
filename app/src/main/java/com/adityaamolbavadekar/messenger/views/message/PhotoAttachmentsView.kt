@@ -128,7 +128,7 @@ class PhotoAttachmentsView @JvmOverloads constructor(
                 //imageView3.isVisible = true
                 //imageLoader.load(attachments[3], imageView3, placeholderDrawable)
                 imageView3Holder.isVisible = true
-                imageView3BlurTextView.text = "+${imagesSize - 4}"
+                imageView3BlurTextView.text = "+${imagesSize - 3}"
                 imageView3BlurTextView.isVisible = true
                 linear1.isVisible = true
             }
@@ -154,7 +154,5 @@ class PhotoAttachmentsView @JvmOverloads constructor(
         attachments.clear()
         notifyDataChanged()
     }
-
-    fun getAddAttachments() = attachments
 
 }

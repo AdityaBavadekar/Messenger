@@ -18,5 +18,6 @@
 <lint>
     <issue id="UselessParent" severity="ignore" />
     <issue id="UseCompoundDrawables" severity="ignore" />
+    <issue id="RedundantLabel" severity="ignore"/>
     <issue id="HardcodedText" severity="warning" />
 </lint>

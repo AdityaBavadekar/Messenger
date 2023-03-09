@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package com.adityaamolbavadekar.messenger.views
+package com.adityaamolbavadekar.messenger.views.image
 
 import android.content.Context
 import android.content.res.ColorStateList
@@ -26,6 +26,7 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.withStyledAttributes
 import com.adityaamolbavadekar.messenger.R
 import com.adityaamolbavadekar.messenger.utils.extensions.load
+import com.adityaamolbavadekar.messenger.views.image.RoundRectDrawable
 import com.bumptech.glide.Glide
 
 class AvatarImageView @JvmOverloads constructor(

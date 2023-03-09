@@ -15,11 +15,10 @@
   ~    limitations under the License.
   -->
 
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/reactionsHolder"
-    style="?materialCardViewFilledStyle"
     android:maxWidth="@dimen/message_max_width"
     android:minWidth="@dimen/message_min_width"
     android:layout_width="match_parent"
@@ -30,15 +29,11 @@
     android:layout_marginVertical="@dimen/dimen_4"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintStart_toStartOf="parent"
-    app:cardCornerRadius="@dimen/message_reactions_indicator_radius"
-    app:cardElevation="0dp"
     >
-
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/reactionsList"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-
-</com.google.android.material.card.MaterialCardView>
+</FrameLayout>

@@ -79,6 +79,10 @@ abstract class BaseMessage public constructor(
         }
     }
 
+    fun isSender(uid: String): Boolean {
+        return senderUid == uid
+    }
+
     fun markAsSent(): BaseMessage {
         deliveryStatus = DeliveryStatus.SENT
         return this
@@ -155,7 +159,7 @@ abstract class BaseMessage public constructor(
 
     fun isTextOnly(): Boolean {
         if (isDeleted) return true
-        return (!hasPhotoAttachments() && !hasLinkPreview() && !hasReply() && hasMessage())
+        return (!hasPhotoAttachments() && !hasDocumentAttachments() && !hasLinkPreview() && !hasReply() && hasMessage())
     }
 
     fun isReadBy(uid: String): Boolean {
@@ -229,5 +233,6 @@ abstract class BaseMessage public constructor(
             query
         ) == true
     }
+
 
 }

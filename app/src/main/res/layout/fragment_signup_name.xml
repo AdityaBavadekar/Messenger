@@ -51,7 +51,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <com.adityaamolbavadekar.messenger.views.AvatarImageView
+            <com.adityaamolbavadekar.messenger.views.image.AvatarImageView
                 android:id="@+id/imageView"
                 android:layout_width="@dimen/avatar_image_view_default_size"
                 android:layout_height="@dimen/avatar_image_view_default_size"

@@ -297,11 +297,12 @@
         <item name="android:maxWidth">@dimen/message_max_width</item>
     </style>
 
-
-    <style name="Messenger.Widget.PhotoAttachmentsView.Card" parent="Messenger.Widget.Message.Card.Filled">
+    <style name="Messenger.Widget.PhotoAttachmentsView" parent="Widget.Messenger.Message.Card.NoStrokeTransparent">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_gravity">center</item>
+        <item name="android:layout_marginBottom">@dimen/dimen_8</item>
+        <item name="android:background">@android:color/transparent</item>
         <item name="android:clickable">true</item>
         <item name="android:focusable">true</item>
         <item name="android:maxWidth">@dimen/message_max_width</item>
