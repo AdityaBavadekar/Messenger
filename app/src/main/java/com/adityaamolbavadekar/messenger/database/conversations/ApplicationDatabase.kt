@@ -34,7 +34,7 @@ import com.adityaamolbavadekar.messenger.utils.logging.InternalLogger
         ConversationRecordRecipientCrossRef::class,
         ConversationDraftMessage::class
     ],
-    version = 1,
+    version = 2,
     autoMigrations = [
         AutoMigration(
             from = 1,

@@ -192,6 +192,9 @@ abstract class BaseMessage public constructor(
                         m.timestamp == timestamp &&
                         m.message == message &&
                         m.senderUid == senderUid &&
+                        m.hasReactions() == hasReactions() &&
+                        m.deliveryStatus == deliveryStatus &&
+                        m.reactions.size == reactions.size && //TODO
                         m.message == message)
             } else false
         }

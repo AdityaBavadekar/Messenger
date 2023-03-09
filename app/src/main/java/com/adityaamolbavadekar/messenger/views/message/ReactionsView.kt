@@ -59,7 +59,8 @@ class ReactionsView @JvmOverloads constructor(
         adapter = EmojiReactionsListAdapter()
         reactionsList.adapter = adapter
         reactionsList.overScrollMode = View.OVER_SCROLL_NEVER
-        reactionsList.addItemDecoration(RectionsSpaceItemDecoration(AndroidUtils.toDP(4, context)))
+        reactionsList.addItemDecoration(RectionsSpaceItemDecoration(AndroidUtils.toDP(2, context)))
+        reactionsList.getRecycledViewPool().setMaxRecycledViews(0,0)
         holder.setOnClickListener {
             clickListener()
         }
@@ -80,7 +81,6 @@ class ReactionsView @JvmOverloads constructor(
         ) {
             outRect.left = space
             outRect.right = space
-            outRect.bottom = space
         }
 
     }
@@ -139,6 +139,7 @@ class ReactionsView @JvmOverloads constructor(
                 binding.countTextView.text = reaction.count.toString()
             }
         }
+        override fun getItemViewType(position: Int): Int = 0
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ReactionItemHolder {
             return ReactionItemHolder(
@@ -151,6 +152,7 @@ class ReactionsView @JvmOverloads constructor(
         }
 
         override fun onBindViewHolder(holder: ReactionItemHolder, position: Int) {
+            holder.setIsRecyclable(false)
             holder.bind(getItem(position))
         }
     }

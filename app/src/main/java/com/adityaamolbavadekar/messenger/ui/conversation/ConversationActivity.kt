@@ -22,6 +22,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
+import android.provider.OpenableColumns
 import android.text.InputType
 import android.view.Menu
 import android.view.MenuItem
@@ -29,7 +30,6 @@ import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.widget.SearchView
-import androidx.core.net.toFile
 import androidx.core.view.*
 import com.adityaamolbavadekar.messenger.R
 import com.adityaamolbavadekar.messenger.database.conversations.DatabaseAndroidViewModel
@@ -125,20 +125,22 @@ class ConversationActivity : BaseActivity(), SearchView.OnQueryTextListener {
                     cloudStorageManager.uploadDocument(docUri,
                         metadata = buildStorageMetadata(),
                         onProgress = { progress ->
+                            InternalLogger.debugInfo(TAG,"Upload document progress = ${progress}%")
                             action(progress)
                         },
                         onSuccess = {
-                            loader.dismiss()
-                            try {
-                                val f = AndroidUtils.saveSentDocumentFile(docUri, this)
-                            } catch (e: Exception) {
-                            }
+                            AndroidUtils.saveSentDocumentFile(docUri, this)
+                            val map = AndroidUtils.getFileMetadata(docUri,contentResolver!!)
+                            val mimeType = map["mimeType"] as String?
+                            val fileName = map["name"] as String
+                            val fileSize = map["size"] as Long
                             val messageRecord =
                                 MessageRecord.from(
                                     me,
                                     conversationId,
-                                    Attachment.from(File(docUri.path))
+                                    Attachment.from(docUri,fileName,fileSize,mimeType)
                                 )
+                            loader.dismiss()
                             sendMessage(messageRecord)
                         },
                         onFailure = {
