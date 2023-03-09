@@ -51,12 +51,12 @@ data class Attachment(
 
     fun fileNameWithExtension() = "$fileName.$extension"
 
-    fun readableSize(): Pair<SizeUnit, Int> {
-        if (size == 0.toLong()) return Pair(SizeUnit.B, 0)
-        val sizeKb = size / 1024
-        val sizeMb = size / sizeKb
-        return if (sizeMb > 0) Pair(SizeUnit.MB, sizeMb.toInt())
-        else Pair(SizeUnit.KB, sizeKb.toInt())
+    fun readableSize(): Pair<SizeUnit, Float> {
+        if (size == 0.toLong()) return Pair(SizeUnit.B, 0.toFloat())
+        val sizeKb : Float = size.toFloat() / 1024
+        if (sizeKb < 1024) return Pair(SizeUnit.KB, sizeKb)
+        val sizeMb : Float = sizeKb / 1024
+        return Pair(SizeUnit.MB, sizeMb)
     }
 
     @Ignore

@@ -6,10 +6,10 @@ enum class SizeUnit(val bytes:Int) {
     companion object {
         fun format(size: Long): String {
             if (size == 0.toLong()) return "0 B"
-            val sizeKb = size / 1024
-            val sizeMb = size / sizeKb
-            return if (sizeMb > 0) "$sizeMb MB"
-            else "$sizeKb KB"
+            val sizeKb : Float = size.toFloat() / 1024
+            if (sizeKb < 1024) return "$sizeKb KB"
+            val sizeMb : Float = sizeKb / 1024
+            return "$sizeMb MB"
         }
     }
 }
