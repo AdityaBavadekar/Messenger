@@ -36,6 +36,7 @@ import com.adityaamolbavadekar.messenger.managers.PrefsManager.Companion.applyFo
 import com.adityaamolbavadekar.messenger.managers.PrefsManager.Companion.prefs
 import com.adityaamolbavadekar.messenger.model.*
 import com.adityaamolbavadekar.messenger.model.RecyclerViewType.Companion.TYPE_HEADER
+import com.adityaamolbavadekar.messenger.model.RecyclerViewType.Companion.TYPE_TIMESTAMP_HEADER
 import com.adityaamolbavadekar.messenger.utils.extensions.getDate
 import com.adityaamolbavadekar.messenger.utils.logging.InternalLogger
 import com.adityaamolbavadekar.messenger.utils.recyclerview.BaseItemHolder
@@ -310,7 +311,6 @@ class MessagesAdapter(private val lifecycleOwner: LifecycleOwner) :
         private val TAG = MessagesAdapter::class.java.simpleName
 
         /* For Messages */
-        private const val TYPE_TIMESTAMP_HEADER = 10
         private const val TYPE_OUTGOING_ITEM = 101
         private const val TYPE_OUTGOING_TEXT_ONLY_ITEM = 102
         private const val TYPE_INCOMING_ITEM = 201

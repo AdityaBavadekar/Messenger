@@ -26,7 +26,7 @@ class RecyclerViewType {
         const val TYPE_HEADER = 2
         const val TYPE_PINNED_HEADER = 3
         const val TYPE_FOOTER = 4
-
+        const val TYPE_TIMESTAMP_HEADER = 10
 
     }
 
