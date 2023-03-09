@@ -17,6 +17,9 @@ task clean(type: Delete) {
     delete rootProject.buildDir
 }
 
-task bumpVersion(type:Exec,description :"Upgrade version name and version code." ,group :"Versioning") doLast(){
-    commandLine 'python ' , 'bumpVersion.py'
+task bumpVersion(description :"Upgrade version name and version code." ,group :"Versioning") doLast(){
+    exec {
+        workingDir 'scripts' 
+        commandLine 'python ' , 'bumpVersion.py' 
+    }
 }
