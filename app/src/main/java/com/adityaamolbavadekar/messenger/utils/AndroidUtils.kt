@@ -153,8 +153,6 @@ class AndroidUtils private constructor() {
             animator.duration = 200
             animator.start()
         }
-
-
     }
 
 }

@@ -29,6 +29,7 @@
         android:contentDescription="@null"
         android:importantForAccessibility="no"
         android:scaleType="centerCrop"
+        android:focusable="false"
         android:src="@color/colorWallpaperDefault"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -118,11 +119,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
-                <!-- FOR VIEWING PURPOSE ONLY.-->
-                <!--                    <include layout="@layout/conversation_fragment"/>-->
 
             </androidx.coordinatorlayout.widget.CoordinatorLayout>
-
 
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

@@ -84,7 +84,8 @@ class MessageItem @JvmOverloads constructor(
     private var conversationRecipients: List<Recipient> = listOf()
 
     private var titleClickListener: TitleClickListener? = null
-    private var replyClickListener: ReplyClickListener? = null
+    private var addReplyListener: AddReplyListener? = null
+    private var navigateToReplyListener: NavigateToReplyListener? = null
     private var reactionListener: OnReactionListener = getEmptyOnReactionListener()
     private var deletionListener: MessageDeletionListener = getEmptyDeletionListener()
     private var searchData: SearchData? = null
@@ -418,9 +419,11 @@ class MessageItem @JvmOverloads constructor(
         popup.menu.findItem(R.id.message_info).isVisible = isDebug
         val deleteForEveryone = popup.menu.findItem(R.id.action_delete_for_everyone)
         val delete = popup.menu.findItem(R.id.action_delete)
+        val react = popup.menu.findItem(R.id.action_react)
         if (isIncoming || requireMessageRecord().isDeleted) {
             deleteForEveryone.isVisible = false
             delete.isVisible = false
+            react.isVisible = false
         } else if (requireMessageRecord().deliveryStatus == DeliveryStatus.READ) {
             deleteForEveryone.isVisible = false
             delete.isVisible = true
@@ -476,7 +479,7 @@ class MessageItem @JvmOverloads constructor(
                         .show()
                 }
                 R.id.action_reply -> {
-
+                    addReplyListener?.invoke(getSender(),requireMessageRecord())
                 }
                 else -> return@setOnMenuItemClickListener false
             }
@@ -533,11 +536,8 @@ class MessageItem @JvmOverloads constructor(
     }
 
     private fun onReplyClicked() {
-        replyClickListener?.invoke(
-            replyView!!,
-            requireMessageRecord(),
-            requireMessageRecord().getReply()!!
-        )
+        navigateToReplyListener?.invoke(getSender(),
+            requireMessageRecord().getReply()!!)
     }
 
     private fun onReactionsViewClicked() {
@@ -596,8 +596,12 @@ class MessageItem @JvmOverloads constructor(
         this.titleClickListener = listener
     }
 
-    fun setOnReplyClickListener(listener: ReplyClickListener) {
-        this.replyClickListener = listener
+    fun setOnAddReplyListener(listener: AddReplyListener) {
+        this.addReplyListener = listener
+    }
+
+    fun setOnNavigateToReplyListener(listener: NavigateToReplyListener) {
+        this.navigateToReplyListener = listener
     }
 
     fun setOnReactionListener(listener: OnReactionListener) {

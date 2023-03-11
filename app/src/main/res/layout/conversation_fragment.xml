@@ -67,7 +67,6 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_gravity="center"
-            android:drawableStart="@drawable/ic_arrow_down"
             android:drawablePadding="@dimen/dimen_8"
             android:gravity="center"
             android:padding="@dimen/dimen_8"

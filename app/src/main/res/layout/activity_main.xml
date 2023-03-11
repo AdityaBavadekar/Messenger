@@ -63,7 +63,8 @@
             android:layout_margin="@dimen/dimen_16"
             android:src="@drawable/ic_edit"
             app:layout_constraintBottom_toTopOf="@id/nav_view"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent"
+            android:contentDescription="New conversation" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -41,7 +41,7 @@ import com.adityaamolbavadekar.messenger.utils.extensions.getDate
 import com.adityaamolbavadekar.messenger.utils.logging.InternalLogger
 import com.adityaamolbavadekar.messenger.utils.recyclerview.BaseItemHolder
 import com.adityaamolbavadekar.messenger.utils.recyclerview.Details
-import com.adityaamolbavadekar.messenger.views.MessageItem
+import com.adityaamolbavadekar.messenger.views.*
 
 class MessagesAdapter(private val lifecycleOwner: LifecycleOwner) :
     ListAdapter<MessageRecord, MessagesAdapter.MessageBaseItemHolder>(
@@ -54,6 +54,8 @@ class MessagesAdapter(private val lifecycleOwner: LifecycleOwner) :
     private var recipients = listOf<Recipient>()
     private var conversationRecord: ConversationRecord? = null
     private var onReactionListener: OnReactionListener? = null
+    private var addReplyListener: AddReplyListener? = null
+    private var navigateToReplyListener: NavigateToReplyListener? = null
     private var deletionListener: MessageDeletionListener? = null
 
     @Suppress("UNNECESSARY_SAFE_CALL")
@@ -67,6 +69,14 @@ class MessagesAdapter(private val lifecycleOwner: LifecycleOwner) :
 
     fun setOnReactionListener(block: OnReactionListener) {
         this.onReactionListener = block
+    }
+
+    fun setOnAddReplyListener(block: AddReplyListener) {
+        this.addReplyListener = block
+    }
+
+    fun setOnNavigateToReplyListener(block: NavigateToReplyListener) {
+        this.navigateToReplyListener = block
     }
 
     fun setDeletionListener(block: MessageDeletionListener) {
@@ -222,6 +232,8 @@ class MessagesAdapter(private val lifecycleOwner: LifecycleOwner) :
         ) {
             super.bind(messageRecord, position, onItemClickCallback)
             onReactionListener?.let { view.setOnReactionListener(it) }
+            addReplyListener?.let { view.setOnAddReplyListener(it) }
+            navigateToReplyListener?.let { view.setOnNavigateToReplyListener(it) }
             view.setSelectionTracker { getItemSelectionTracker() }
             deletionListener?.let { view.setOnDeletionListener(it) }
             view.setSearchData(searchData)

@@ -76,3 +76,10 @@ fun List<String>.toStringHashMapList(): MutableList<HashMap<String, String>> {
     }
     return newList
 }
+
+fun List<BaseMessage>.whereMessageId(id:String): Pair<Int, BaseMessage>? {
+    forEachIndexed { index, baseMessage ->
+        if (baseMessage.id == id) return Pair(index,baseMessage)
+    }
+    return null
+}

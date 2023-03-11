@@ -49,6 +49,12 @@
                 android:layout_height="wrap_content"
                 tools:visibility="gone" />
 
+            <com.adityaamolbavadekar.messenger.views.message.ReplyView
+                android:id="@+id/replyView"
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
             <LinearLayout
                 android:id="@+id/inputContainer"
                 android:layout_width="match_parent"

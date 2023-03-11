@@ -206,7 +206,6 @@ class ConversationViewModel : ViewModel() {
             val newList = TimestampsGenerator.generate(list, timestamps)
             database.insertOrUpdateMessages(newList)
         }
-//        return generateDateHeaders(list)
     }
 
     private fun generateDateHeaders(list: List<MessageRecord>): Job {
@@ -412,10 +411,16 @@ class ConversationViewModel : ViewModel() {
         }
     }
 
+    fun findMessageIndexOf(messageId: String): Int? {
+        return messages.value!!.whereMessageId(messageId)?.first
+    }
+
     private val childEventListener = object : ChildEventListener {
         override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
-            //val m = snapshot.getValue<MessageRecord>()
-            InternalLogger.debugInfo(TAG, "childEventListener.onChildAdded : ${snapshot.ref}")
+            val m = try {
+                snapshot.getValue<MessageRecord>().toString()
+            } catch (e: Exception) null
+            InternalLogger.debugInfo(TAG, "childEventListener.onChildAdded : ${}")
         }
 
         override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {

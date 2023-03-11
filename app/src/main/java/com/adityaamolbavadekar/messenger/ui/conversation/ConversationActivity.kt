@@ -16,27 +16,15 @@
 
 package com.adityaamolbavadekar.messenger.ui.conversation
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.net.Uri
-import android.os.Bundle
-import android.provider.OpenableColumns
-import android.text.InputType
 import android.view.Menu
 import android.view.MenuItem
-import android.view.ViewGroup
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.viewModels
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.*
 import com.adityaamolbavadekar.messenger.R
-import com.adityaamolbavadekar.messenger.database.conversations.DatabaseAndroidViewModel
-import com.adityaamolbavadekar.messenger.databinding.ConversationActivityBinding
 import com.adityaamolbavadekar.messenger.dialogs.Dialogs
-import com.adityaamolbavadekar.messenger.managers.CloudStorageManager
-import com.adityaamolbavadekar.messenger.managers.PrefsManager
 import com.adityaamolbavadekar.messenger.model.*
 import com.adityaamolbavadekar.messenger.ui.conversation_info.ConversationInfoActivity
 import com.adityaamolbavadekar.messenger.ui.picture_upload_preview.PictureUploadPreviewActivity
@@ -46,181 +34,15 @@ import com.adityaamolbavadekar.messenger.utils.Constants.EXTRA_CONVERSATION_ID
 import com.adityaamolbavadekar.messenger.utils.Constants.Extras.EXTRA_CONVERSATION_TYPE
 import com.adityaamolbavadekar.messenger.utils.KeyboardUtils
 import com.adityaamolbavadekar.messenger.utils.OnResponseCallback
-import com.adityaamolbavadekar.messenger.utils.base.BaseActivity
-import com.adityaamolbavadekar.messenger.utils.extensions.asApplicationClass
 import com.adityaamolbavadekar.messenger.utils.extensions.runOnMainThread
 import com.adityaamolbavadekar.messenger.utils.logging.InternalLogger
 import com.adityaamolbavadekar.messenger.views.compose.EmojiPopupWindow
 import com.google.firebase.storage.StorageMetadata
-import java.io.File
 
-class ConversationActivity : BaseActivity(), SearchView.OnQueryTextListener {
+class ConversationActivity : ParentConversationActivity(), SearchView.OnQueryTextListener {
 
-    private val windowInsetsAnimationCallback = object : WindowInsetsAnimationCompat.Callback(
-        DISPATCH_MODE_STOP
-    ) {
-        override fun onProgress(
-            insets: WindowInsetsCompat,
-            runningAnimations: MutableList<WindowInsetsAnimationCompat>
-        ): WindowInsetsCompat {
-            val calculatedMargin = (insets.getInsets(WindowInsetsCompat.Type.ime()).bottom)
-            var marginToBeApplied: Int =
-                calculatedMargin + resources.getDimension(R.dimen.compose_message_keyboard_open_margin_bottom)
-                    .toInt()
-            val navBarSize = (insets.getInsets(WindowInsetsCompat.Type.systemBars()).bottom)
-            if (calculatedMargin == navBarSize) marginToBeApplied = 0
-            binding.composeBar.updateLayoutParams<ViewGroup.MarginLayoutParams> {
-                bottomMargin = marginToBeApplied
-            }
-            return insets
-        }
-    }
-
-    private lateinit var binding: ConversationActivityBinding
-    private lateinit var conversationId: String
-    private lateinit var prefsManager: PrefsManager
-    private var draftDeleted = false
-    private var conversation: ConversationRecord? = null
-    private var groupRecipients: MutableList<Recipient> = mutableListOf()
-    private val database: DatabaseAndroidViewModel by viewModels {
-        DatabaseAndroidViewModel.Factory(application.asApplicationClass().database)
-    }
-    private val viewModel: ConversationViewModel by viewModels()
-    private lateinit var me: Recipient
-    private val cloudStorageManager = CloudStorageManager()
-    private var conversationFragment: ConversationFragment? = null
-    private var latestKeyboardHeight: Int = 0
-    private var currentInputType: InputType = InputType.NONE
-
-    private val activityLauncher =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-            if (it.resultCode == Activity.RESULT_OK && it.data != null) {
-                val messageText = it.data!!.getStringExtra(Intent.EXTRA_TEXT) ?: ""
-                val contentUris = it.data!!.getStringArrayExtra(Intent.EXTRA_STREAM)!!
-                InternalLogger.debugInfo(
-                    TAG,
-                    "**ActivityResult**\nMessage : $messageText\nContentUris :$contentUris"
-                )
-                savePictures(PictureUploadPreviewActivity.getUriList(contentUris)) { uris ->
-                    val messageRecord =
-                        MessageRecord.from(me, conversationId, messageText, uris)
-                    sendMessage(messageRecord)
-                }
-            }
-        }
-
-    private val imagePickerLauncher =
-        registerForActivityResult(ActivityResultContracts.GetMultipleContents()) {
-            it?.let { uriList ->
-                if (uriList.isNotEmpty()) {
-                    showPicturePreview(uriList)
-                }
-            }
-        }
-
-    private val documentPickerLauncher =
-        registerForActivityResult(ActivityResultContracts.GetContent()) {
-            it?.let { docUri ->
-                Dialogs.showDefiniteProgressDialog(this, p = { loader, action ->
-                    cloudStorageManager.uploadDocument(docUri,
-                        metadata = buildStorageMetadata(),
-                        onProgress = { progress ->
-                            InternalLogger.debugInfo(TAG,"Upload document progress = ${progress}%")
-                            action(progress)
-                        },
-                        onSuccess = {
-                            AndroidUtils.saveSentDocumentFile(docUri, this)
-                            val map = AndroidUtils.getFileMetadata(docUri,contentResolver!!)
-                            val mimeType = map["mimeType"] as String?
-                            val fileName = map["name"] as String
-                            val fileSize = map["size"] as Long
-                            val messageRecord =
-                                MessageRecord.from(
-                                    me,
-                                    conversationId,
-                                    Attachment.from(docUri,fileName,fileSize,mimeType)
-                                )
-                            loader.dismiss()
-                            sendMessage(messageRecord)
-                        },
-                        onFailure = {
-                            loader.dismiss()
-                        }
-                    )
-                })
-            }
-        }
-
-    override fun onCreateActivity(savedInstanceState: Bundle?) {
-        super.onCreateActivity(savedInstanceState)
-        conversationId = requireNotNull(intent.getStringExtra(EXTRA_CONVERSATION_ID))
-        { "ConversationId cannot be null." }
-        binding = ConversationActivityBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-        if (savedInstanceState == null) {
-            supportFragmentManager.beginTransaction()
-                .replace(
-                    binding.conversationFragmentContainer.id,
-                    ConversationFragment(),
-                    CONVERSATION_FRAGMENT_TAG
-                )
-                .runOnCommit {
-                    supportFragmentManager.findFragmentByTag(CONVERSATION_FRAGMENT_TAG)
-                        ?.let {
-                            conversationFragment = (it as ConversationFragment)
-                        }
-                }
-                .commit()
-        }
-        setSupportActionBar(binding.toolbar)
-        supportActionBar?.setDisplayShowTitleEnabled(false)
-        prefsManager = PrefsManager(this)
-        val user = prefsManager.getUserObject()!!
-        me = Recipient.Builder(user).build()
-        val conversationType = intent.getIntExtra(EXTRA_CONVERSATION_TYPE, -1)
-        check(conversationType != -1) { "ConversationType cannot be null" }
-        InternalLogger.logD(TAG, "ConversationType=$conversationType")
-        val p2pUid = intent.getStringExtra(Constants.Extras.EXTRA_USER_UID)
-        viewModel.configure(me, conversationId, database)
-        viewModel.configureExtras(conversationType, p2pUid)
-
-        /* Get the recipients and conversation info for conversationId. */
-        database.getRecipientsOfConversation(conversationId)
-            .observe(this) { conversationWithRecipients ->
-                viewModel.onLocalConversationDataChanged(conversationWithRecipients)
-                InternalLogger.logD(
-                    TAG,
-                    "ConversationRecipients : $conversationWithRecipients"
-                )
-            }
-
-        database.getMessages(conversationId).observe(this) {
-            viewModel.onLocalMessagesDataChanged(it)
-        }
-
-        viewModel.conversationWithRecipients.observe(this) {
-            conversation = it.conversationRecord
-            if (it.conversationRecord.isGroup) {
-                groupRecipients = it.recipients.toMutableList()
-            }
-            updateToolbar()
-        }
-
-        window.statusBarColor = Color.TRANSPARENT
-        window.navigationBarColor = Color.TRANSPARENT
-
-        setupViews()
-
-    }
-
-    private fun setupViews() {
-
-        latestKeyboardHeight = prefsManager.getImeKeyboardHeight()
-
-        binding.toolbar.setNavigationOnClickListener {
-            finish()
-        }
-
+    override fun setupInput() {
+        super.setupInput()
         binding.composeBar.setOnImageAddedListener { contentUri, _, _ ->
             showPicturePreview(listOf(contentUri))
         }
@@ -297,27 +119,23 @@ class ConversationActivity : BaseActivity(), SearchView.OnQueryTextListener {
                 }
             }
         }
+    }
 
-        viewModel.status.observe(this) {
-            val status = StatusParser.parse(it, this)
-            if (status != null) {
-                binding.subtitle.text = status
-                binding.subtitle.isVisible = true
-            } else {
-                binding.subtitle.isVisible = false
-            }
+    override fun setupTitleBar() {
+        super.setupTitleBar()
+
+        binding.titleSubtitleHolder.setOnClickListener {
+            startActivity(
+                ConversationInfoActivity.createNewIntent(
+                    this,
+                    conversation!!
+                )
+            )
         }
 
-        viewModel.isMessagingRestrictedForMe.observe(this) { isRestricted ->
-            if (isRestricted) {
-                showOnlyManagersCanSendMassages()
-            } else showCanSendMassages()
+        binding.toolbar.setNavigationOnClickListener {
+            finish()
         }
-
-        binding.permissionManagersOnly.root.setOnClickListener {
-
-        }
-
         viewModel.conversationTitle.observe(this) {
             binding.title.text = it
         }
@@ -332,6 +150,36 @@ class ConversationActivity : BaseActivity(), SearchView.OnQueryTextListener {
             }
         }
 
+        viewModel.status.observe(this) {
+            val status = StatusParser.parse(it, this)
+            if (status != null) {
+                binding.subtitle.text = status
+                binding.subtitle.isVisible = true
+            } else {
+                binding.subtitle.isVisible = false
+            }
+        }
+    }
+
+    override fun setupMessagingPermissions() {
+        super.setupMessagingPermissions()
+        viewModel.isMessagingRestrictedForMe.observe(this) { isRestricted ->
+            if (isRestricted) {
+                showOnlyManagersCanSendMassages()
+            } else showCanSendMassages()
+        }
+
+        binding.permissionManagersOnly.root.setOnClickListener {
+
+        }
+
+    }
+
+    override fun setupKeyboardListeners() {
+        super.setupKeyboardListeners()
+
+        latestKeyboardHeight = prefsManager.getImeKeyboardHeight()
+
         binding.root.addOnImeStateListener { isVisible, height ->
             InternalLogger.logD(TAG, "IME : [isVisible=$isVisible] [imeHeight=$height]")
             if (isVisible) {
@@ -341,7 +189,6 @@ class ConversationActivity : BaseActivity(), SearchView.OnQueryTextListener {
         }
 
         initWindowInsetsImeAnimations()
-
     }
 
     private fun initWindowInsetsImeAnimations() {
@@ -381,9 +228,6 @@ class ConversationActivity : BaseActivity(), SearchView.OnQueryTextListener {
         }
     }
 
-    /**
-     * Sends message with messageSender according to the type of conversation like Group,Self,P2P.
-     * */
     private fun sendMessage(message: MessageRecord) {
         viewModel.sendMessage(message)
             .addOnSuccessListener {
@@ -413,10 +257,8 @@ class ConversationActivity : BaseActivity(), SearchView.OnQueryTextListener {
         }
     }
 
-    /**
-     * Updates the toolbar title, profile picture and PresenceStatus.
-     * */
-    private fun updateToolbar() {
+    override fun updateTitleBar() {
+        super.updateTitleBar()
         if (conversation != null) {
 
             /* Updates names names of group recipients in the subtitle. */
@@ -437,17 +279,11 @@ class ConversationActivity : BaseActivity(), SearchView.OnQueryTextListener {
                     binding.subtitle.isVisible = false
                 }
             }
-
-            binding.titleSubtitleHolder.setOnClickListener {
-                startActivity(
-                    ConversationInfoActivity.createNewIntent(
-                        this,
-                        conversation!!
-                    )
-                )
-            }
-
         }
+    }
+
+    fun onShouldAddReply(recipient: Recipient?, messageRecord: MessageRecord) {
+        binding.composeBar.setReply(recipient,messageRecord)
     }
 
     private fun showPicturePreview(uriList: List<Uri>) {
@@ -579,6 +415,59 @@ class ConversationActivity : BaseActivity(), SearchView.OnQueryTextListener {
         return true
     }
 
+    override fun onQueryTextSubmit(query: String?): Boolean {
+        viewModel.search(query)
+        return true
+    }
+
+    override fun onQueryTextChange(newText: String?): Boolean = false
+
+    override fun onDocumentPicked(docUri: Uri) {
+        super.onDocumentPicked(docUri)
+        Dialogs.showDefiniteProgressDialog(this, p = { loader, action ->
+            cloudStorageManager.uploadDocument(docUri,
+                metadata = buildStorageMetadata(),
+                onProgress = { progress ->
+                    InternalLogger.debugInfo(TAG,"Upload document progress = ${progress}%")
+                    action(progress)
+                },
+                onSuccess = {
+                    AndroidUtils.saveSentDocumentFile(docUri, this)
+                    val map = AndroidUtils.getFileMetadata(docUri,contentResolver!!)
+                    val mimeType = map["mimeType"] as String?
+                    val fileName = map["name"] as String
+                    val fileSize = map["size"] as Long
+                    val messageRecord =
+                        MessageRecord.from(
+                            me,
+                            conversationId,
+                            Attachment.from(docUri,fileName,fileSize,mimeType)
+                        )
+                    loader.dismiss()
+                    sendMessage(messageRecord)
+                },
+                onFailure = {
+                    loader.dismiss()
+                }
+            )
+        })
+    }
+
+    override fun onShouldSavePictures(urisList: List<Uri>, messageText: String) {
+        super.onShouldSavePictures(urisList, messageText)
+        savePictures(urisList) { uris ->
+            val messageRecord =
+                MessageRecord.from(me, conversationId, messageText, uris)
+            sendMessage(messageRecord)
+        }
+    }
+
+    override fun onShouldShowPicturePreview(urisList: List<Uri>) {
+        super.onShouldShowPicturePreview(urisList)
+        showPicturePreview(urisList)
+    }
+
+
     companion object {
         fun createNewIntent(
             context: Context,
@@ -601,16 +490,8 @@ class ConversationActivity : BaseActivity(), SearchView.OnQueryTextListener {
         }
 
         private val TAG = ConversationActivity::class.java.simpleName
-        private const val CONVERSATION_FRAGMENT_TAG = "conversation_fragment"
     }
 
     enum class InputType { ATTACHMENT, EMOJI, NONE }
-
-    override fun onQueryTextSubmit(query: String?): Boolean {
-        viewModel.search(query)
-        return true
-    }
-
-    override fun onQueryTextChange(newText: String?): Boolean = false
 
 }

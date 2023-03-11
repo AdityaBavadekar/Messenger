@@ -23,6 +23,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.viewModels
+import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.navigation.ui.NavigationUI
 import com.adityaamolbavadekar.messenger.database.conversations.DatabaseAndroidViewModel
@@ -42,13 +43,14 @@ class MainActivity : BaseActivity() {
     private var userPhotoUrl: String? = null
     private val authManager = AuthManager()
     private var fabClickListener: () -> Unit = {}
+    private lateinit var navController: NavController
 
     override fun onCreateActivity(savedInstanceState: Bundle?) {
         super.onCreateActivity(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setSupportActionBar(findViewById(R.id.toolbar))
-        val navController = Navigation.findNavController(this, R.id.container)
+        navController = Navigation.findNavController(this, R.id.container)
         NavigationUI.setupWithNavController(binding.navView, navController)
         (binding.navView as NavigationBarView).setOnItemReselectedListener {}
 
@@ -104,6 +106,13 @@ class MainActivity : BaseActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
 
         return true
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        if (!navController.popBackStack()) {
+            finish()
+        }
     }
 
     companion object {

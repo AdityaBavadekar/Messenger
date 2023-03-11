@@ -59,6 +59,10 @@ class ConversationFragment : BindingHelperFragment<ConversationFragmentBinding>(
     private lateinit var messagesSelectionCallback: MessagesSelectionCallback
     private lateinit var messageRecyclerView: MessagesListRecyclerView
 
+    private fun getConversationActivity():ConversationActivity {
+        return requireActivity() as ConversationActivity
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         doOnCreateView()
@@ -87,6 +91,12 @@ class ConversationFragment : BindingHelperFragment<ConversationFragmentBinding>(
         }
         setupSelectionTracker()
         messagesAdapter.setOnReactionListener(this)
+        messagesAdapter.setOnAddReplyListener { recipient, messageRecord ->
+            getConversationActivity().onShouldAddReply(recipient,messageRecord)
+        }
+        messagesAdapter.setOnNavigateToReplyListener { recipient, replyInfo ->
+            navigateToMessage(replyInfo.correspondingMessageId)
+        }
         messagesAdapter.setDeletionListener(this)
         /* Helps in showing the date header onScrolling.  */
         conversationOnScrollDateHeader =
@@ -116,6 +126,12 @@ class ConversationFragment : BindingHelperFragment<ConversationFragmentBinding>(
             }
         }
 
+    }
+
+    private fun navigateToMessage(messageId: String) {
+        viewModel.findMessageIndexOf(messageId)?.let{
+            messageRecyclerView.scrollLinearLayoutToPosition(it)
+        }
     }
 
 

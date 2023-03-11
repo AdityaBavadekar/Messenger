@@ -22,11 +22,13 @@ import com.adityaamolbavadekar.messenger.utils.extensions.getDateStub
 class TimestampsGenerator private constructor() {
 
     companion object {
+        private const val TIMESTAMPS_ENABLED = false
 
         fun generate(
             list: List<MessageRecord>,
             timestamps: List<MessageRecord>
         ): MutableList<MessageRecord> {
+            if(!TIMESTAMPS_ENABLED) return list.toMutableList()
             val newList = mutableListOf<MessageRecord>()
             val messagesList = list.toMutableList()
             messagesList.addAll(timestamps)

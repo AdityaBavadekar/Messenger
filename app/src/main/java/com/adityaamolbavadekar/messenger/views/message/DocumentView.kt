@@ -24,11 +24,8 @@ import android.widget.TextView
 import com.adityaamolbavadekar.messenger.R
 import com.adityaamolbavadekar.messenger.databinding.DocumentViewLayoutBinding
 import com.adityaamolbavadekar.messenger.model.Attachment
-import com.adityaamolbavadekar.messenger.model.SizeUnit
 import com.adityaamolbavadekar.messenger.utils.AndroidUtils
 import com.adityaamolbavadekar.messenger.utils.ImageLoader
-import com.adityaamolbavadekar.messenger.utils.TextDrawable
-import com.bumptech.glide.Glide
 import com.google.android.material.card.MaterialCardView
 
 // TODO: Complete this View and add to RecyclerViewTypes and add support for documents.
@@ -40,7 +37,9 @@ class DocumentView @JvmOverloads constructor(
 ) : FrameLayout(context, attrs, defStyleAttr, defStyleRes) {
 
     private val holder: MaterialCardView
-    private val imageView: ImageView
+    private val thumbnailImageView: ImageView
+    private val downloadFileImageView: ImageView
+    private val fileIconImageView: ImageView
     private val textView: TextView
     private val fileNameTextView: TextView
     private val imageLoader = ImageLoader.with(this)
@@ -50,13 +49,18 @@ class DocumentView @JvmOverloads constructor(
     init {
         val inflatedView =
             DocumentViewLayoutBinding.inflate(LayoutInflater.from(context), this, true)
-        imageView = inflatedView.imageView
+        thumbnailImageView = inflatedView.imageView
+        downloadFileImageView = inflatedView.downloadFileImageView
+        fileIconImageView = inflatedView.fileTypeImageView
         textView = inflatedView.textView
         fileNameTextView = inflatedView.fileName
         holder = inflatedView.holder
         holder.setOnClickListener {
             document?.let { clickListener(it) }
         }
+        downloadFileImageView.setOnClickListener {  }
+        AndroidUtils.setGone(downloadFileImageView)
+        AndroidUtils.setGone(thumbnailImageView)
         AndroidUtils.setGone(holder)
     }
 
@@ -74,17 +78,13 @@ class DocumentView @JvmOverloads constructor(
     private fun setup() {
         document?.let {
             textView.text = StringBuilder()
-                .append(it.extension)
+                .append(it.extension.uppercase())
                 .append(" | ")
                 .append(it.readableSize().second.toString())
                 .append(" ")
                 .append(it.readableSize().first.name)
-            it.extension.uppercase() + " | " + it.size.toString()
             fileNameTextView.text = it.fileNameWithExtension()
-            Glide.with(imageView)
-                .load(
-                    TextDrawable.Builder().createDefaultWithText(it.extension.uppercase(), context)
-                )
+
         }
     }
 

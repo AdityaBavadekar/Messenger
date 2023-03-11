@@ -78,7 +78,40 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:background="?colorSecondaryContainer" >
+            tools:background="?colorSecondaryContainer">
+
+            <View
+                android:layout_width="0dp"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                android:layout_height="2dp"
+                android:layout_weight="1"
+                tools:background="?colorSecondary" />
+            <View
+                android:layout_width="0dp"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                android:layout_height="2dp"
+                android:layout_weight="1"
+                tools:background="?colorSecondary" />
+            <View
+                android:layout_width="0dp"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                android:layout_height="2dp"
+                android:layout_weight="1"
+                tools:background="?colorSecondary" />
+            <View
+                android:layout_width="0dp"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                android:layout_height="2dp"
+                android:layout_weight="1"
+                tools:background="?colorSecondary" />
 
         </LinearLayout>
 
@@ -86,6 +119,7 @@
             layout="@layout/conversation_toolbar"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            tools:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/pageIndicator" />
