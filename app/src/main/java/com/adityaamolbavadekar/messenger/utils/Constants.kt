@@ -26,7 +26,7 @@ import java.util.*
 
 object Constants {
 
-    const val FILE_PROVIDER_AUTHORITY = BuildConfig.APPLICATION_ID + "." + "provider"
+    const val FILE_PROVIDER_AUTHORITY = BuildConfig.APPLICATION_ID + "." + "fileprovider"
     const val VOICE_CALL_SUPPORTED = false
 
 
