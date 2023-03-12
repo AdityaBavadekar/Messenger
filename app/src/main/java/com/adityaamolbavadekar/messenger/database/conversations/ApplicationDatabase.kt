@@ -31,6 +31,7 @@ import com.adityaamolbavadekar.messenger.utils.logging.InternalLogger
         ReactionRecord::class,
         Recipient::class,
         Attachment::class,
+        LocalAttachment::class,
         ConversationRecordRecipientCrossRef::class,
         ConversationDraftMessage::class
     ],
