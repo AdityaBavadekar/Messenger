@@ -84,8 +84,11 @@ interface ConversationDao {
     @Query("SELECT * FROM messages_table WHERE conversationId LIKE :conversationIdentifier ORDER BY timestamp DESC")
     fun getMessages(conversationIdentifier: String): LiveData<List<MessageRecord>>
 
-    @Query("SELECT * FROM messages_table ORDER BY timestamp ASC")
-    fun getAllMessages(): LiveData<List<MessageRecord>>
+    @Query("SELECT * FROM messages_table WHERE conversationId LIKE :conversationIdentifier ORDER BY timestamp DESC")
+    fun getMessagesAsFlow(conversationIdentifier: String): Flow<List<MessageRecord>>
+
+    @Query("SELECT * FROM messages_table WHERE conversationId LIKE :conversationIdentifier ORDER BY timestamp ASC")
+    fun getMessagesListPaged(conversationIdentifier:String): androidx.paging.DataSource.Factory<String,MessageRecord>
 
     @Query("SELECT * FROM messages_table WHERE id LIKE :messageId")
     fun getMessage(messageId: String): MessageRecord
@@ -175,6 +178,10 @@ interface ConversationDao {
     @Transaction
     @Query("SELECT * FROM conversation_table WHERE conversationId LIKE :conversationId LIMIT 1")
     fun getRecipientsOfConversationRecord(conversationId: String): LiveData<ConversationWithRecipients>
+
+    @Transaction
+    @Query("SELECT * FROM conversation_table WHERE conversationId LIKE :conversationId LIMIT 1")
+    fun getRecipientsOfConversationRecordAsFlow(conversationId: String): Flow<ConversationWithRecipients>
 
     @Transaction
     @Query("SELECT * FROM recipients_table WHERE uid LIKE :uid LIMIT 1")

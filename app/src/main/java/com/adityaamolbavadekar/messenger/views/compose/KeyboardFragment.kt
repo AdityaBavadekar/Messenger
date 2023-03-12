@@ -1,53 +1,20 @@
-/*
- *    Copyright 2023 Aditya Bavadekar
- *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
- *
- *        http://www.apache.org/licenses/LICENSE-2.0
- *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
- */
-
 package com.adityaamolbavadekar.messenger.views.compose
 
 import android.content.Context
-import android.view.Gravity
-import android.view.LayoutInflater
+import android.os.Bundle
 import android.view.View
-import android.view.ViewGroup
-import android.widget.PopupWindow
 import androidx.core.view.isGone
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.GridLayoutManager
-import com.adityaamolbavadekar.messenger.R
 import com.adityaamolbavadekar.messenger.databinding.EmojiFragmentBinding
 import com.adityaamolbavadekar.messenger.model.Emoji
 import com.adityaamolbavadekar.messenger.utils.EmojiUtils
+import com.adityaamolbavadekar.messenger.utils.base.BindingHelperFragment
 import com.adityaamolbavadekar.messenger.utils.extensions.runOnIOThread
-import com.adityaamolbavadekar.messenger.utils.logging.InternalLogger
 import com.google.android.material.tabs.TabLayout
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 
-class EmojiPopupWindow
-private constructor(
-    private val onEmojiClicked: (String) -> Unit,
-    private val parent: View,
-    private val binding: EmojiFragmentBinding,
-    setWidth: Int,
-    setHeight: Int,
-    setElevation: Float,
-    private val onCloseListener: () -> Unit
-) :
-    PopupWindow(binding.root, setWidth, setHeight, /*focusable*/true),
-    TabLayout.OnTabSelectedListener {
+class KeyboardFragment(private val onEmojiClicked:(String)->Unit) : BindingHelperFragment<EmojiFragmentBinding>(),TabLayout.OnTabSelectedListener {
 
     private var activeTabId = 0
     private var activeTabCategory = EmojiBottomFragment.EmojiCategeory.Activities
@@ -56,17 +23,22 @@ private constructor(
     private val _emojisList: MutableLiveData<List<Emoji>> = MutableLiveData(listOf())
     private val emojisList: LiveData<List<Emoji>> = _emojisList
 
-    init {
-        isOutsideTouchable = true
-        elevation = setElevation
+    override fun onShouldInflateBinding(): EmojiFragmentBinding {
+        return EmojiFragmentBinding.inflate(layoutInflater)
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
         runOnIOThread {
-            EmojiUtils.loadEmojiData(parent.context)?.let {
+            EmojiUtils.loadEmojiData(context)?.let {
                 _emojisList.postValue(it)
             }
         }
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         doOnCreateView()
-        showAtLocation(/*parent*/parent,/*gravity*/Gravity.BOTTOM,/*x*/0,/*y*/0)
-        setOnDismissListener { onCloseListener() }
     }
 
     private fun doOnCreateView() {
@@ -121,32 +93,12 @@ private constructor(
         }
     }
 
+    fun show() {}
+    fun hide() {}
+
     companion object {
 
         private val TAG = EmojiPopupWindow::class.java.simpleName
         private const val EMOJI_LIST_SPAN_COUNT = 8
-        fun build(
-            onEmojiClicked: (String) -> Unit,
-            parent: View,
-            context: Context,
-            windowHeight: Int,
-            onCloseListener: () -> Unit
-        ): EmojiPopupWindow {
-            val binding =
-                EmojiFragmentBinding.inflate(LayoutInflater.from(context), null, false)
-            val width = ViewGroup.LayoutParams.MATCH_PARENT
-            val elevation = context.resources.getDimension(R.dimen.emoji_popup_elevation)
-            var height = context.resources.getDimension(R.dimen.emoji_popup_min_height).toInt()
-            if (height < windowHeight) height = windowHeight
-            return EmojiPopupWindow(
-                onEmojiClicked,
-                parent,
-                binding,
-                width,
-                height,
-                elevation,
-                onCloseListener
-            )
-        }
     }
 }

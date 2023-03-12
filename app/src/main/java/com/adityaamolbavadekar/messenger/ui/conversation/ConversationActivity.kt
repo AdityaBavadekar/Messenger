@@ -22,20 +22,20 @@ import android.net.Uri
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.widget.SearchView
-import androidx.core.view.*
+import androidx.core.view.ViewCompat
+import androidx.core.view.isGone
+import androidx.core.view.isVisible
 import com.adityaamolbavadekar.messenger.R
 import com.adityaamolbavadekar.messenger.dialogs.Dialogs
 import com.adityaamolbavadekar.messenger.model.*
 import com.adityaamolbavadekar.messenger.ui.conversation_info.ConversationInfoActivity
 import com.adityaamolbavadekar.messenger.ui.picture_upload_preview.PictureUploadPreviewActivity
-import com.adityaamolbavadekar.messenger.utils.AndroidUtils
-import com.adityaamolbavadekar.messenger.utils.Constants
+import com.adityaamolbavadekar.messenger.utils.*
 import com.adityaamolbavadekar.messenger.utils.Constants.EXTRA_CONVERSATION_ID
 import com.adityaamolbavadekar.messenger.utils.Constants.Extras.EXTRA_CONVERSATION_TYPE
-import com.adityaamolbavadekar.messenger.utils.KeyboardUtils
-import com.adityaamolbavadekar.messenger.utils.OnResponseCallback
 import com.adityaamolbavadekar.messenger.utils.extensions.runOnMainThread
 import com.adityaamolbavadekar.messenger.utils.logging.InternalLogger
+import com.adityaamolbavadekar.messenger.views.compose.EmojiKeyboard
 import com.adityaamolbavadekar.messenger.views.compose.EmojiPopupWindow
 import com.google.firebase.storage.StorageMetadata
 
@@ -96,8 +96,12 @@ class ConversationActivity : ParentConversationActivity(), SearchView.OnQueryTex
             sendMessage(message)
         }
 
+        val k = ViewUtil.Stub<EmojiKeyboard>(binding.emojiKeyboardStub)
         //TODO
-        binding.composeBar.setOnScheduleListener {}
+        binding.composeBar.setOnScheduleListener {
+            k.get().setEmojiEnteredListener { }
+            k.get().show(latestKeyboardHeight)
+        }
 
         binding.composeBar.setOnAttachImagesListener {
             //Open image picker
@@ -283,7 +287,7 @@ class ConversationActivity : ParentConversationActivity(), SearchView.OnQueryTex
     }
 
     fun onShouldAddReply(recipient: Recipient?, messageRecord: MessageRecord) {
-        binding.composeBar.setReply(recipient,messageRecord)
+        binding.composeBar.setReply(recipient, messageRecord)
     }
 
     private fun showPicturePreview(uriList: List<Uri>) {
@@ -428,12 +432,12 @@ class ConversationActivity : ParentConversationActivity(), SearchView.OnQueryTex
             cloudStorageManager.uploadDocument(docUri,
                 metadata = buildStorageMetadata(),
                 onProgress = { progress ->
-                    InternalLogger.debugInfo(TAG,"Upload document progress = ${progress}%")
+                    InternalLogger.debugInfo(TAG, "Upload document progress = ${progress}%")
                     action(progress)
                 },
                 onSuccess = {
                     AndroidUtils.saveSentDocumentFile(docUri, this)
-                    val map = AndroidUtils.getFileMetadata(docUri,contentResolver!!)
+                    val map = AndroidUtils.getFileMetadata(docUri, contentResolver!!)
                     val mimeType = map["mimeType"] as String?
                     val fileName = map["name"] as String
                     val fileSize = map["size"] as Long
@@ -441,7 +445,7 @@ class ConversationActivity : ParentConversationActivity(), SearchView.OnQueryTex
                         MessageRecord.from(
                             me,
                             conversationId,
-                            Attachment.from(docUri,fileName,fileSize,mimeType)
+                            Attachment.from(docUri, fileName, fileSize, mimeType)
                         )
                     loader.dismiss()
                     sendMessage(messageRecord)

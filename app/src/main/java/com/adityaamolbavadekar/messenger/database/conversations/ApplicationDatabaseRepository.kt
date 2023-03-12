@@ -17,6 +17,8 @@
 package com.adityaamolbavadekar.messenger.database.conversations
 
 import androidx.lifecycle.LiveData
+import androidx.paging.LivePagedListBuilder
+import androidx.paging.PagedList
 import com.adityaamolbavadekar.messenger.model.*
 import kotlinx.coroutines.flow.Flow
 
@@ -78,12 +80,18 @@ class ApplicationDatabaseRepository(private val dao: ConversationDao) {
         return dao.getMessages(conversationId)
     }
 
+    fun getMessagesAsFlow(conversationId: String): Flow<List<MessageRecord>> {
+        return dao.getMessagesAsFlow(conversationId)
+    }
+
     fun deleteMessages(conversationId: String) {
         dao.deleteMessages(conversationId)
     }
 
-    fun getAllMessages(): LiveData<List<MessageRecord>> {
-        return dao.getAllMessages()
+    fun getAllMessages(conversationId:String,config:PagedList.Config): LiveData<PagedList<MessageRecord>> {
+        val factory = dao.getMessagesListPaged(conversationId)
+        return LivePagedListBuilder(factory,config)
+            .build()
     }
     /*[END] Message*/
 
@@ -162,6 +170,10 @@ class ApplicationDatabaseRepository(private val dao: ConversationDao) {
 
     fun getRecipientsOfConversation(conversationId: String): LiveData<ConversationWithRecipients> {
         return dao.getRecipientsOfConversationRecord(conversationId)
+    }
+
+    fun getRecipientsOfConversationAsFlow(conversationId: String): Flow<ConversationWithRecipients> {
+        return dao.getRecipientsOfConversationRecordAsFlow(conversationId)
     }
 
     fun getConversationsOfRecipients(uid: String): LiveData<RecipientWithConversations> {

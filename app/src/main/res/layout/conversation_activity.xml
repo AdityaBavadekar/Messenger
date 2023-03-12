@@ -150,6 +150,13 @@
                 android:layout_gravity="bottom"
                 />
 
+            <ViewStub
+                android:id="@+id/emoji_keyboard_stub"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inflatedId="@+id/emoji_keyboard"
+                android:layout="@layout/conversation_activity_emoji_keyboard_stub" />
+
             <FrameLayout
                 android:id="@+id/fragment_container"
                 android:layout_width="match_parent"

@@ -518,6 +518,21 @@ class CloudDatabaseManager {
                 InternalLogger.logE(TAG, "Unable to get Messages list", e)
             }
         }
+
+
+        fun observeMessagesFromGroupDatabaseV2(
+            groupId: String,
+            childEventListener: ChildEventListener
+        ) {
+            ref = Firebase.database
+                .getReference(Constants.CloudPaths.getGroupMessagesPath(groupId))
+            InternalLogger.logI(TAG, "Messages Listener added on $ref")
+            try {
+                ref!!.addChildEventListener(childEventListener)
+            } catch (e: Exception) {
+                InternalLogger.logE(TAG, "Unable to get Messages list", e)
+            }
+        }
         /*[END] Group*/
 
         private var listener: ValueEventListener? = null
@@ -526,6 +541,7 @@ class CloudDatabaseManager {
         fun removeListener() {
             listener?.let { ref?.removeEventListener(it) }
         }
+
     }
 
     inner class Statuses {

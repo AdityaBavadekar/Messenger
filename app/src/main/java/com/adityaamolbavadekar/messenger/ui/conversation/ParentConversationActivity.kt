@@ -4,13 +4,10 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.core.view.WindowInsetsAnimationCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.updateLayoutParams
-import com.adityaamolbavadekar.messenger.R
 import com.adityaamolbavadekar.messenger.database.conversations.DatabaseAndroidViewModel
 import com.adityaamolbavadekar.messenger.databinding.ConversationActivityBinding
 import com.adityaamolbavadekar.messenger.managers.CloudStorageManager
@@ -35,9 +32,9 @@ open class ParentConversationActivity : BaseActivity() {
     protected var conversation: ConversationRecord? = null
     protected var groupRecipients: MutableList<Recipient> = mutableListOf()
     protected val database: DatabaseAndroidViewModel by viewModels {
-        DatabaseAndroidViewModel.Factory(application.asApplicationClass().database)
+        application.asApplicationClass().database.viewModelFactory()
     }
-    protected val viewModel: ConversationViewModel by viewModels()
+    protected val viewModel: ConversationViewModel by viewModels { ConversationViewModel.getFactory() }
     protected lateinit var me: Recipient
     protected val cloudStorageManager = CloudStorageManager()
     protected var conversationFragment: ConversationFragment? = null
@@ -45,27 +42,33 @@ open class ParentConversationActivity : BaseActivity() {
     private lateinit var colorUtils: ColorUtils
     protected var currentInputType: ConversationActivity.InputType =
         ConversationActivity.InputType.NONE
-
+    private var animationLastStageBottomInset = 0F
+    private var animationInitialStageBottomInset = 0F
     protected val windowInsetsAnimationCallback = object : WindowInsetsAnimationCompat.Callback(
         DISPATCH_MODE_STOP
     ) {
+
+        override fun onStart(
+            animation: WindowInsetsAnimationCompat,
+            bounds: WindowInsetsAnimationCompat.BoundsCompat
+        ): WindowInsetsAnimationCompat.BoundsCompat {
+            animationLastStageBottomInset = binding.composeBar.bottom.toFloat()
+            return bounds
+        }
+
+        override fun onPrepare(animation: WindowInsetsAnimationCompat) {
+            animationInitialStageBottomInset = binding.composeBar.bottom.toFloat()
+        }
+
         override fun onProgress(
             insets: WindowInsetsCompat,
             runningAnimations: MutableList<WindowInsetsAnimationCompat>
         ): WindowInsetsCompat {
-            val calculatedMargin = (insets.getInsets(WindowInsetsCompat.Type.ime()).bottom)
-            val defaultMargin =
-                resources.getDimension(R.dimen.compose_message_keyboard_open_margin_bottom)
-                    .toInt()
-            var marginToBeApplied: Int = calculatedMargin
-            if (marginToBeApplied < defaultMargin) marginToBeApplied = defaultMargin
-            binding.composeBar.updateLayoutParams<ViewGroup.MarginLayoutParams> {
-                InternalLogger.logI(
-                    TAG,
-                    "Updating bottomMargin og composeBar to $marginToBeApplied"
-                )
-                bottomMargin = marginToBeApplied
-            }
+            val imeAnimation = runningAnimations.find {
+                it.typeMask and WindowInsetsCompat.Type.ime() != 0
+            } ?: return insets
+            binding.composeBar.translationY =
+                (animationInitialStageBottomInset - animationLastStageBottomInset) * (1 - imeAnimation.interpolatedFraction)
             return insets
         }
     }
@@ -114,6 +117,7 @@ open class ParentConversationActivity : BaseActivity() {
     open fun setupWallpaper() {
         binding.wallpaperImageView
     }
+
     private fun setupViews() {
         setupTitleBar()
         setupInput()
@@ -127,6 +131,7 @@ open class ParentConversationActivity : BaseActivity() {
 
         conversationId = requireNotNull(intent.getStringExtra(Constants.EXTRA_CONVERSATION_ID))
         { "ConversationId cannot be null." }
+        viewModel.setConversationId(conversationId)
         binding = ConversationActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
         if (savedInstanceState == null) {
@@ -156,20 +161,6 @@ open class ParentConversationActivity : BaseActivity() {
         val p2pUid = intent.getStringExtra(Constants.Extras.EXTRA_USER_UID)
         viewModel.configure(me, conversationId, database)
         viewModel.configureExtras(conversationType, p2pUid)
-
-        /* Get the recipients and conversation info for conversationId. */
-        database.getRecipientsOfConversation(conversationId)
-            .observe(this) { conversationWithRecipients ->
-                viewModel.onLocalConversationDataChanged(conversationWithRecipients)
-                InternalLogger.logD(
-                    TAG,
-                    "ConversationRecipients : $conversationWithRecipients"
-                )
-            }
-
-        database.getMessages(conversationId).observe(this) {
-            viewModel.onLocalMessagesDataChanged(it)
-        }
 
         viewModel.conversationWithRecipients.observe(this) {
             conversation = it.conversationRecord

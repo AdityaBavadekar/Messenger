@@ -30,6 +30,8 @@ import com.adityaamolbavadekar.messenger.database.conversations.DatabaseAndroidV
 import com.adityaamolbavadekar.messenger.databinding.ActivityMainBinding
 import com.adityaamolbavadekar.messenger.managers.AuthManager
 import com.adityaamolbavadekar.messenger.ui.settings.SettingsActivity
+import com.adityaamolbavadekar.messenger.utils.AndroidUtils
+import com.adityaamolbavadekar.messenger.utils.ColorUtils
 import com.adityaamolbavadekar.messenger.utils.base.BaseActivity
 import com.adityaamolbavadekar.messenger.utils.extensions.isNotNull
 import com.adityaamolbavadekar.messenger.utils.extensions.load
@@ -53,7 +55,7 @@ class MainActivity : BaseActivity() {
         navController = Navigation.findNavController(this, R.id.container)
         NavigationUI.setupWithNavController(binding.navView, navController)
         (binding.navView as NavigationBarView).setOnItemReselectedListener {}
-
+        AndroidUtils.setNavigationBarColor(window, ColorUtils(this).getPrimaryContainerColor())
         database.getLiveDataLoggedInAccount().observe(this) {
             it?.let { user ->
                 if (user.photoUrl.isNotNull()) {

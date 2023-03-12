@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.adityaamolbavadekar.messenger.views.compose.EmojiKeyboard xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/emoji_keyboard"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+</com.adityaamolbavadekar.messenger.views.compose.EmojiKeyboard>

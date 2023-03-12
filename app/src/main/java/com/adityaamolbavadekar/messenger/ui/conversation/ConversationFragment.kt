@@ -51,7 +51,7 @@ class ConversationFragment : BindingHelperFragment<ConversationFragmentBinding>(
     lateinit var activityToolbar: Toolbar
     var actionMode: ActionMode? = null
     lateinit var selectionTracker: SelectionTracker<Long>
-    private val viewModel: ConversationViewModel by activityViewModels()
+    private val viewModel: ConversationViewModel by activityViewModels { ConversationViewModel.getFactory() }
     private lateinit var messagesAdapter: MessagesAdapter
     private lateinit var conversationId: String
     private var conversation: ConversationRecord? = null
@@ -59,7 +59,7 @@ class ConversationFragment : BindingHelperFragment<ConversationFragmentBinding>(
     private lateinit var messagesSelectionCallback: MessagesSelectionCallback
     private lateinit var messageRecyclerView: MessagesListRecyclerView
 
-    private fun getConversationActivity():ConversationActivity {
+    private fun getConversationActivity(): ConversationActivity {
         return requireActivity() as ConversationActivity
     }
 
@@ -92,7 +92,7 @@ class ConversationFragment : BindingHelperFragment<ConversationFragmentBinding>(
         setupSelectionTracker()
         messagesAdapter.setOnReactionListener(this)
         messagesAdapter.setOnAddReplyListener { recipient, messageRecord ->
-            getConversationActivity().onShouldAddReply(recipient,messageRecord)
+            getConversationActivity().onShouldAddReply(recipient, messageRecord)
         }
         messagesAdapter.setOnNavigateToReplyListener { recipient, replyInfo ->
             navigateToMessage(replyInfo.correspondingMessageId)
@@ -122,14 +122,16 @@ class ConversationFragment : BindingHelperFragment<ConversationFragmentBinding>(
             messagesAdapter.setSearchData(it)
             messagesAdapter.notifyDataSetChanged()
             it?.searchMessages?.let { messagesPositions ->
-		if (messagesPositions.isNotEmpty()) messageRecyclerView.scrollLinearLayoutToPosition(messagesPositions.first())
+                if (messagesPositions.isNotEmpty()) messageRecyclerView.scrollLinearLayoutToPosition(
+                    messagesPositions.first()
+                )
             }
         }
 
     }
 
     private fun navigateToMessage(messageId: String) {
-        viewModel.findMessageIndexOf(messageId)?.let{
+        viewModel.findMessageIndexOf(messageId)?.let {
             messageRecyclerView.scrollLinearLayoutToPosition(it)
         }
     }

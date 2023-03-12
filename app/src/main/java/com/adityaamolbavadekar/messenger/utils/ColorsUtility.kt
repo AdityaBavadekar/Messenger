@@ -4,6 +4,7 @@ import androidx.annotation.AttrRes
 
 interface ColorsUtility {
     fun getPrimaryColor(): Int
+    fun getPrimaryContainerColor(): Int
     fun getSurfaceColor(): Int
     fun getThemeMainColor(): Int
     fun getOppositeColor(): Int
