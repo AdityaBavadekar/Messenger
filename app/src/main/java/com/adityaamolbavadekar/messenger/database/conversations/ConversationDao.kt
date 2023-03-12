@@ -84,8 +84,8 @@ interface ConversationDao {
     @Query("SELECT * FROM messages_table WHERE conversationId LIKE :conversationIdentifier ORDER BY timestamp DESC")
     fun getMessages(conversationIdentifier: String): LiveData<List<MessageRecord>>
 
-    @Query("SELECT * FROM messages_table ORDER BY timestamp ASC")
-    fun getAllMessages(): LiveData<List<MessageRecord>>
+    @Query("SELECT * FROM messages_table WHERE conversationId LIKE :conversationIdentifier ORDER BY timestamp DESC")
+    fun getMessagesAsFlow(conversationIdentifier: String): Flow<List<MessageRecord>>
 
     @Query("SELECT * FROM messages_table WHERE id LIKE :messageId")
     fun getMessage(messageId: String): MessageRecord
@@ -177,6 +177,10 @@ interface ConversationDao {
     fun getRecipientsOfConversationRecord(conversationId: String): LiveData<ConversationWithRecipients>
 
     @Transaction
+    @Query("SELECT * FROM conversation_table WHERE conversationId LIKE :conversationId LIMIT 1")
+    fun getRecipientsOfConversationRecordAsFlow(conversationId: String): Flow<ConversationWithRecipients>
+
+    @Transaction
     @Query("SELECT * FROM recipients_table WHERE uid LIKE :uid LIMIT 1")
     fun getConversationRecordsOfRecipient(uid: String): LiveData<RecipientWithConversations>
 
@@ -186,6 +190,13 @@ interface ConversationDao {
     /*[END] Recipients and Conversations*/
 
     /*RELATIONS*/
+
+    /*LocalAttachments*/
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertLocalAttachment(localAttachment: LocalAttachment)
+
+    @Query("SELECT * FROM local_attachments_table WHERE correspondingMessageId LIKE :attachmentId")
+    fun getLocalAttachment(attachmentId: String): LocalAttachment
 
 
 }

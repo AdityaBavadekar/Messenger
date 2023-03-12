@@ -36,6 +36,13 @@ object KeyboardUtils {
         fun onChanged(isVisible: Boolean, keyboardHeight: Int)
     }
 
+    interface CustomKeyboard {
+        fun show(height:Int)
+        fun show()
+        fun hide()
+        val isShowing:Boolean
+    }
+
     fun addKeyboardVisibilityListener(activity: Activity, listener: KeyboardVisibilityListener) {
 
         val rootView = getRootView(activity)

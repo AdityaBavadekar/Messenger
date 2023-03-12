@@ -131,10 +131,6 @@ class DatabaseAndroidViewModel(dao: ConversationDao) : ViewModel() {
     /*[END] Conversation*/
 
     /*[START] Message*/
-    fun getAllMessages(): LiveData<List<MessageRecord>> {
-        return repo.getAllMessages()
-    }
-
     fun getMessages(conversationId: String): LiveData<List<MessageRecord>> {
         return repo.getMessages(conversationId)
     }

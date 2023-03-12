@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~    Copyright 2023 Aditya Bavadekar
   ~
   ~    Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,21 +18,22 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/reactionsHolder"
-    android:maxWidth="@dimen/message_max_width"
-    android:minWidth="@dimen/message_min_width"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="start|center_vertical"
-    app:layout_constraintTop_toTopOf="parent"
-    android:layout_marginStart="@dimen/dimen_8"
     android:layout_marginVertical="@dimen/dimen_4"
+    android:layout_marginStart="@dimen/dimen_8"
+    android:maxWidth="@dimen/message_max_width"
+    android:minWidth="@dimen/message_min_width"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintStart_toStartOf="parent"
-    >
+    app:layout_constraintTop_toTopOf="parent">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/reactionsList"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:itemCount="1"
+        tools:listitem="@layout/emoji_reaction_item" />
 
 </FrameLayout>

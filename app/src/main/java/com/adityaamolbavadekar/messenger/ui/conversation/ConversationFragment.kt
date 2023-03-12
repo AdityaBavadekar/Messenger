@@ -17,22 +17,26 @@
 package com.adityaamolbavadekar.messenger.ui.conversation
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ActionMode
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.FileProvider
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.widget.RecyclerView
+import com.adityaamolbavadekar.messenger.R
 import com.adityaamolbavadekar.messenger.databinding.ConversationFragmentBinding
 import com.adityaamolbavadekar.messenger.dialogs.Dialogs
-import com.adityaamolbavadekar.messenger.model.ConversationRecord
-import com.adityaamolbavadekar.messenger.model.MessageRecord
-import com.adityaamolbavadekar.messenger.model.ReactionRecord
+import com.adityaamolbavadekar.messenger.model.*
+import com.adityaamolbavadekar.messenger.utils.Constants
 import com.adityaamolbavadekar.messenger.utils.Constants.EXTRA_CONVERSATION_ID
+import com.adityaamolbavadekar.messenger.utils.DownlodUtil
 import com.adityaamolbavadekar.messenger.utils.base.BindingHelperFragment
 import com.adityaamolbavadekar.messenger.utils.logging.InternalLogger
 import com.adityaamolbavadekar.messenger.views.MessagesListRecyclerView
@@ -51,13 +55,17 @@ class ConversationFragment : BindingHelperFragment<ConversationFragmentBinding>(
     lateinit var activityToolbar: Toolbar
     var actionMode: ActionMode? = null
     lateinit var selectionTracker: SelectionTracker<Long>
-    private val viewModel: ConversationViewModel by activityViewModels()
+    private val viewModel: ConversationViewModel by activityViewModels { ConversationViewModel.getFactory() }
     private lateinit var messagesAdapter: MessagesAdapter
     private lateinit var conversationId: String
     private var conversation: ConversationRecord? = null
     private lateinit var conversationOnScrollDateHeader: ConversationOnScrollDateHeader
     private lateinit var messagesSelectionCallback: MessagesSelectionCallback
     private lateinit var messageRecyclerView: MessagesListRecyclerView
+
+    private fun getConversationActivity(): ConversationActivity {
+        return requireActivity() as ConversationActivity
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -86,8 +94,58 @@ class ConversationFragment : BindingHelperFragment<ConversationFragmentBinding>(
             addOnScrollListener(onScrollListener)
         }
         setupSelectionTracker()
-        messagesAdapter.setOnReactionListener(this)
-        messagesAdapter.setDeletionListener(this)
+        messagesAdapter.getListenersDatabase().apply {
+            setOnReactionListener(this@ConversationFragment)
+            setOnAddReplyListener { recipient, messageRecord ->
+                getConversationActivity().onShouldAddReply(recipient, messageRecord)
+            }
+            setOnNavigateToReplyListener { recipient, replyInfo ->
+                navigateToMessage(replyInfo.correspondingMessageId)
+            }
+            setOnDeletionListener(this@ConversationFragment)
+            setOpenDocumentListener {
+                val attachment = viewModel.getLocalAttachment(it.id)
+                Intent(Intent.ACTION_VIEW).apply {
+                    val file = attachment.getFile()
+                    val uri = FileProvider.getUriForFile(
+                        requireContext(),
+                        Constants.FILE_PROVIDER_AUTHORITY,
+                        file
+                    )
+                    setDataAndType(uri, attachment.attachmentMimeType)
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK and Intent.FLAG_GRANT_READ_URI_PERMISSION
+                    try {
+                        requireContext().startActivity(this)
+                    } catch (e: Exception) {
+                        InternalLogger.logE(TAG, "Unable to start file open intent.", e)
+                        Toast.makeText(
+                            requireContext(),
+                            requireContext().getString(R.string.unable_to_open_file),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+            }
+            setDownloadDocumentListener { messageId, attachment ->
+                DownlodUtil.downloadFromStorage(
+                    requireContext(),
+                    attachment.fileNameWithExtension(),
+                    attachment.downloadUrl
+                ) { localFile ->
+                    val localAttachment = LocalAttachment.new(
+                        attachment,
+                        messageId,
+                        attachment.downloadUrl,
+                        localFile.canonicalPath,
+                        localFile.name,
+                        localFile.parentFile!!.absolutePath,
+                        LocalAttachment.DocumentStorage.DOCS_SENT.ordinal
+                    )
+                    viewModel.insertLocalAttachment(localAttachment)
+                }
+
+            }
+        }
         /* Helps in showing the date header onScrolling.  */
         conversationOnScrollDateHeader =
             ConversationOnScrollDateHeader(binding.dateHeader, requireContext())
@@ -112,10 +170,18 @@ class ConversationFragment : BindingHelperFragment<ConversationFragmentBinding>(
             messagesAdapter.setSearchData(it)
             messagesAdapter.notifyDataSetChanged()
             it?.searchMessages?.let { messagesPositions ->
-		if (messagesPositions.isNotEmpty()) messageRecyclerView.scrollLinearLayoutToPosition(messagesPositions.first())
+                if (messagesPositions.isNotEmpty()) messageRecyclerView.scrollLinearLayoutToPosition(
+                    messagesPositions.first()
+                )
             }
         }
 
+    }
+
+    private fun navigateToMessage(messageId: String) {
+        viewModel.findMessageIndexOf(messageId)?.let {
+            messageRecyclerView.scrollLinearLayoutToPosition(it)
+        }
     }
 
 

@@ -59,6 +59,134 @@ data class MessageRecord(
     type
 ) {
 
+    class Builder(private val conversationId: String) {
+        private var id: String = Id.get()
+        private var message: String? = null
+        private var attachments: List<String> = listOf()
+        private var documentAttachment: Attachment? = null
+        private var reactions: MutableList<ReactionRecord> = mutableListOf()
+        private var timestamp: Long = System.currentTimeMillis()
+        private var isDeleted: Boolean = false
+        private var deletionTimestamp: Long = 0
+        private var deliveryStatus: Int = DeliveryStatus.NOT_SENT
+        private var senderUid: String = ""
+        private var senderUsername: String = ""
+        private var mentions: List<String> = listOf()
+        private var viewedBy: List<String> = listOf()
+        private var linkPreviewInfo: LinkPreviewInfo? = null
+        private var messageReplyRecord: MessageReplyRecord? = null
+        private var type: Int = RecyclerViewType.TYPE_ITEM
+
+        fun setId(id:String): Builder {
+            this.id = id
+            return this
+        }
+
+        fun setMessage(message: String?): Builder {
+            this.message = message
+            return this
+        }
+
+        fun setPhotoAttachments(list: List<String>): Builder {
+            this.attachments = list
+            return this
+        }
+
+        fun setDocumentAttachment(attachment: Attachment): Builder {
+            this.documentAttachment = attachment
+            return this
+        }
+
+        fun setReactions(list: List<ReactionRecord>): Builder {
+            this.reactions = list.toMutableList()
+            return this
+        }
+
+        fun setTimestamp(time: Long): Builder {
+            this.timestamp = time
+            return this
+        }
+
+        fun setTimestampToNow(): Builder {
+            this.timestamp = System.currentTimeMillis()
+            return this
+        }
+
+        fun setDeleted(boolean: Boolean, time: Long): Builder {
+            this.isDeleted = boolean
+            this.deletionTimestamp = time
+            return this
+        }
+
+        fun setDeliveryStatus(deliveryStatus: Int): Builder {
+            this.deliveryStatus = deliveryStatus
+            return this
+        }
+
+        fun withStatusNotSent(): Builder {
+            this.deliveryStatus = DeliveryStatus.NOT_SENT
+            return this
+        }
+
+        fun withStatusSent(): Builder {
+            this.deliveryStatus = DeliveryStatus.SENT
+            return this
+        }
+
+        fun withStatusRead(): Builder {
+            this.deliveryStatus = DeliveryStatus.READ
+            return this
+        }
+
+        fun setSender(sender: Recipient): Builder {
+            this.senderUid = sender.uid
+            this.senderUsername = sender.username
+            this.viewedBy = listOf(sender.uid)
+            return this
+        }
+
+        fun setSender(uid: String, username: String): Builder {
+            this.senderUid = uid
+            this.senderUsername = username
+            this.viewedBy = listOf(uid)
+            return this
+        }
+
+        fun setLinkPreviewInfo(linkPreviewInfo: LinkPreviewInfo): Builder {
+            this.linkPreviewInfo = linkPreviewInfo
+            return this
+        }
+
+        fun setReplyInfo(reply: MessageReplyRecord): Builder {
+            this.messageReplyRecord = reply
+            return this
+        }
+
+        fun build(): MessageRecord {
+            return MessageRecord(
+                id = id,
+                conversationId = conversationId,
+                message = message,
+                attachments = attachments,
+                documentAttachment = documentAttachment,
+                reactions = reactions,
+                timestamp = timestamp,
+                isDeleted = isDeleted,
+                deletionTimestamp = deletionTimestamp,
+                deliveryStatus = deliveryStatus,
+                senderUid = senderUid,
+                senderUsername = senderUsername,
+                mentions = mentions,
+                viewedBy = viewedBy,
+                linkPreviewInfo = linkPreviewInfo,
+                messageReplyRecord = messageReplyRecord,
+                type = type
+            )
+        }
+
+
+    }
+
     companion object {
 
         fun from(

@@ -73,6 +73,7 @@
     <dimen name="message_card_elevation">0dp</dimen>
     <dimen name="message_min_width">80dp</dimen>
     <dimen name="message_max_width">280dp</dimen>
+    <dimen name="document_message_width">350dp</dimen>
     <dimen name="message_reply_text_view_max_width">200dp</dimen>
     <dimen name="message_reply_image_view_size">35dp</dimen>
     <dimen name="message_timestamp_min_width">50dp</dimen>
@@ -114,6 +115,8 @@
 
     <dimen name="edit_text_layout_drawable_corners_radius">8dp</dimen>
     <dimen name="edit_text_layout_drawable_padding">2dp</dimen>
+    <dimen name="emoji_selector_item_size">48dp</dimen>
+    <dimen name="reactions_view_item_corner_radius">24dp</dimen>
 
 
 </resources>

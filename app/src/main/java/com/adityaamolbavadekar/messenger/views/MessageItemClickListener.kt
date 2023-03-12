@@ -16,11 +16,15 @@
 
 package com.adityaamolbavadekar.messenger.views
 
-import android.view.View
 import android.widget.TextView
+import com.adityaamolbavadekar.messenger.model.Attachment
 import com.adityaamolbavadekar.messenger.model.MessageRecord
 import com.adityaamolbavadekar.messenger.model.MessageReplyRecord
+import com.adityaamolbavadekar.messenger.model.Recipient
 
 typealias TitleClickListener = (v: TextView, messageRecord: MessageRecord) -> Unit
 typealias MessageClickListener = (v: TextView, messageRecord: MessageRecord) -> Unit
-typealias ReplyClickListener = (v: View, messageRecord: MessageRecord, replyInfo: MessageReplyRecord) -> Unit
+typealias AddReplyListener = (recipient: Recipient?, messageRecord: MessageRecord) -> Unit
+typealias NavigateToReplyListener = (recipient: Recipient?, replyInfo: MessageReplyRecord) -> Unit
+typealias OpenDocumentListener = (attachment: Attachment) -> Unit
+typealias DownloadDocumentListener = (messageId:String,attachment: Attachment) -> Unit

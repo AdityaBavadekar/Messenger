@@ -27,7 +27,6 @@ public class ContentType {
     public static final String MULTIPART_RELATED = "application/vnd.wap.multipart.related";
     public static final String MULTIPART_ALTERNATIVE = "application/vnd.wap.multipart.alternative";
     public static final String MULTIPART_SIGNED = "multipart/signed";
-
     public static final String TEXT_PLAIN        = "text/plain";
     public static final String TEXT_HTML         = "text/html";
     public static final String TEXT_VCALENDAR    = "text/x-vCalendar";

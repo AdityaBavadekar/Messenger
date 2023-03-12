@@ -35,6 +35,9 @@ import com.adityaamolbavadekar.messenger.R
 import com.adityaamolbavadekar.messenger.databinding.ComposeLayoutBinding
 import com.adityaamolbavadekar.messenger.databinding.LinkPreviewLayoutShortBinding
 import com.adityaamolbavadekar.messenger.model.LinkPreviewInfo
+import com.adityaamolbavadekar.messenger.model.MessageRecord
+import com.adityaamolbavadekar.messenger.model.MessageReplyRecord
+import com.adityaamolbavadekar.messenger.model.Recipient
 import com.adityaamolbavadekar.messenger.utils.Operation
 import com.adityaamolbavadekar.messenger.utils.extensions.containsUrls
 import com.adityaamolbavadekar.messenger.utils.extensions.extractUrls
@@ -43,6 +46,7 @@ import com.adityaamolbavadekar.messenger.utils.linkpreview.LinkPreview
 import com.adityaamolbavadekar.messenger.views.CircularMenuItemButton
 import com.adityaamolbavadekar.messenger.views.ConversationComposeEditText
 import com.adityaamolbavadekar.messenger.views.OnImageAddedListener
+import com.adityaamolbavadekar.messenger.views.message.ReplyView
 
 class ComposeMessageBar @JvmOverloads constructor(
     context: Context,
@@ -55,6 +59,7 @@ class ComposeMessageBar @JvmOverloads constructor(
     private val emojiButton: CircularMenuItemButton
     private val sendButton: CircularMenuItemButton
     private val linkPreview: LinkPreviewLayoutShortBinding
+    private val replyView: ReplyView
     private val innerContainer: LinearLayout
     private val fragmentContainer: FrameLayout
     private var afterInputTextChangedListener: () -> Unit = {}
@@ -66,6 +71,7 @@ class ComposeMessageBar @JvmOverloads constructor(
     private var buttonsTint: ColorStateList? = null
     private var isSentButtonInSendState = false
     private var isPlainTextOnly = false
+    private var replyRecord : MessageReplyRecord? = null
 
     init {
         val binding =
@@ -75,6 +81,7 @@ class ComposeMessageBar @JvmOverloads constructor(
         emojiButton = binding.emojiButton
         sendButton = binding.sendButton
         linkPreview = binding.linkPreview
+        replyView = binding.replyView
         innerContainer = binding.editContainer
         fragmentContainer = binding.fragmentContainer
         context.withStyledAttributes(attrs, R.styleable.ComposeMessageBar) {
@@ -322,6 +329,11 @@ class ComposeMessageBar @JvmOverloads constructor(
             currentlyExtractedLinks = it.toString().extractUrls()
             LinkPreview.get(currentlyExtractedLinks[0], this)
         }
+    }
+
+    fun setReply(recipient: Recipient?, messageRecord: MessageRecord) {
+        this.replyRecord = MessageReplyRecord.new(messageRecord)
+        replyView.setMessageRecord(replyRecord)
     }
 
 }

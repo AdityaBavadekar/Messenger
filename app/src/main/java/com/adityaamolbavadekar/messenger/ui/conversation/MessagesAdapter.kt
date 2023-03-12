@@ -37,11 +37,12 @@ import com.adityaamolbavadekar.messenger.managers.PrefsManager.Companion.prefs
 import com.adityaamolbavadekar.messenger.model.*
 import com.adityaamolbavadekar.messenger.model.RecyclerViewType.Companion.TYPE_HEADER
 import com.adityaamolbavadekar.messenger.model.RecyclerViewType.Companion.TYPE_TIMESTAMP_HEADER
+import com.adityaamolbavadekar.messenger.utils.MessageItemListeners
 import com.adityaamolbavadekar.messenger.utils.extensions.getDate
 import com.adityaamolbavadekar.messenger.utils.logging.InternalLogger
 import com.adityaamolbavadekar.messenger.utils.recyclerview.BaseItemHolder
 import com.adityaamolbavadekar.messenger.utils.recyclerview.Details
-import com.adityaamolbavadekar.messenger.views.MessageItem
+import com.adityaamolbavadekar.messenger.views.*
 
 class MessagesAdapter(private val lifecycleOwner: LifecycleOwner) :
     ListAdapter<MessageRecord, MessagesAdapter.MessageBaseItemHolder>(
@@ -53,8 +54,7 @@ class MessagesAdapter(private val lifecycleOwner: LifecycleOwner) :
     private var isDebug: Boolean = InternalLogger.isDebugBuild
     private var recipients = listOf<Recipient>()
     private var conversationRecord: ConversationRecord? = null
-    private var onReactionListener: OnReactionListener? = null
-    private var deletionListener: MessageDeletionListener? = null
+    private var listeners = MessageItemListeners()
 
     @Suppress("UNNECESSARY_SAFE_CALL")
     fun setConversationWithRecipients(conversationWithRecipients: ConversationWithRecipients) {
@@ -65,13 +65,7 @@ class MessagesAdapter(private val lifecycleOwner: LifecycleOwner) :
         }
     }
 
-    fun setOnReactionListener(block: OnReactionListener) {
-        this.onReactionListener = block
-    }
-
-    fun setDeletionListener(block: MessageDeletionListener) {
-        this.deletionListener = block
-    }
+    fun getListenersDatabase() = listeners
 
     private val myUid: String = AuthManager().uid
 
@@ -221,9 +215,8 @@ class MessagesAdapter(private val lifecycleOwner: LifecycleOwner) :
             onItemClickCallback: BaseItemHolder.OnItemClickCallback<MessageRecord>?
         ) {
             super.bind(messageRecord, position, onItemClickCallback)
-            onReactionListener?.let { view.setOnReactionListener(it) }
+            view.setListenersDatabase(getListenersDatabase())
             view.setSelectionTracker { getItemSelectionTracker() }
-            deletionListener?.let { view.setOnDeletionListener(it) }
             view.setSearchData(searchData)
             view.setDebug(isDebug)
             view.bind(

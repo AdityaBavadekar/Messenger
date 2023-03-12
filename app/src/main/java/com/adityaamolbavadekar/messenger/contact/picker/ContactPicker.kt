@@ -139,8 +139,8 @@ class ContactPicker : BaseActivity() {
             cloudDatabaseManager.getUsersManager().observeUsers(this)
             cloudDatabaseManager.getUsersManager().getPublicUsersList()
             runOnIOThread {
-                database.getRecipients().collect {
-                    contactsPickerAdapter.submitList(it)
+                database.getRecipients().collect {list->
+                    contactsPickerAdapter.submitList(list.toMutableList().filter { it.uid != me.uid})
                 }
             }
             Permissions.ReadContacts.doIfDenied(requireContext()) {

@@ -29,6 +29,10 @@ class ColorUtils(private val context: Context) : ColorsUtility, Color() {
         return getColorForAttribute(R.attr.colorPrimary)
     }
 
+    override fun getPrimaryContainerColor(): Int {
+        return getColorForAttribute(R.attr.colorPrimaryContainer)
+    }
+
     override fun getSurfaceColor(): Int {
         return getColorForAttribute(R.attr.colorSurface)
     }

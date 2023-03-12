@@ -139,10 +139,8 @@ class ReactionsView @JvmOverloads constructor(
         class ReactionItemHolder(private val binding: EmojiReactionItemBinding) :
             RecyclerView.ViewHolder(binding.root) {
             fun bind(reaction: ReactionData) {
-                val colorUtils = ColorUtils(binding.holder.context)
                 binding.emojiTextView.text = reaction.reaction
                 binding.countTextView.text = reaction.count.toString()
-                binding.holder.setBackgroundColor(colorUtils.getPrimaryColor())
             }
         }
         override fun getItemViewType(position: Int): Int = 0

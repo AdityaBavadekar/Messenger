@@ -59,6 +59,7 @@
 
     <style name="Messenger.Widget.Appbar.ConversationStyle" parent="Messenger.Widget.Appbar.Surface">
         <item name="elevation">@dimen/appbar_elevation</item>
+        <item name="liftOnScroll">false</item>
     </style>
 
     <style name="Messenger.Widget.AvatarImageView.Default" parent="android:Widget.ImageButton">
@@ -145,19 +146,15 @@
         <item name="cardElevation">@dimen/message_card_elevation</item>
         <item name="cardForegroundColor">@android:color/transparent</item>
         <item name="cardCornerRadius">@dimen/message_corner_radius</item>
-        <!--        <item name="android:clickable">true</item>-->
-        <!--        <item name="android:focusable">true</item>-->
     </style>
 
     <style name="Messenger.Widget.Message.HolderCard.Outgoing" parent="Messenger.Widget.Message.HolderCard">
-        <!--        <item name="cardBackgroundColor">@color/colorMessageDefaultOutgoing</item>-->
         <item name="cardBackgroundColor">
             @color/messenger_widget_message_container_background_outgoing
         </item>
     </style>
 
     <style name="Messenger.Widget.Message.HolderCard.Incoming" parent="Messenger.Widget.Message.HolderCard">
-        <!--        <item name="cardBackgroundColor">@color/colorMessageDefaultIncoming</item>-->
         <item name="cardBackgroundColor">
             @color/messenger_widget_message_container_background_incoming
         </item>
@@ -298,6 +295,17 @@
     </style>
 
     <style name="Messenger.Widget.PhotoAttachmentsView" parent="Widget.Messenger.Message.Card.NoStrokeTransparent">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:layout_marginBottom">@dimen/dimen_8</item>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+        <item name="android:maxWidth">@dimen/message_max_width</item>
+    </style>
+
+    <style name="Messenger.Widget.DocumentView" parent="Widget.Messenger.Message.Card.NoStrokeTransparent">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_gravity">center</item>

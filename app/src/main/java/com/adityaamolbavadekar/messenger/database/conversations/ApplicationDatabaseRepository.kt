@@ -78,12 +78,12 @@ class ApplicationDatabaseRepository(private val dao: ConversationDao) {
         return dao.getMessages(conversationId)
     }
 
-    fun deleteMessages(conversationId: String) {
-        dao.deleteMessages(conversationId)
+    fun getMessagesAsFlow(conversationId: String): Flow<List<MessageRecord>> {
+        return dao.getMessagesAsFlow(conversationId)
     }
 
-    fun getAllMessages(): LiveData<List<MessageRecord>> {
-        return dao.getAllMessages()
+    fun deleteMessages(conversationId: String) {
+        dao.deleteMessages(conversationId)
     }
     /*[END] Message*/
 
@@ -164,6 +164,10 @@ class ApplicationDatabaseRepository(private val dao: ConversationDao) {
         return dao.getRecipientsOfConversationRecord(conversationId)
     }
 
+    fun getRecipientsOfConversationAsFlow(conversationId: String): Flow<ConversationWithRecipients> {
+        return dao.getRecipientsOfConversationRecordAsFlow(conversationId)
+    }
+
     fun getConversationsOfRecipients(uid: String): LiveData<RecipientWithConversations> {
         return dao.getConversationRecordsOfRecipient(uid)
     }
@@ -175,5 +179,15 @@ class ApplicationDatabaseRepository(private val dao: ConversationDao) {
     fun getRecipient(uid: String): LiveData<Recipient> {
         return dao.getRecipientWithUid(uid)
     }
+
+    /*[START] LocalAttachments*/
+    suspend fun insertOrUpdateLocalAttachment(localAttachment: LocalAttachment) {
+        dao.insertLocalAttachment(localAttachment)
+    }
+
+    fun getLocalAttachment(attachmentId:String): LocalAttachment {
+        return dao.getLocalAttachment(attachmentId)
+    }
+    /*[END] LocalAttachments*/
 
 }

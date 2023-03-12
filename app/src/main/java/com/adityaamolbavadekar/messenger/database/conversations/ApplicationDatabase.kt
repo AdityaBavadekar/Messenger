@@ -31,6 +31,7 @@ import com.adityaamolbavadekar.messenger.utils.logging.InternalLogger
         ReactionRecord::class,
         Recipient::class,
         Attachment::class,
+        LocalAttachment::class,
         ConversationRecordRecipientCrossRef::class,
         ConversationDraftMessage::class
     ],
@@ -48,6 +49,12 @@ import com.adityaamolbavadekar.messenger.utils.logging.InternalLogger
 abstract class ApplicationDatabase : RoomDatabase() {
 
     abstract fun dao(): ConversationDao
+    fun repo(): ApplicationDatabaseRepository {
+        return ApplicationDatabaseRepository(dao())
+    }
+    fun viewModelFactory(): DatabaseAndroidViewModel.Factory {
+        return DatabaseAndroidViewModel.Factory(this)
+    }
 
     companion object {
 

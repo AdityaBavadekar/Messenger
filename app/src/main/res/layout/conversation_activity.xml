@@ -29,6 +29,7 @@
         android:contentDescription="@null"
         android:importantForAccessibility="no"
         android:scaleType="centerCrop"
+        android:focusable="false"
         android:src="@color/colorWallpaperDefault"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -118,11 +119,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
-                <!-- FOR VIEWING PURPOSE ONLY.-->
-                <!--                    <include layout="@layout/conversation_fragment"/>-->
 
             </androidx.coordinatorlayout.widget.CoordinatorLayout>
-
 
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
@@ -151,6 +149,13 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
                 />
+
+            <ViewStub
+                android:id="@+id/emoji_keyboard_stub"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inflatedId="@+id/emoji_keyboard"
+                android:layout="@layout/conversation_activity_emoji_keyboard_stub" />
 
             <FrameLayout
                 android:id="@+id/fragment_container"

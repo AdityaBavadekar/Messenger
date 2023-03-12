@@ -16,27 +16,25 @@
 
 package com.adityaamolbavadekar.messenger.ui.conversation
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import android.accounts.NetworkErrorException
+import androidx.lifecycle.*
+import androidx.lifecycle.viewmodel.CreationExtras
+import com.adityaamolbavadekar.messenger.database.conversations.ApplicationDatabaseRepository
 import com.adityaamolbavadekar.messenger.database.conversations.DatabaseAndroidViewModel
 import com.adityaamolbavadekar.messenger.managers.CloudDatabaseManager
+import com.adityaamolbavadekar.messenger.managers.InternetManager
 import com.adityaamolbavadekar.messenger.model.*
 import com.adityaamolbavadekar.messenger.notifications.NotificationData
 import com.adityaamolbavadekar.messenger.notifications.NotificationSender
-import com.adityaamolbavadekar.messenger.utils.OnResponseCallback
 import com.adityaamolbavadekar.messenger.utils.extensions.findFirstMessage
-import com.adityaamolbavadekar.messenger.utils.extensions.getDateStub
 import com.adityaamolbavadekar.messenger.utils.extensions.runOnIOThread
 import com.adityaamolbavadekar.messenger.utils.logging.InternalLogger
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.TaskCompletionSource
-import com.google.firebase.database.ChildEventListener
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 
-class ConversationViewModel : ViewModel() {
+class ConversationViewModel(private val repo: ApplicationDatabaseRepository) : ViewModel(),
+    MessagesChildListener.Listener {
 
     private var lastMessage: MessageRecord? = null
     private var isObservingRemoteDatabase = false
@@ -71,25 +69,7 @@ class ConversationViewModel : ViewModel() {
     private val messageDeleter = MessagesDeleter()
     private lateinit var me: Recipient
     private var configured = false
-    private val onGetObservedMessagesResponseCallback =
-        object : OnResponseCallback<List<MessageRecord>, Exception> {
-            override fun onSuccess(t: List<MessageRecord>) {
-                createDateHeaders(updateConversationId(t))
-            }
-
-            override fun onFailure(e: Exception) {
-                InternalLogger.logE(TAG, "Unable observe messages.", e)
-            }
-        }
-
-    private fun updateConversationId(list: List<MessageRecord>): MutableList<MessageRecord> {
-        val newList = mutableListOf<MessageRecord>()
-        list.forEach {
-            it.conversationId = conversationId
-            newList.add(it)
-        }
-        return newList
-    }
+    private var isConnected = false
 
     private val onGroupConversationDataChangedCallback: (RemoteConversation) -> Unit =
         { remoteConversation ->
@@ -183,74 +163,6 @@ class ConversationViewModel : ViewModel() {
         startObservingRemoteData(p2pUid)
     }
 
-    fun onLocalConversationDataChanged(data: ConversationWithRecipients) {
-        _isMessagingRestrictedForMe.postValue(
-            data.conversationRecord.isMessagingRestrictedForUser(
-                me.uid
-            )
-        )
-        _conversationPhoto.postValue(data.conversationRecord.photoUrl)
-        _conversationTitle.postValue(data.conversationRecord.title)
-        conversationType = data.conversationRecord.conversationType()
-        startObservingRemoteData(if (conversationType == ConversationRecord.CONVERSATION_TYPE_P2P) data.conversationRecord.p2PRecipientUid() else null)
-        this._conversationWithRecipients.postValue(data)
-    }
-
-    fun onLocalMessagesDataChanged(data: List<MessageRecord>) {
-        this._messages.postValue(data)
-    }
-
-    private fun createDateHeaders(list: List<MessageRecord>): Job {
-        return runOnIOThread {
-            val timestamps = messages.value!!.filter { it.isTimestampHeader() }
-            val newList = TimestampsGenerator.generate(list, timestamps)
-            database.insertOrUpdateMessages(newList)
-        }
-//        return generateDateHeaders(list)
-    }
-
-    private fun generateDateHeaders(list: List<MessageRecord>): Job {
-        return runOnIOThread {
-            val newList = mutableListOf<MessageRecord>()
-            val mList = list.sortedBy { it.timestamp }
-            mList
-                .forEachIndexed { index, messageRecord ->
-                    if (messageRecord.isTimestampHeader()) {
-                        newList.add(messageRecord)
-                        return@forEachIndexed
-                    }
-
-                    val currentTimestampString = getDateStub(messageRecord.timestamp)
-                    // Previous index is +1 as we set reverseLayout=true
-                    val prev = list.getOrNull(index + 1)
-                    if (index == list.lastIndex) {
-                        //index is list's lastIndex means that there is no previous message, so we first add
-                        //the message and then a timestamp for current message.
-                        newList.add(messageRecord)
-                        val stamp = MessageRecord.timestampHeader(
-                            messageRecord.timestamp,
-                            conversationId
-                        )
-                        newList.add(stamp)
-                    } else {
-                        if (prev != null && !prev.isTimestampHeader()) {
-                            val prevTimestampString = getDateStub(prev.timestamp)
-                            if (prevTimestampString != currentTimestampString) {
-                                //A timestamp is needed
-                                val stamp = MessageRecord.timestampHeader(
-                                    prev.timestamp,
-                                    conversationId
-                                )
-                                newList.add(stamp)
-                            }
-                        }
-                        newList.add(messageRecord)
-                    }
-                }
-            database.insertOrUpdateMessages(newList)
-        }
-    }
-
     private fun startObservingRemoteData(p2pUid: String?) {
         if (isObservingRemoteDatabase) return
         when (conversationType) {
@@ -266,15 +178,10 @@ class ConversationViewModel : ViewModel() {
     }
 
     private fun startObservingRemoteP2PData(p2pUid: String, observeStatus: Boolean = true) {
-        messagesManager
-            .observeMessagesFromDatabase(
-                me.uid, p2pUid, onGetObservedMessagesResponseCallback
-            )
-        if (InternalLogger.isDebugBuild) {
-            messagesManager.observeMessagesFromDatabaseV2(
-                me.uid, p2pUid, childEventListener
-            )
-        }
+        messagesManager.observeMessagesFromDatabaseV2(
+            me.uid, p2pUid,
+            MessagesChildListener(this).childEventListener
+        )
         if (observeStatus) {
             statusManager.observeStatus(p2pUid) {
                 _status.postValue(it)
@@ -294,10 +201,9 @@ class ConversationViewModel : ViewModel() {
                 onGroupConversationDataChangedCallback
             )
         messagesManager
-            .observeMessagesFromGroupDatabase(
+            .observeMessagesFromGroupDatabaseV2(
                 conversationId,
-                me.uid,
-                onGetObservedMessagesResponseCallback
+                MessagesChildListener(this).childEventListener
             )
     }
 
@@ -306,11 +212,11 @@ class ConversationViewModel : ViewModel() {
         sendNotifications: Boolean = true
     ): Task<Void> {
         val source = TaskCompletionSource<Void>()
-        /*if (!InternetManager.isAvailable) {
+        if (!isConnected) {
             markAsNotSent(message)
             source.setException(NetworkErrorException())
             return source.task
-        }*/
+        }
         lastMessage = message
         val conversation = conversationWithRecipients.value!!.conversationRecord
         database.insertOrUpdateMessage(message)
@@ -412,32 +318,93 @@ class ConversationViewModel : ViewModel() {
         }
     }
 
-    private val childEventListener = object : ChildEventListener {
-        override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
-            //val m = snapshot.getValue<MessageRecord>()
-            InternalLogger.debugInfo(TAG, "childEventListener.onChildAdded : ${snapshot.ref}")
-        }
+    fun findMessageIndexOf(messageId: String): Int? {
+        return messages.value!!.whereMessageId(messageId)?.first
+    }
 
-        override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
-            InternalLogger.debugInfo(TAG, "childEventListener.onChildChanged : ${snapshot.ref}")
-        }
+    fun setConversationId(id: String) {
+        this.conversationId = id
+        initialise()
+    }
 
-        override fun onChildRemoved(snapshot: DataSnapshot) {
-            InternalLogger.debugInfo(TAG, "childEventListener.onChildRemoved : ${snapshot.ref}")
-        }
+    private fun onLocalConversationDataChanged(data: ConversationWithRecipients) {
+        _isMessagingRestrictedForMe.postValue(
+            data.conversationRecord.isMessagingRestrictedForUser(
+                me.uid
+            )
+        )
+        _conversationPhoto.postValue(data.conversationRecord.photoUrl)
+        _conversationTitle.postValue(data.conversationRecord.title)
+        conversationType = data.conversationRecord.conversationType()
+        startObservingRemoteData(if (conversationType == ConversationRecord.CONVERSATION_TYPE_P2P) data.conversationRecord.p2PRecipientUid() else null)
+    }
 
-        override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
-            InternalLogger.debugInfo(TAG, "childEventListener.onChildMoved : ${snapshot.ref}")
-        }
+    private fun initialise() {
+        collectMessages()
+        collectConversationAndRecipientsInfo()
+        observeNetworkConnectivity()
+    }
 
-        override fun onCancelled(error: DatabaseError) {
-            InternalLogger.logE(TAG, "childEventListener.onCancelled", error.toException())
+    private fun collectMessages() = runOnIOThread {
+        repo.getMessagesAsFlow(conversationId).collect {
+            _messages.postValue(it)
         }
     }
 
+    private fun collectConversationAndRecipientsInfo() = runOnIOThread {
+        repo.getRecipientsOfConversationAsFlow(conversationId).collect {
+            _conversationWithRecipients.postValue(it)
+            onLocalConversationDataChanged(it)
+        }
+    }
+
+    private fun observeNetworkConnectivity() = viewModelScope.launch {
+        InternetManager.isConnected.observeForever(connectionObserver)
+    }
+
+    private val connectionObserver: Observer<Boolean> =
+        Observer<Boolean> { t ->
+            InternalLogger.logW(TAG, "ConnectionObserver.onChanged(${t ?: false})")
+            isConnected = t ?: false
+        }
 
     companion object {
         private val TAG = ConversationViewModel::class.java.simpleName
+
+        @Suppress("UNCHECKED_CAST")
+        fun getFactory(): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
+            override fun <T : ViewModel> create(
+                modelClass: Class<T>,
+                extras: CreationExtras
+            ): T {
+                val application =
+                    checkNotNull(extras[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY])
+                val savedStateHandle = extras.createSavedStateHandle()
+                val messengerApplication = application as com.adityaamolbavadekar.messenger.App
+                return ConversationViewModel(messengerApplication.database.repo()) as T
+            }
+        }
+
     }
 
+    override fun doOnAdded(messageRecord: MessageRecord) {
+        //TODO Mark messages as Read
+        database.insertOrUpdateMessage(messageRecord)
+    }
+
+    override fun doOnChanged(messageRecord: MessageRecord) {
+        database.insertOrUpdateMessage(messageRecord)
+    }
+
+    override fun doOnRemoved(messageRecord: MessageRecord) {
+        database.insertOrUpdateMessage(messageRecord)
+    }
+
+    fun insertLocalAttachment(attachment: LocalAttachment) =viewModelScope.launch{
+        repo.insertOrUpdateLocalAttachment(attachment)
+    }
+
+    fun getLocalAttachment(id: String): LocalAttachment {
+        return repo.getLocalAttachment(id)
+    }
 }
