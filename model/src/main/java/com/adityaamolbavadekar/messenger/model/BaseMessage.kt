@@ -42,7 +42,7 @@ abstract class BaseMessage public constructor(
             Fields.CONVERSATION_ID to conversationId,
             Fields.MESSAGE to message,
             Fields.ATTACHMENTS to attachments,
-            Fields.DOC_ATTACHMENTS to documentAttachment,
+            Fields.DOC_ATTACHMENT to documentAttachment?.hashMap(),
             Fields.REACTIONS to reactions.toHashMapList(),
             Fields.TIMESTAMP to timestamp,
             Fields.IS_DELETED to isDeleted,
@@ -64,7 +64,7 @@ abstract class BaseMessage public constructor(
             const val CONVERSATION_ID = "conversationId"
             const val MESSAGE = "message"
             const val ATTACHMENTS = "attachments"
-            const val DOC_ATTACHMENTS = "documentAttachment"
+            const val DOC_ATTACHMENT = "documentAttachment"
             const val REACTIONS = "reactions"
             const val TIMESTAMP = "timestamp"
             const val IS_DELETED = "isDeleted"

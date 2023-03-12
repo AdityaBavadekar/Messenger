@@ -17,8 +17,6 @@
 package com.adityaamolbavadekar.messenger.database.conversations
 
 import androidx.lifecycle.LiveData
-import androidx.paging.LivePagedListBuilder
-import androidx.paging.PagedList
 import com.adityaamolbavadekar.messenger.model.*
 import kotlinx.coroutines.flow.Flow
 
@@ -86,12 +84,6 @@ class ApplicationDatabaseRepository(private val dao: ConversationDao) {
 
     fun deleteMessages(conversationId: String) {
         dao.deleteMessages(conversationId)
-    }
-
-    fun getAllMessages(conversationId:String,config:PagedList.Config): LiveData<PagedList<MessageRecord>> {
-        val factory = dao.getMessagesListPaged(conversationId)
-        return LivePagedListBuilder(factory,config)
-            .build()
     }
     /*[END] Message*/
 
@@ -187,5 +179,15 @@ class ApplicationDatabaseRepository(private val dao: ConversationDao) {
     fun getRecipient(uid: String): LiveData<Recipient> {
         return dao.getRecipientWithUid(uid)
     }
+
+    /*[START] LocalAttachments*/
+    suspend fun insertOrUpdateLocalAttachment(localAttachment: LocalAttachment) {
+        dao.insertLocalAttachment(localAttachment)
+    }
+
+    fun getLocalAttachment(attachmentId:String): LocalAttachment {
+        return dao.getLocalAttachment(attachmentId)
+    }
+    /*[END] LocalAttachments*/
 
 }

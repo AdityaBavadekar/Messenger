@@ -18,8 +18,6 @@ package com.adityaamolbavadekar.messenger.views
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
-import android.net.Uri
 import android.text.Spanned
 import android.text.SpannedString
 import android.text.style.BackgroundColorSpan
@@ -28,7 +26,6 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.RelativeLayout
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.text.buildSpannedString
 import androidx.core.text.inSpans
@@ -49,6 +46,7 @@ import com.adityaamolbavadekar.messenger.utils.Constants.TimestampFormats.MESSAG
 import com.adityaamolbavadekar.messenger.utils.Constants.TimestampFormats.TIMESTAMP_FORMAT_FULL
 import com.adityaamolbavadekar.messenger.utils.CustomLinkHandlerSpan
 import com.adityaamolbavadekar.messenger.utils.ImageLoader
+import com.adityaamolbavadekar.messenger.utils.MessageItemListeners
 import com.adityaamolbavadekar.messenger.utils.extensions.isNotNull
 import com.adityaamolbavadekar.messenger.utils.extensions.isNull
 import com.adityaamolbavadekar.messenger.utils.extensions.simpleDateFormat
@@ -88,6 +86,8 @@ class MessageItem @JvmOverloads constructor(
     private var navigateToReplyListener: NavigateToReplyListener? = null
     private var reactionListener: OnReactionListener = getEmptyOnReactionListener()
     private var deletionListener: MessageDeletionListener = getEmptyDeletionListener()
+    private var openDocumentListener: OpenDocumentListener? = null
+    private var downloadDocumentListener: DownloadDocumentListener? = null
     private var searchData: SearchData? = null
     private val imageLoader = ImageLoader.with(this)
     private var itemIndex: Int = 0
@@ -349,9 +349,13 @@ class MessageItem @JvmOverloads constructor(
         }
 
         checkNotNull(documentAttachmentsView) { "documentAttachmentsView cannot be null" }
+        documentAttachmentsView!!.setIncoming(!getIsSentByMe())
         documentAttachmentsView!!.setDocument(requireMessageRecord().documentAttachment!!)
         documentAttachmentsView!!.setOnAttachmentClickListener {
-            onDocumentAttachmentClicked(it)
+            openDocumentListener?.invoke(it)
+        }
+        documentAttachmentsView!!.setOnDownloadListener {
+            downloadDocumentListener?.invoke(requireMessageRecord().id,it)
         }
         setVisible(documentAttachmentsView!!)
     }
@@ -479,7 +483,7 @@ class MessageItem @JvmOverloads constructor(
                         .show()
                 }
                 R.id.action_reply -> {
-                    addReplyListener?.invoke(getSender(),requireMessageRecord())
+                    addReplyListener?.invoke(getSender(), requireMessageRecord())
                 }
                 else -> return@setOnMenuItemClickListener false
             }
@@ -536,8 +540,10 @@ class MessageItem @JvmOverloads constructor(
     }
 
     private fun onReplyClicked() {
-        navigateToReplyListener?.invoke(getSender(),
-            requireMessageRecord().getReply()!!)
+        navigateToReplyListener?.invoke(
+            getSender(),
+            requireMessageRecord().getReply()!!
+        )
     }
 
     private fun onReactionsViewClicked() {
@@ -552,23 +558,6 @@ class MessageItem @JvmOverloads constructor(
                     getTitleText(), getTimestampText()
                 )
         )
-    }
-
-    private fun onDocumentAttachmentClicked(attachment: Attachment) {
-        Intent(Intent.ACTION_VIEW).apply {
-            setDataAndType(Uri.fromFile(attachment.file()), attachment.mimeType())
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK
-            try {
-                context.startActivity(this)
-            } catch (e: Exception) {
-                InternalLogger.logE(TAG, "Unable to start file open intent.", e)
-                Toast.makeText(
-                    context,
-                    context.getString(R.string.unable_to_open_file),
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-        }
     }
 
     private fun onPhotoAttachmentsClicked(urls: List<String>) {
@@ -592,6 +581,10 @@ class MessageItem @JvmOverloads constructor(
     fun getNextMessageRecord() = nextMessageRecord
     fun getConversationRecord() = conversation
 
+    fun setListenersDatabase(listeners: MessageItemListeners) {
+        listeners.applyToMessageItem(this)
+    }
+
     fun setOnTitleClickListener(listener: TitleClickListener) {
         this.titleClickListener = listener
     }
@@ -610,6 +603,14 @@ class MessageItem @JvmOverloads constructor(
 
     fun setOnDeletionListener(listener: MessageDeletionListener) {
         this.deletionListener = listener
+    }
+
+    fun setOpenDocumentListener(listener: OpenDocumentListener) {
+        this.openDocumentListener = listener
+    }
+
+    fun setDownloadDocumentListener(listener: DownloadDocumentListener) {
+        this.downloadDocumentListener = listener
     }
 
     fun setPreviousMessageRecord(message: MessageRecord?) {

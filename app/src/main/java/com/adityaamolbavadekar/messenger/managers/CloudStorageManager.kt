@@ -168,10 +168,14 @@ class CloudStorageManager {
             }
     }
 
+    /**
+     * @return If Successful downloadUrl from [onSuccess] callback
+     * - If failure exception from [onFailure] callback.
+     * **/
     fun uploadDocument(
         docUri: Uri, metadata: StorageMetadata,
         onProgress: (Int) -> Unit,
-        onSuccess: () -> Unit,
+        onSuccess: (String) -> Unit,
         onFailure: (Exception) -> Unit,
     ) =
         runOnIOThread {
@@ -188,8 +192,21 @@ class CloudStorageManager {
                         )
                     )
                 }
-                .addOnSuccessListener { onSuccess() }
-                .addOnFailureListener { onFailure(it) }
+                .addOnSuccessListener {
+                    InternalLogger.logI(TAG,"UploadTask : success")
+                    ref.downloadUrl
+                        .addOnSuccessListener {
+                            InternalLogger.logI(TAG,"UploadTask.downloadUrl : success")
+                            onSuccess(it.toString())
+                        }
+                        .addOnFailureListener {
+                        InternalLogger.logE(TAG,"Unable get downloadUrl for ${ref}",it)
+                            onFailure(it)
+                        }
+                }
+                .addOnFailureListener {
+                    InternalLogger.logE(TAG,"Unable to upload file at ${ref}",it)
+                    onFailure(it) }
         }
 
     companion object {

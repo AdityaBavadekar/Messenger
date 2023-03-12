@@ -45,6 +45,8 @@ class DocumentView @JvmOverloads constructor(
     private val imageLoader = ImageLoader.with(this)
     private var document: Attachment? = null
     private var clickListener: (Attachment) -> Unit = {}
+    private var downloadClickListener: (Attachment) -> Unit = {}
+    private var isIncoming: Boolean = false
 
     init {
         val inflatedView =
@@ -56,9 +58,15 @@ class DocumentView @JvmOverloads constructor(
         fileNameTextView = inflatedView.fileName
         holder = inflatedView.holder
         holder.setOnClickListener {
-            document?.let { clickListener(it) }
+            document?.let {
+                if(isIncoming){
+                    downloadClickListener(it)
+                }else clickListener(it)
+            }
         }
-        downloadFileImageView.setOnClickListener {  }
+        downloadFileImageView.setOnClickListener {
+            document?.let { downloadClickListener(it) }
+        }
         AndroidUtils.setGone(downloadFileImageView)
         AndroidUtils.setGone(thumbnailImageView)
         AndroidUtils.setGone(holder)
@@ -66,6 +74,10 @@ class DocumentView @JvmOverloads constructor(
 
     fun setOnAttachmentClickListener(listener: (Attachment) -> Unit) {
         clickListener = listener
+    }
+
+    fun setOnDownloadListener(listener: (Attachment) -> Unit) {
+        downloadClickListener = listener
     }
 
     fun setDocument(doc: Attachment?) {
@@ -84,8 +96,14 @@ class DocumentView @JvmOverloads constructor(
                 .append(" ")
                 .append(it.readableSize().first.name)
             fileNameTextView.text = it.fileNameWithExtension()
-
+            if(isIncoming){
+                AndroidUtils.setVisible(downloadFileImageView)
+            }
         }
+    }
+
+    fun setIncoming(b: Boolean) {
+        isIncoming = b
     }
 
 

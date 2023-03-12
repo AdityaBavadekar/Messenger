@@ -30,8 +30,9 @@ import com.adityaamolbavadekar.messenger.dialogs.Dialogs
 import com.adityaamolbavadekar.messenger.model.ConversationRecord
 import com.adityaamolbavadekar.messenger.ui.conversation.ConversationActivity
 import com.adityaamolbavadekar.messenger.utils.base.BindingHelperFragment
-import com.adityaamolbavadekar.messenger.utils.recyclerview.BaseItemHolder
 import com.adityaamolbavadekar.messenger.utils.extensions.runOnIOThread
+import com.adityaamolbavadekar.messenger.utils.extensions.runOnMainThread
+import com.adityaamolbavadekar.messenger.utils.recyclerview.BaseItemHolder
 
 /**
  * Displays list of conversations.
@@ -66,20 +67,22 @@ class ConversationListFragment : BindingHelperFragment<ConversationListFragmentB
         runOnIOThread {
             database.getConversations().collect {
                 conversationListAdapter.submitList(it)
-                if (it.isEmpty()) {
-                    binding.conversationRecyclerView.isGone = true
-                    binding.noConversationsLayout.isVisible = true
-                } else {
-                    binding.conversationRecyclerView.isVisible = true
-                    binding.noConversationsLayout.isGone = true
+                runOnMainThread {
+                    if (it.isEmpty()) {
+                        binding.conversationRecyclerView.isGone = true
+                        binding.noConversationsLayout.isVisible = true
+                    } else {
+                        binding.conversationRecyclerView.isVisible = true
+                        binding.noConversationsLayout.isGone = true
+                    }
                 }
             }
         }
 
-        
-        runOnIOThread{
+
+        runOnIOThread {
             database.getRecipients().collect {
-                 conversationListAdapter.setRecipients(it)
+                conversationListAdapter.setRecipients(it)
             }
         }
 

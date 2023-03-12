@@ -17,6 +17,7 @@
 package com.adityaamolbavadekar.messenger.utils
 
 import android.content.Context
+import com.adityaamolbavadekar.messenger.BuildConfig
 import com.adityaamolbavadekar.messenger.model.Id
 import com.adityaamolbavadekar.messenger.utils.extensions.simpleDateFormat
 import com.adityaamolbavadekar.messenger.utils.logging.InternalLogger
@@ -25,6 +26,7 @@ import java.util.*
 
 object Constants {
 
+    const val FILE_PROVIDER_AUTHORITY = BuildConfig.APPLICATION_ID + "." + "provider"
     const val VOICE_CALL_SUPPORTED = false
 
 
@@ -71,14 +73,14 @@ object Constants {
         private const val NAME_PARENT_DOCS_DIR = NAME_PARENT_MEDIA_DIR + "/Messenger Documents"
         private const val NAME_PARENT_SENT_DOCS_DIR = NAME_PARENT_DOCS_DIR + "/Sent"
 
-        fun createDefaultDirs(context: Context){
+        fun createDefaultDirs(context: Context) {
             try {
                 getMediaDir(context)
                 getDocsDir(context)
                 getImagesDir(context)
                 getVideosDir(context)
             } catch (e: Exception) {
-                InternalLogger.logE("Constants","Unable create dirs",e)
+                InternalLogger.logE("Constants", "Unable create dirs", e)
             }
         }
 

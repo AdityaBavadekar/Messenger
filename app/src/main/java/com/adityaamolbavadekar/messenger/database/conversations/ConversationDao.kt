@@ -87,9 +87,6 @@ interface ConversationDao {
     @Query("SELECT * FROM messages_table WHERE conversationId LIKE :conversationIdentifier ORDER BY timestamp DESC")
     fun getMessagesAsFlow(conversationIdentifier: String): Flow<List<MessageRecord>>
 
-    @Query("SELECT * FROM messages_table WHERE conversationId LIKE :conversationIdentifier ORDER BY timestamp ASC")
-    fun getMessagesListPaged(conversationIdentifier:String): androidx.paging.DataSource.Factory<String,MessageRecord>
-
     @Query("SELECT * FROM messages_table WHERE id LIKE :messageId")
     fun getMessage(messageId: String): MessageRecord
 
@@ -193,6 +190,13 @@ interface ConversationDao {
     /*[END] Recipients and Conversations*/
 
     /*RELATIONS*/
+
+    /*LocalAttachments*/
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertLocalAttachment(localAttachment: LocalAttachment)
+
+    @Query("SELECT * FROM local_attachments_table WHERE correspondingMessageId LIKE :attachmentId")
+    fun getLocalAttachment(attachmentId: String): LocalAttachment
 
 
 }

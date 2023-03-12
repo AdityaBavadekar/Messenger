@@ -399,4 +399,12 @@ class ConversationViewModel(private val repo: ApplicationDatabaseRepository) : V
     override fun doOnRemoved(messageRecord: MessageRecord) {
         database.insertOrUpdateMessage(messageRecord)
     }
+
+    fun insertLocalAttachment(attachment: LocalAttachment) =viewModelScope.launch{
+        repo.insertOrUpdateLocalAttachment(attachment)
+    }
+
+    fun getLocalAttachment(id: String): LocalAttachment {
+        return repo.getLocalAttachment(id)
+    }
 }

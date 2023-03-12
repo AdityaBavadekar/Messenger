@@ -75,7 +75,10 @@ class ComposeAddPopupWindow private constructor(
     }
 
     private fun doOnCreateView() {
-        val listAdapter = ComposeAddFragmentAdapter { clicked(it) }
+        val listAdapter = ComposeAddFragmentAdapter {
+            dismiss()
+            clicked(it)
+        }
         binding.recycler.apply {
             layoutManager = GridLayoutManager(this@ComposeAddPopupWindow.parent.context, 5)
             adapter = listAdapter

@@ -71,25 +71,13 @@ class AndroidUtils private constructor() {
             return uri.toString().startsWith("file://")
         }
 
-        fun saveSentDocumentFile(uri: Uri, context: Context): File {
-
-            val fileName = "DOC_" + createFileName(FILE_TYPE_OTHER) + "."
+        fun saveSentDocumentFile(extension:String,uri: Uri, context: Context): File {
+            var fileName = "DOC_" + createFileName(FILE_TYPE_OTHER) + "."
+            if (extension.trim().isNotEmpty()) fileName += extension
             val f =
                 File(Constants.AppDirectories.getSentDocsDir(context).absolutePath + "/$fileName")
             f.createNewFile()
-            try {
-                if (true) { //isContentUri(uri)
-                    val outputStream = FileOutputStream(f)
-                    val io = context.contentResolver!!.openInputStream(uri)!!
-                    io.copyTo(outputStream)
-                    io.close()
-                    outputStream.flush()
-                    outputStream.close()
-                } else {
-                    File(uri.path).copyTo(f, true)
-                }
-            } catch (_: Exception) {
-            }
+            copyUriFileContents(context,uri,f)
             if (f.length() > 0) {
                 InternalLogger.debugInfo(
                     TAG,
@@ -97,6 +85,36 @@ class AndroidUtils private constructor() {
                 )
             }
             return f
+        }
+
+        fun saveDownloadedDocumentFile(extension:String,uri: Uri, context: Context): File {
+            var fileName = "DOC_" + createFileName(FILE_TYPE_OTHER) + "."
+            if (extension.trim().isNotEmpty()) fileName += extension
+            val f =
+                File(Constants.AppDirectories.getDocsDir(context).absolutePath + "/$fileName")
+            f.createNewFile()
+            copyUriFileContents(context,uri,f)
+            if (f.length() > 0) {
+                InternalLogger.debugInfo(
+                    TAG,
+                    "Created file [${fileName}] with size " + SizeUnit.format(f.length())
+                )
+            }
+            return f
+        }
+
+        fun copyUriFileContents(context:Context,uri: Uri,file: File): Boolean {
+            try {
+                val outputStream = FileOutputStream(file)
+                val io = context.contentResolver!!.openInputStream(uri)!!
+                io.copyTo(outputStream)
+                io.close()
+                outputStream.flush()
+                outputStream.close()
+                return true
+            } catch (_: Exception) {
+                return false
+            }
         }
 
         fun createFileName(type: Int): String {

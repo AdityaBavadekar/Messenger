@@ -435,23 +435,46 @@ class ConversationActivity : ParentConversationActivity(), SearchView.OnQueryTex
                     InternalLogger.debugInfo(TAG, "Upload document progress = ${progress}%")
                     action(progress)
                 },
-                onSuccess = {
-                    AndroidUtils.saveSentDocumentFile(docUri, this)
+                onSuccess = { downloadUrl ->
+                    val messageId = Id.get()
                     val map = AndroidUtils.getFileMetadata(docUri, contentResolver!!)
                     val mimeType = map["mimeType"] as String?
-                    val fileName = map["name"] as String
+                    val fileNameWithExtension = (map["name"] as String)
                     val fileSize = map["size"] as Long
-                    val messageRecord =
-                        MessageRecord.from(
-                            me,
-                            conversationId,
-                            Attachment.from(docUri, fileName, fileSize, mimeType)
+                    val attachment = Attachment.from(
+                        docUri,
+                        fileNameWithExtension,
+                        fileSize,
+                        mimeType,
+                        downloadUrl
+                    )
+                    AndroidUtils.saveSentDocumentFile(attachment.extension,docUri, this).also { localFile ->
+                        val localAttachment = LocalAttachment.new(
+                            attachment,
+                            messageId,
+                            downloadUrl,
+                            localFile.canonicalPath,
+                            localFile.name,
+                            localFile.parentFile!!.absolutePath,
+                            LocalAttachment.DocumentStorage.DOCS_SENT.ordinal
                         )
+                        viewModel.insertLocalAttachment(localAttachment)
+                    }
+                    val messageRecord = MessageRecord.Builder(conversationId)
+                        .setId(messageId)
+                        .setSender(me)
+                        .setDocumentAttachment(attachment)
+                        .build()
                     loader.dismiss()
                     sendMessage(messageRecord)
                 },
                 onFailure = {
                     loader.dismiss()
+                    Dialogs.showErrorDialog(
+                        this,
+                        it.message ?: getString(R.string.oops_something_went_wrong_try_again_later),
+                        getString(R.string.okay)
+                    ) {}
                 }
             )
         })

@@ -3,6 +3,7 @@ package com.adityaamolbavadekar.messenger.utils;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.AlarmManager;
+import android.app.DownloadManager;
 import android.app.KeyguardManager;
 import android.app.NotificationManager;
 import android.app.job.JobScheduler;
@@ -32,6 +33,10 @@ import org.jetbrains.annotations.NotNull;
 public class ServiceUtil {
   public static InputMethodManager getInputMethodManager(Context context) {
     return (InputMethodManager)context.getSystemService(Context.INPUT_METHOD_SERVICE);
+  }
+
+  public static DownloadManager getDownloadManager(Context context) {
+    return (DownloadManager)context.getSystemService(Context.DOWNLOAD_SERVICE);
   }
 
   public static WindowManager getWindowManager(Context context) {

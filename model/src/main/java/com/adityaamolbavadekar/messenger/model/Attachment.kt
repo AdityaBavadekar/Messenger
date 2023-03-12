@@ -34,8 +34,21 @@ data class Attachment(
     val uploadTimestamp: Long,
     val width: Int,
     val height: Int,
-    val absolutePath: String,
-) {
+    val downloadUrl: String,
+):RemoteDatabasePersitable {
+
+    override fun hashMap(): HashMap<String, Any?> {
+        return hashMapOf(
+            "id" to id,
+            "size" to size,
+            "mimeType" to mimeType,
+            "extension" to extension,
+            "uploadTimestamp" to uploadTimestamp,
+            "width" to width,
+            "height" to height,
+            "downloadUrl" to downloadUrl
+        )
+    }
 
     constructor() : this(
         id = Id.get(),
@@ -46,7 +59,7 @@ data class Attachment(
         uploadTimestamp = 0,
         width = 0,
         height = 0,
-        absolutePath = ""
+        downloadUrl = ""
     )
 
     fun fileNameWithExtension() = "$fileName.$extension"
@@ -65,7 +78,8 @@ data class Attachment(
     }
 
     fun file(): File {
-        return File(absolutePath)
+
+        return File(downloadUrl)
     }
 
     companion object {
@@ -77,29 +91,33 @@ data class Attachment(
                 uploadTimestamp = System.currentTimeMillis(),
                 width = 0,
                 height = 0,
-                absolutePath = file.absolutePath,
+                downloadUrl = file.absolutePath,
                 mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(file.extension)
             )
         }
 
-        fun from(uri: Uri, fileName: String, size: Long, mimeType: String?): Attachment {
+        fun from(uri: Uri, fileNameWithExtension: String, size: Long, mimeType: String?,downloadUrl: String): Attachment {
             var fileExtension = ""
             MimeTypeMap.getSingleton().getExtensionFromMimeType(mimeType)?.let {
                 fileExtension = it
             }
-            if (fileExtension == "" && fileName.contains(".")) {
+            if (fileExtension == "" && fileNameWithExtension.contains(".")) {
                 fileExtension =
-                    fileName.subSequence(fileName.lastIndexOf("."), fileName.lastIndex).toString()
+                    fileNameWithExtension.subSequence(fileNameWithExtension.lastIndexOf("."), fileNameWithExtension.lastIndex).toString()
             }
+
+            val fileNameString = if(fileNameWithExtension.lastIndexOf(".")!=-1)
+                fileNameWithExtension.subSequence(0,fileNameWithExtension.lastIndexOf(".")).toString()
+            else fileNameWithExtension
 
             return Attachment(
                 size = size,
-                fileName = fileName,
+                fileName = fileNameString,
                 extension = fileExtension,
                 uploadTimestamp = System.currentTimeMillis(),
                 width = 0,
                 height = 0,
-                absolutePath = uri.toString(),
+                downloadUrl = downloadUrl,
                 mimeType = mimeType
             )
         }
