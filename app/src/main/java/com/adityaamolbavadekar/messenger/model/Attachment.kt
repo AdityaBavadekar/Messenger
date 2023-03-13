@@ -96,6 +96,18 @@ data class Attachment(
             )
         }
 
+        fun from(metadata:FileMetadata,downloadUrl: String): Attachment {
+            return Attachment(
+                size = metadata.size,
+                fileName = metadata.name,
+                extension = metadata.extension,
+                uploadTimestamp = System.currentTimeMillis(),
+                width = 0,
+                height = 0,
+                downloadUrl = downloadUrl,
+                mimeType = metadata.mimeType)
+        }
+
         fun from(uri: Uri, fileNameWithExtension: String, size: Long, mimeType: String?,downloadUrl: String): Attachment {
             var fileExtension = ""
             MimeTypeMap.getSingleton().getExtensionFromMimeType(mimeType)?.let {
@@ -106,9 +118,7 @@ data class Attachment(
                     fileNameWithExtension.subSequence(fileNameWithExtension.lastIndexOf("."), fileNameWithExtension.lastIndex).toString()
             }
 
-            val fileNameString = if(fileNameWithExtension.lastIndexOf(".")!=-1)
-                fileNameWithExtension.subSequence(0,fileNameWithExtension.lastIndexOf(".")).toString()
-            else fileNameWithExtension
+            val fileNameString = fileNameWithExtension.substringBeforeLast(".")
 
             return Attachment(
                 size = size,

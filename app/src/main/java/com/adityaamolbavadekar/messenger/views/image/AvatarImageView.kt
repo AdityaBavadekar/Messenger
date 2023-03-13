@@ -26,7 +26,6 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.withStyledAttributes
 import com.adityaamolbavadekar.messenger.R
 import com.adityaamolbavadekar.messenger.utils.extensions.load
-import com.adityaamolbavadekar.messenger.views.image.RoundRectDrawable
 import com.bumptech.glide.Glide
 
 class AvatarImageView @JvmOverloads constructor(
@@ -71,7 +70,7 @@ class AvatarImageView @JvmOverloads constructor(
     }
 
 
-    private class ImageViewApiImpl {
+    class ImageViewApiImpl {
 
         fun initialise(
             view: View,
@@ -79,10 +78,11 @@ class AvatarImageView @JvmOverloads constructor(
             radius: Int,
             elevation: Int,
         ) {
-            val background = RoundRectDrawable(
-                backgroundColor,
-                radius.toFloat()
-            )
+            val background =
+                RoundedBackgroundDrawable(
+                    backgroundColor,
+                    radius.toFloat()
+                )
             view.background = (background)
             view.clipToOutline = true
             view.elevation = elevation.toFloat()

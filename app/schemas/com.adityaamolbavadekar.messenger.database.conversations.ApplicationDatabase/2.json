@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 2,
-    "identityHash": "7c2e3740a5cde0128360e518cfbe1a61",
+    "identityHash": "bcf38a9c9bb136e8366175e54f8e40b3",
     "entities": [
       {
         "tableName": "accounts_table",
@@ -514,7 +514,7 @@
       },
       {
         "tableName": "attachments_table",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `size` INTEGER NOT NULL, `mimeType` TEXT, `fileName` TEXT NOT NULL, `extension` TEXT NOT NULL, `uploadTimestamp` INTEGER NOT NULL, `width` INTEGER NOT NULL, `height` INTEGER NOT NULL, `absolutePath` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `size` INTEGER NOT NULL, `mimeType` TEXT, `fileName` TEXT NOT NULL, `extension` TEXT NOT NULL, `uploadTimestamp` INTEGER NOT NULL, `width` INTEGER NOT NULL, `height` INTEGER NOT NULL, `downloadUrl` TEXT NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -565,8 +565,94 @@
             "notNull": true
           },
           {
-            "fieldPath": "absolutePath",
-            "columnName": "absolutePath",
+            "fieldPath": "downloadUrl",
+            "columnName": "downloadUrl",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "local_attachments_table",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `correspondingAttachmentId` TEXT NOT NULL, `correspondingMessageId` TEXT NOT NULL, `attachmentFileSize` INTEGER NOT NULL, `attachmentMimeType` TEXT, `attachmentFileName` TEXT NOT NULL, `attachmentFileExtension` TEXT NOT NULL, `remoteDownloadUrl` TEXT NOT NULL, `documentStorageType` INTEGER NOT NULL, `localFilePath` TEXT NOT NULL, `localFileName` TEXT NOT NULL, `localStorageDir` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "correspondingAttachmentId",
+            "columnName": "correspondingAttachmentId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "correspondingMessageId",
+            "columnName": "correspondingMessageId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "attachmentFileSize",
+            "columnName": "attachmentFileSize",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "attachmentMimeType",
+            "columnName": "attachmentMimeType",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "attachmentFileName",
+            "columnName": "attachmentFileName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "attachmentFileExtension",
+            "columnName": "attachmentFileExtension",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "remoteDownloadUrl",
+            "columnName": "remoteDownloadUrl",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "documentStorageType",
+            "columnName": "documentStorageType",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "localFilePath",
+            "columnName": "localFilePath",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "localFileName",
+            "columnName": "localFileName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "localStorageDir",
+            "columnName": "localStorageDir",
             "affinity": "TEXT",
             "notNull": true
           }
@@ -671,7 +757,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '7c2e3740a5cde0128360e518cfbe1a61')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'bcf38a9c9bb136e8366175e54f8e40b3')"
     ]
   }
 }

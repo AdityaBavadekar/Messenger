@@ -64,6 +64,7 @@ class MessageItem @JvmOverloads constructor(
 ) : RelativeLayout(context, attr, defStyle), RecyclableMessageItem {
 
     private var mainHolderView: MaterialCardView? = null
+    private var messageItemBodyLayout: MessageItemBodyLayout? = null
     private var titleTextView: TextView? = null
     private var messageTextView: TextView? = null
     private var timestampTextView: TextView? = null
@@ -108,6 +109,15 @@ class MessageItem @JvmOverloads constructor(
 
     private var wasBindedPreviously: Boolean = false
     private var isSelectedMessageItem: Boolean = false
+    private val contractMessage = Runnable {
+        mainHolderView!!.animate()
+            .scaleX(LONG_PRESS_SCALE_FACTOR)
+            .scaleY(LONG_PRESS_SCALE_FACTOR)
+            .setUpdateListener { animation ->
+                val parent = parent as View
+                parent.invalidate()
+            }
+    }
 
     override fun bind(
         lifecycleOwner: LifecycleOwner,
@@ -195,6 +205,7 @@ class MessageItem @JvmOverloads constructor(
         }
 
         mainHolderView = findViewById(R.id.send_message_card)
+        messageItemBodyLayout = findViewById(R.id.message_body_layout)
         titleTextView = findViewById(R.id.title)
         messageTextView = findViewById(R.id.message)
         timestampTextView = findViewById(R.id.stamp)
@@ -673,6 +684,8 @@ class MessageItem @JvmOverloads constructor(
 
     companion object {
         private val TAG = MessageItem::class.java.simpleName
+        private const val LONG_PRESS_SCALE_FACTOR = 0.95f
+        private const val SHRINK_BUBBLE_DELAY_MILLIS = 100
         private const val IS_SELECTION_SUPPORTED = false
         fun new(context: Context): MessageItem {
             return MessageItem(context, null, 0)

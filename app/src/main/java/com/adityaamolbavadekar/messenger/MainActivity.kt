@@ -55,7 +55,9 @@ class MainActivity : BaseActivity() {
         navController = Navigation.findNavController(this, R.id.container)
         NavigationUI.setupWithNavController(binding.navView, navController)
         (binding.navView as NavigationBarView).setOnItemReselectedListener {}
-        AndroidUtils.setNavigationBarColor(window, ColorUtils(this).getPrimaryContainerColor())
+        val colorUtils = ColorUtils(this)
+        binding.navView.setBackgroundColor(colorUtils.getPrimaryContainerColor())
+        AndroidUtils.setNavigationBarColor(window, colorUtils.getPrimaryContainerColor())
         database.getLiveDataLoggedInAccount().observe(this) {
             it?.let { user ->
                 if (user.photoUrl.isNotNull()) {
