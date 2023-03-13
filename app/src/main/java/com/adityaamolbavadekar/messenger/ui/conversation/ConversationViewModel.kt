@@ -181,7 +181,7 @@ class ConversationViewModel(private val repo: ApplicationDatabaseRepository) : V
 
     private fun startObservingRemoteP2PData(p2pUid: String, observeStatus: Boolean = true) {
         messagesManager.observeMessagesFromDatabaseV2(
-            me.uid, p2pUid,
+            myUid, p2pUid,
             MessagesChildListener(this).childEventListener
         )
         if (observeStatus) {
