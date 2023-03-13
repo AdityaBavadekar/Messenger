@@ -99,30 +99,32 @@ class ConversationFragment : BindingHelperFragment<ConversationFragmentBinding>(
             setOnAddReplyListener { recipient, messageRecord ->
                 getConversationActivity().onShouldAddReply(recipient, messageRecord)
             }
-            setOnNavigateToReplyListener { recipient, replyInfo ->
+            setOnNavigateToReplyListener { _, replyInfo ->
                 navigateToMessage(replyInfo.correspondingMessageId)
             }
             setOnDeletionListener(this@ConversationFragment)
             setOpenDocumentListener {
-                val attachment = viewModel.getLocalAttachment(it.id)
-                Intent(Intent.ACTION_VIEW).apply {
-                    val file = attachment.getFile()
-                    val uri = FileProvider.getUriForFile(
-                        requireContext(),
-                        Constants.FILE_PROVIDER_AUTHORITY,
-                        file
-                    )
-                    setDataAndType(uri, attachment.attachmentMimeType)
-                    flags = Intent.FLAG_ACTIVITY_NEW_TASK and Intent.FLAG_GRANT_READ_URI_PERMISSION
-                    try {
-                        requireContext().startActivity(this)
-                    } catch (e: Exception) {
-                        InternalLogger.logE(TAG, "Unable to start file open intent.", e)
-                        Toast.makeText(
+                viewModel.getLocalAttachment(it.id) { attachment ->
+                    Intent(Intent.ACTION_VIEW).apply {
+                        val file = attachment.getFile()
+                        val uri = FileProvider.getUriForFile(
                             requireContext(),
-                            requireContext().getString(R.string.unable_to_open_file),
-                            Toast.LENGTH_SHORT
-                        ).show()
+                            Constants.FILE_PROVIDER_AUTHORITY,
+                            file
+                        )
+                        setDataAndType(uri, attachment.attachmentMimeType)
+                        flags =
+                            Intent.FLAG_ACTIVITY_NEW_TASK and Intent.FLAG_GRANT_READ_URI_PERMISSION
+                        try {
+                            requireContext().startActivity(this)
+                        } catch (e: Exception) {
+                            InternalLogger.logE(TAG, "Unable to start file open intent.", e)
+                            Toast.makeText(
+                                requireContext(),
+                                requireContext().getString(R.string.unable_to_open_file),
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
                     }
                 }
             }

@@ -17,11 +17,14 @@
 package com.adityaamolbavadekar.messenger.views
 
 import android.content.Context
+import android.graphics.Rect
 import android.util.AttributeSet
+import android.view.WindowInsets
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.Guideline
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.updatePadding
+import com.adityaamolbavadekar.messenger.R
 import com.adityaamolbavadekar.messenger.utils.logging.InternalLogger
 
 class WindowInsetsAwareConstraintLayout @JvmOverloads constructor(
@@ -36,6 +39,8 @@ class WindowInsetsAwareConstraintLayout @JvmOverloads constructor(
     private var imeMaxHeight = 0
     private var imeStateListener: ImeStateListener = { _, _ -> }
     private var onInsetsChangedListener: OnInsetsChangedListener = { _ -> }
+    private val navigationBarGuideline: Guideline? = findViewById(R.id.navigation_bar_guideline)
+    private val statusBarGuideline: Guideline? = findViewById(R.id.status_bar_guideline)
 
     init {
         setupForInsets()
@@ -46,13 +51,16 @@ class WindowInsetsAwareConstraintLayout @JvmOverloads constructor(
 
             ViewCompat.setOnApplyWindowInsetsListener(this) { v, insets ->
                 val systemBarInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-
-                v.updatePadding(
-                    top = systemBarInsets.top,
-                    bottom = systemBarInsets.bottom,
-                    left = systemBarInsets.left,
-                    right = systemBarInsets.right
+                val windowInsets =
+                    insets.toWindowInsets()!!
+                        .getInsets(WindowInsets.Type.systemBars() or WindowInsets.Type.ime() or WindowInsets.Type.displayCutout())
+                val rect = Rect(
+                    windowInsets.left,
+                    windowInsets.top,
+                    windowInsets.right,
+                    windowInsets.bottom
                 )
+                internalApplyInsets(rect)
 
                 afterApplyWindowInsets(insets)
 
@@ -64,6 +72,16 @@ class WindowInsetsAwareConstraintLayout @JvmOverloads constructor(
                     or SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN)
 
         } else ViewCompat.setOnApplyWindowInsetsListener(this, null)
+    }
+
+    private fun internalApplyInsets(insets: Rect) {
+        if (statusBarGuideline != null) {
+            statusBarGuideline.setGuidelineBegin(insets.top);
+        }
+
+        if (navigationBarGuideline != null) {
+            navigationBarGuideline.setGuidelineEnd(insets.bottom);
+        }
     }
 
     private fun afterApplyWindowInsets(insets: WindowInsetsCompat) {

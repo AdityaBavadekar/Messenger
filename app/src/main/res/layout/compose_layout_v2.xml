@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~    Copyright 2023 Aditya Bavadekar
+  ~
+  ~    Licensed under the Apache License, Version 2.0 (the "License");
+  ~    you may not use this file except in compliance with the License.
+  ~    You may obtain a copy of the License at
+  ~
+  ~        http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~    Unless required by applicable law or agreed to in writing, software
+  ~    distributed under the License is distributed on an "AS IS" BASIS,
+  ~    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~    See the License for the specific language governing permissions and
+  ~    limitations under the License.
+  -->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_alignParentBottom="true"
+    android:layout_centerHorizontal="true"
+    android:layout_gravity="bottom"
+    android:orientation="vertical"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent">
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:orientation="horizontal"
+        android:padding="@dimen/compose_bar_padding">
+
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:clipChildren="false"
+            android:clipToPadding="false">
+
+            <LinearLayout
+                android:id="@+id/editContainer"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/compose_container_background"
+                android:orientation="vertical">
+
+                <include
+                    android:id="@+id/link_preview"
+                    layout="@layout/link_preview_layout_short"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    tools:visibility="gone" />
+
+                <com.adityaamolbavadekar.messenger.views.message.ReplyView
+                    android:id="@+id/replyView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone" />
+
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clipChildren="false"
+                    android:clipToPadding="false">
+
+                    <LinearLayout
+                        android:id="@+id/inputContainer"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:minHeight="@dimen/compose_bar_input_min_height"
+                        android:orientation="horizontal"
+                        android:paddingHorizontal="@dimen/dimen_4">
+
+                        <com.adityaamolbavadekar.messenger.views.CircularMenuItemButton
+                            android:id="@+id/addButton"
+                            android:layout_width="@dimen/compose_bar_input_min_height"
+                            android:layout_height="@dimen/compose_bar_input_min_height"
+                            android:layout_gravity="center_horizontal|bottom"
+                            android:src="@drawable/ic_add"
+                            app:iconTint="?android:textColorPrimary" />
+
+                        <com.adityaamolbavadekar.messenger.views.ConversationComposeEditText
+                            android:id="@+id/message_input"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:autofillHints=""
+                            android:background="@android:color/transparent"
+                            android:fadeScrollbars="true"
+                            android:hint="@string/type_a_message"
+                            android:importantForAutofill="no"
+                            android:inputType="textMultiLine"
+                            android:maxLines="6"
+                            android:minHeight="@dimen/compose_bar_input_min_height"
+                            android:minLines="1"
+                            android:paddingHorizontal="@dimen/dimen_4"
+                            android:paddingEnd="?listPreferredItemHeightSmall"
+                            android:scrollbarSize="@dimen/dimen_2"
+                            android:scrollbarStyle="outsideInset"
+                            android:scrollbars="vertical"
+                            android:textColorHint="?android:textColorPrimary"
+                            android:textColorLink="?colorPrimary">
+
+                            <requestFocus />
+                        </com.adityaamolbavadekar.messenger.views.ConversationComposeEditText>
+
+
+                        <com.adityaamolbavadekar.messenger.views.CircularMenuItemButton
+                            android:id="@+id/emojiButton"
+                            android:layout_width="@dimen/compose_bar_input_min_height"
+                            android:layout_height="@dimen/compose_bar_input_min_height"
+                            android:layout_gravity="center_horizontal|bottom"
+                            android:src="@drawable/ic_emoji"
+                            app:iconTint="?android:textColorPrimary" />
+
+                    </LinearLayout>
+
+                </FrameLayout>
+            </LinearLayout>
+        </FrameLayout>
+
+        <com.adityaamolbavadekar.messenger.views.CircularMenuItemButton
+            android:id="@+id/sendButton"
+            android:layout_width="@dimen/compose_bar_input_min_height"
+            android:layout_height="@dimen/compose_bar_input_min_height"
+            android:layout_gravity="center_horizontal|bottom"
+            android:src="@drawable/ic_send"
+            app:iconTint="?android:textColorPrimary" />
+
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/fragment_container"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:visibility="gone" />
+
+</LinearLayout>

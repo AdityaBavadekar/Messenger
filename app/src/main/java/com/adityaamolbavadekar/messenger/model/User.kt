@@ -22,6 +22,8 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.util.*
 
+import com.adityaamolbavadekar.messenger.R
+
 @Entity(tableName = "accounts_table")
 data class User(
     var username: String?,

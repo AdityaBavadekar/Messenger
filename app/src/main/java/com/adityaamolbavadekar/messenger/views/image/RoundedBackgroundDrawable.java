@@ -29,7 +29,6 @@ import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -39,8 +38,7 @@ import org.jetbrains.annotations.NotNull;
  * <p>
  * Simpler and uses less resources compared to GradientDrawable or ShapeDrawable.
  */
-@RequiresApi(21)
-class RoundRectDrawable extends Drawable {
+public class RoundedBackgroundDrawable extends Drawable {
     private final Paint mPaint;
     private final RectF mBoundsF;
     private final Rect mBoundsI;
@@ -54,7 +52,7 @@ class RoundRectDrawable extends Drawable {
     private ColorStateList mTint;
     private PorterDuff.Mode mTintMode = PorterDuff.Mode.SRC_IN;
 
-    RoundRectDrawable(ColorStateList backgroundColor, float radius) {
+    public RoundedBackgroundDrawable(ColorStateList backgroundColor, float radius) {
         mRadius = radius;
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
         setBackground(backgroundColor);

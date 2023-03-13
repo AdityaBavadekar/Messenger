@@ -404,7 +404,7 @@ class ConversationViewModel(private val repo: ApplicationDatabaseRepository) : V
         repo.insertOrUpdateLocalAttachment(attachment)
     }
 
-    fun getLocalAttachment(id: String): LocalAttachment {
-        return repo.getLocalAttachment(id)
+    fun getLocalAttachment(id: String,callback:(LocalAttachment)->Unit)=viewModelScope.launch {
+        callback(repo.getLocalAttachment(id))
     }
 }
