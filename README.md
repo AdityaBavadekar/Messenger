@@ -1,7 +1,7 @@
 ![](https://img.shields.io/github/v/release/AdityaBavadekar/Messenger?include_prereleases&label=Messenger)
 [![Android CI](https://github.com/AdityaBavadekar/Messenger/actions/workflows/android.yml/badge.svg)](https://github.com/AdityaBavadekar/Messenger-Android/actions/workflows/android.yml)
 
-> **Note**: This app used to work till mid 2024. But since Firebase made SMS Auth a paid feature thing, this app fails to login. The app was made to allow only SMS Auth so as to keep the identity of user unique and secure and not allow random fake accounts to be made now and then like Google Accounts. 
+> **Note**: This app used to work very good till mid 2024. But Thanks to Firebase SMS Billing, since Firebase made SMS Auth a paid feature thing, this app fails to login. The app was made to allow only SMS Auth so as to keep the identity of user unique and secure and not allow random fake accounts to be made now and then like Google Accounts. 
 
 # Messenger
 Wave Messenger is simple and easy-to-use real-time messaging app for android, make for private and group conversations.
