@@ -16,6 +16,8 @@
 
 package com.adityaamolbavadekar.messenger.model
 
+import com.adityaamolbavadekar.messenger.R
+
 /**
  * For identifying Delivery Status of a message.
  * */

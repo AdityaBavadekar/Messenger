@@ -199,6 +199,13 @@
     <string name="download_title_messenger_update">Downloading Messenger update</string>
     <string name="unable_to_open_file">Unable to open file</string>
 
+    <string name="default_description">Hey! I am on Messenger.</string>
+    <string name="unknown">Unknown</string>
+    <string name="failed">Failed</string>
+    <string name="read">Read</string>
+    <string name="sent">Sent</string>
+    <string name="not_sent">Not sent</string>
+
     <string-array name="theme_chooser">
         <item>System Default</item>
         <item>Light</item>
