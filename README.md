@@ -5,9 +5,11 @@
 Wave Messenger is simple and easy-to-use real-time messaging app for android, make for private and group conversations.
 This is open-source repository of Messenger.
 
-| ![Screenshot_1728400315](https://github.com/user-attachments/assets/1f6fdc0d-2959-44c0-bcdd-93fc0a5b0a12) | ![Screenshot_1728399896](https://github.com/user-attachments/assets/219eb341-ae89-43c7-a454-a8b4528034e6) | ![Screenshot_1728399890](https://github.com/user-attachments/assets/3f8c90ea-848c-45f1-b05f-35388bb01990) | ![Screenshot_1728400318](https://github.com/user-attachments/assets/50321ef1-35c2-424e-9bd5-21ec133c0569)
+| ![Image 1](https://github.com/user-attachments/assets/1f6fdc0d-2959-44c0-bcdd-93fc0a5b0a12) | ![Image 2](https://github.com/user-attachments/assets/219eb341-ae89-43c7-a454-a8b4528034e6) | ![Image 3](https://github.com/user-attachments/assets/3f8c90ea-848c-45f1-b05f-35388bb01990) | ![Image 4](https://github.com/user-attachments/assets/50321ef1-35c2-424e-9bd5-21ec133c0569) |
 | ---- | ---- | ---- | ---- |
-
+| ![Image 5](https://github.com/user-attachments/assets/7da4fc08-e30b-47f6-a63a-2c63379115bf) | ![Image 6](https://github.com/user-attachments/assets/129f82d2-c69c-4421-8cab-c590bba24bdb) | ![Image 7](https://github.com/user-attachments/assets/19e0636d-7322-4cf3-8709-b4a23c7f1151) | ![Image 8](https://github.com/user-attachments/assets/1680b1c8-ecac-4291-be8a-8e010af2ac6e) |
+| ![Image 9](https://github.com/user-attachments/assets/d6976717-8b31-4873-b7da-c78df6ed9192) | ![Image 10](https://github.com/user-attachments/assets/9747a5cb-5ae7-47ca-b195-cdbce260faf1) | ![Image 11](https://github.com/user-attachments/assets/19297bba-e4d6-4058-829a-3315f84b2b5e) | ![Image 12](https://github.com/user-attachments/assets/b7f9a744-7e80-4bf1-a4df-eea1faa7cac9) |
+| ![Image 13](https://github.com/user-attachments/assets/27f973ef-682e-4dee-b06f-24010a8359ff) |  |  |  |
 
 ## Important Notes
 - Messenger does not have encryption facility for now but we are working to provide support for secure end-2-end encryption.
