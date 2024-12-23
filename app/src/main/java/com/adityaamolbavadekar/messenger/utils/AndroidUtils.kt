@@ -1,14 +1,18 @@
+@file:Suppress("MemberVisibilityCanBePrivate")
+
 package com.adityaamolbavadekar.messenger.utils
 
 import android.animation.ValueAnimator
 import android.content.ContentResolver
 import android.content.Context
+import android.content.res.Configuration
 import android.net.Uri
 import android.provider.OpenableColumns
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
 import androidx.core.database.getLongOrNull
+import com.adityaamolbavadekar.messenger.model.FileMetadata
 import com.adityaamolbavadekar.messenger.model.Id
 import com.adityaamolbavadekar.messenger.model.SizeUnit
 import com.adityaamolbavadekar.messenger.utils.extensions.simpleDateFormat
@@ -44,7 +48,11 @@ class AndroidUtils private constructor() {
             v.visibility = View.GONE
         }
 
-        fun getFileMetadata(uri: Uri, contentResolver: ContentResolver): HashMap<String, Any?> {
+        private fun isLandscape(context:Context): Boolean {
+            return context.resources.configuration.orientation === Configuration.ORIENTATION_LANDSCAPE
+        }
+
+        fun getFileMetadata(uri: Uri, contentResolver: ContentResolver): FileMetadata {
             val fileMimeType = contentResolver.getType(uri)
             val cursor = contentResolver.query(uri, null, null, null, null)!!
             val nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
@@ -52,11 +60,21 @@ class AndroidUtils private constructor() {
             cursor.moveToFirst()
             val fileName = cursor.getString(nameIndex)
             val fileSize = cursor.getLongOrNull(sizeIndex) ?: 0
-            return hashMapOf(
-                "mimeType" to fileMimeType,
-                "name" to fileName,
-                "size" to fileSize,
+            return FileMetadata(
+                name = fileName,
+                nameWithoutExtension = getNameWithoutExtension(fileName),
+                extension = getExtension(fileName),
+                mimeType = fileMimeType,
+                size = fileSize
             )
+        }
+
+        fun getNameWithoutExtension(fileName: String): String {
+            return fileName.substringBeforeLast(".")
+        }
+
+        fun getExtension(fileName: String): String {
+            return fileName.substringAfterLast(".").toString()
         }
 
         fun getApplicationMediaDirectory(context: Context): File {
@@ -71,13 +89,14 @@ class AndroidUtils private constructor() {
             return uri.toString().startsWith("file://")
         }
 
-        fun saveSentDocumentFile(extension:String,uri: Uri, context: Context): File {
+        fun saveSentDocumentFile(extension: String, uri: Uri, context: Context): File {
             var fileName = "DOC_" + createFileName(FILE_TYPE_OTHER) + "."
             if (extension.trim().isNotEmpty()) fileName += extension
             val f =
                 File(Constants.AppDirectories.getSentDocsDir(context).absolutePath + "/$fileName")
             f.createNewFile()
-            copyUriFileContents(context,uri,f)
+            f.nameWithoutExtension
+            copyUriFileContents(context, uri, f)
             if (f.length() > 0) {
                 InternalLogger.debugInfo(
                     TAG,
@@ -87,13 +106,13 @@ class AndroidUtils private constructor() {
             return f
         }
 
-        fun saveDownloadedDocumentFile(extension:String,uri: Uri, context: Context): File {
+        fun saveDownloadedDocumentFile(extension: String, uri: Uri, context: Context): File {
             var fileName = "DOC_" + createFileName(FILE_TYPE_OTHER) + "."
             if (extension.trim().isNotEmpty()) fileName += extension
             val f =
                 File(Constants.AppDirectories.getDocsDir(context).absolutePath + "/$fileName")
             f.createNewFile()
-            copyUriFileContents(context,uri,f)
+            copyUriFileContents(context, uri, f)
             if (f.length() > 0) {
                 InternalLogger.debugInfo(
                     TAG,
@@ -103,7 +122,7 @@ class AndroidUtils private constructor() {
             return f
         }
 
-        fun copyUriFileContents(context:Context,uri: Uri,file: File): Boolean {
+        fun copyUriFileContents(context: Context, uri: Uri, file: File): Boolean {
             try {
                 val outputStream = FileOutputStream(file)
                 val io = context.contentResolver!!.openInputStream(uri)!!

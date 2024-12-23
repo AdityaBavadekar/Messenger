@@ -192,7 +192,7 @@ class ConversationActivity : ParentConversationActivity(), SearchView.OnQueryTex
             }
         }
 
-        initWindowInsetsImeAnimations()
+        //initWindowInsetsImeAnimations()
     }
 
     private fun initWindowInsetsImeAnimations() {
@@ -428,26 +428,18 @@ class ConversationActivity : ParentConversationActivity(), SearchView.OnQueryTex
 
     override fun onDocumentPicked(docUri: Uri) {
         super.onDocumentPicked(docUri)
+        InternalLogger.logI(TAG,"onDocumentPicked($docUri)")
         Dialogs.showDefiniteProgressDialog(this, p = { loader, action ->
             cloudStorageManager.uploadDocument(docUri,
                 metadata = buildStorageMetadata(),
                 onProgress = { progress ->
-                    InternalLogger.debugInfo(TAG, "Upload document progress = ${progress}%")
+                    InternalLogger.logI(TAG, "Upload document progress = ${progress}%")
                     action(progress)
                 },
                 onSuccess = { downloadUrl ->
                     val messageId = Id.get()
-                    val map = AndroidUtils.getFileMetadata(docUri, contentResolver!!)
-                    val mimeType = map["mimeType"] as String?
-                    val fileNameWithExtension = (map["name"] as String)
-                    val fileSize = map["size"] as Long
-                    val attachment = Attachment.from(
-                        docUri,
-                        fileNameWithExtension,
-                        fileSize,
-                        mimeType,
-                        downloadUrl
-                    )
+                    val fileMetadata = AndroidUtils.getFileMetadata(docUri, contentResolver!!)
+                    val attachment = Attachment.from(fileMetadata, downloadUrl)
                     AndroidUtils.saveSentDocumentFile(attachment.extension,docUri, this).also { localFile ->
                         val localAttachment = LocalAttachment.new(
                             attachment,
@@ -493,7 +485,6 @@ class ConversationActivity : ParentConversationActivity(), SearchView.OnQueryTex
         super.onShouldShowPicturePreview(urisList)
         showPicturePreview(urisList)
     }
-
 
     companion object {
         fun createNewIntent(

@@ -60,7 +60,7 @@ class MessagesAdapter(private val lifecycleOwner: LifecycleOwner) :
     fun setConversationWithRecipients(conversationWithRecipients: ConversationWithRecipients) {
         conversationRecord = conversationWithRecipients.conversationRecord
         isGroup = conversationWithRecipients.conversationRecord.isGroup
-        if (conversationWithRecipients.recipients != null || conversationWithRecipients.recipients.isNotEmpty()) {
+        if (conversationWithRecipients.recipients.size > 0) {
             recipients = conversationWithRecipients.recipients
         }
     }

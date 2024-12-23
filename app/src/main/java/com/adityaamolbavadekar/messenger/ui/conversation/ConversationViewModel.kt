@@ -23,6 +23,7 @@ import com.adityaamolbavadekar.messenger.database.conversations.ApplicationDatab
 import com.adityaamolbavadekar.messenger.database.conversations.DatabaseAndroidViewModel
 import com.adityaamolbavadekar.messenger.managers.CloudDatabaseManager
 import com.adityaamolbavadekar.messenger.managers.InternetManager
+import com.adityaamolbavadekar.messenger.managers.AuthManager
 import com.adityaamolbavadekar.messenger.model.*
 import com.adityaamolbavadekar.messenger.notifications.NotificationData
 import com.adityaamolbavadekar.messenger.notifications.NotificationSender
@@ -39,6 +40,7 @@ class ConversationViewModel(private val repo: ApplicationDatabaseRepository) : V
     private var lastMessage: MessageRecord? = null
     private var isObservingRemoteDatabase = false
     private lateinit var conversationId: String
+    private val myUid: String = AuthManager().uid
     private var conversationType = 0
     private val _messages: MutableLiveData<List<MessageRecord>> = MutableLiveData(listOf())
     val messages: LiveData<List<MessageRecord>> = _messages
@@ -179,7 +181,7 @@ class ConversationViewModel(private val repo: ApplicationDatabaseRepository) : V
 
     private fun startObservingRemoteP2PData(p2pUid: String, observeStatus: Boolean = true) {
         messagesManager.observeMessagesFromDatabaseV2(
-            me.uid, p2pUid,
+            myUid, p2pUid,
             MessagesChildListener(this).childEventListener
         )
         if (observeStatus) {
@@ -329,9 +331,7 @@ class ConversationViewModel(private val repo: ApplicationDatabaseRepository) : V
 
     private fun onLocalConversationDataChanged(data: ConversationWithRecipients) {
         _isMessagingRestrictedForMe.postValue(
-            data.conversationRecord.isMessagingRestrictedForUser(
-                me.uid
-            )
+            data.conversationRecord.isMessagingRestrictedForUser(myUid)
         )
         _conversationPhoto.postValue(data.conversationRecord.photoUrl)
         _conversationTitle.postValue(data.conversationRecord.title)
@@ -404,7 +404,7 @@ class ConversationViewModel(private val repo: ApplicationDatabaseRepository) : V
         repo.insertOrUpdateLocalAttachment(attachment)
     }
 
-    fun getLocalAttachment(id: String): LocalAttachment {
-        return repo.getLocalAttachment(id)
+    fun getLocalAttachment(id: String,callback:(LocalAttachment)->Unit)=viewModelScope.launch {
+        callback(repo.getLocalAttachment(id))
     }
 }

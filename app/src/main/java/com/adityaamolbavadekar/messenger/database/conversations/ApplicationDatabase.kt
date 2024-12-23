@@ -19,7 +19,15 @@ package com.adityaamolbavadekar.messenger.database.conversations
 import android.content.Context
 import androidx.room.*
 import androidx.sqlite.db.SupportSQLiteDatabase
-import com.adityaamolbavadekar.messenger.model.*
+import com.adityaamolbavadekar.messenger.model.User
+import com.adityaamolbavadekar.messenger.model.ConversationRecord
+import com.adityaamolbavadekar.messenger.model.MessageRecord
+import com.adityaamolbavadekar.messenger.model.ReactionRecord
+import com.adityaamolbavadekar.messenger.model.Recipient
+import com.adityaamolbavadekar.messenger.model.Attachment
+import com.adityaamolbavadekar.messenger.model.LocalAttachment
+import com.adityaamolbavadekar.messenger.model.ConversationRecordRecipientCrossRef
+import com.adityaamolbavadekar.messenger.model.ConversationDraftMessage
 import com.adityaamolbavadekar.messenger.utils.logging.InternalLogger
 
 @Database(
@@ -74,6 +82,7 @@ abstract class ApplicationDatabase : RoomDatabase() {
         }
 
         private val callback = object : Callback() {
+
             override fun onCreate(db: SupportSQLiteDatabase) {
                 super.onCreate(db)
                 InternalLogger.logD("RoomDatabase.Callback", "Database created")
